@@ -2,7 +2,8 @@
 
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import React from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "./chakra/theme";
 
 type Props = {
   children: React.ReactNode;
@@ -10,7 +11,11 @@ type Props = {
 };
 
 function Provider({ children, session }: Props) {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  return (
+    <SessionProvider session={session}>
+      <ChakraProvider theme={theme}>{children}</ChakraProvider>
+    </SessionProvider>
+  );
 }
 
 export default Provider;
