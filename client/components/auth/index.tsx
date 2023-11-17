@@ -3,15 +3,8 @@
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Center,
-  Image,
-  Input,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Center, Input, Stack, Text } from "@chakra-ui/react";
+import Image from "next/image";
 
 type AuthProps = {
   session: Session | null;
@@ -34,13 +27,7 @@ function Auth({ session, reloadSession }: AuthProps) {
         spacing={5}
         align="center"
       >
-        <Image
-          className=""
-          src="/icon.png"
-          width={100}
-          height={12}
-          alt="swift logo"
-        />
+        <Image src="/icon.png" width={75} height={15} alt="swift logo" />
 
         {session ? (
           <>
