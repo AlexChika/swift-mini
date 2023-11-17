@@ -1,9 +1,17 @@
 "use client";
 
-import { Box, Button, Center, Stack, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Center,
+  Image,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
 type AuthProps = {
   session: Session | null;
@@ -11,29 +19,46 @@ type AuthProps = {
 };
 
 function Auth({ session, reloadSession }: AuthProps) {
+  const [username, setUsername] = useState("");
+
+  function onSubmit() {
+    console.log({ username });
+  }
+
   return (
     <Center position="relative" height="100vh">
-      <Box
-        position="absolute"
-        top="20px"
-        left="50%"
-        transform="translateX(-50%)"
-        mx="auto"
-        bg="white"
-        w="max-content"
-        mt="20px"
-        p="5px"
-        rounded="10px"
+      <Stack
+        bg="whiteAlpha.100"
+        border="1px slid grey"
+        p={30}
+        spacing={5}
+        align="center"
       >
-        <Image src="/icon.png" width={70} height={20} alt="swift logo" />
-      </Box>
+        <Image
+          className=""
+          src="/icon.png"
+          width={100}
+          height={12}
+          alt="swift logo"
+        />
 
-      <Stack align="center">
-        {session ? (
-          <Text>Create a username</Text>
+        {!session ? (
+          <>
+            <Text>Create a username</Text>
+            <Input
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              placeholder="Enter a username"
+            />
+            <Button fontSize={14} w="full" onClick={onSubmit}>
+              All Good
+            </Button>
+          </>
         ) : (
           <>
+            <Text>You are not signed in</Text>
             <Button
+              fontSize={14}
               onClick={() => signIn("google")}
               leftIcon={
                 <Image

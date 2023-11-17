@@ -12,7 +12,7 @@ type Props = {
 function HomePage({ session }: Props) {
   return (
     <Box>
-      {session?.user ? (
+      {session?.user.username ? (
         <Chat />
       ) : (
         <Auth session={session} reloadSession={() => {}} />
