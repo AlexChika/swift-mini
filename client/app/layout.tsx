@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import Provider from "./Provider";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import "./globals.css";
+import { ColorModeScript } from "@chakra-ui/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
