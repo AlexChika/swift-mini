@@ -42,8 +42,11 @@ function Auth({ session, reloadSession }: AuthProps) {
           alt="swift logo"
         />
 
-        {!session ? (
+        {session ? (
           <>
+            <Text noOfLines={1} textAlign="center" mb={-5}>
+              Hi {session?.user.name}
+            </Text>
             <Text>Create a username</Text>
             <Input
               onChange={(e) => setUsername(e.target.value)}
