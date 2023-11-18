@@ -1,4 +1,4 @@
-import usersTypeDefs from "../resolvers/user";
+import usersTypeDefs from "./user";
 
 const typeDefs = [usersTypeDefs];
 

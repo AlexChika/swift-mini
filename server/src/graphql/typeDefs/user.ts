@@ -12,6 +12,10 @@ type Mutation {
     createUsername(username:String!):CreateUserResponse
 }
 
+# type Subscription {
+
+# }
+
 type CreateUserResponse {
     success:Boolean!
     error:String
