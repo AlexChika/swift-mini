@@ -10,6 +10,11 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
 
+const corsOpts = {
+  origin: process.env.CLIENT_ORIGIN,
+  credentials: true,
+};
+
 async function main() {
   const app = express();
   const httpServer = http.createServer(app);
@@ -31,7 +36,7 @@ async function main() {
 
   await server.start();
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, cors: corsOpts });
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: "4000" }, resolve)
   );

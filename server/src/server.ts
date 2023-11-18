@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import { createServer } from "http";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
@@ -11,11 +12,20 @@ import cors from "cors";
 import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
 
+// configs
+dotenv.config();
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+const corsOpts = {
+  origin:
+    process.env.NODE_ENV === "production" ? process.env.CLIENT_ORIGIN : "*",
+  credentials: true,
+};
+
+// http server
 const app = express();
 const httpServer = createServer(app);
 
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-
+// websocket server
 const wsServer = new WebSocketServer({
   server: httpServer,
   path: "/subscriptions",
@@ -43,7 +53,7 @@ await server.start();
 
 app.use(
   "/graphql",
-  cors<cors.CorsRequest>(),
+  cors<cors.CorsRequest>(corsOpts),
   express.json(),
   expressMiddleware(server)
 );

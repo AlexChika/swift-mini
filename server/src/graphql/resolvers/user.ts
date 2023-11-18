@@ -3,7 +3,9 @@ const resolvers = {
     searchUsers() {},
   },
   Mutation: {
-    createUsername() {},
+    createUsername(_, args) {
+      console.log(args);
+    },
   },
   // Subscription: {},
 };

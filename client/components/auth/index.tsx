@@ -5,6 +5,9 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button, Center, Input, Stack, Text } from "@chakra-ui/react";
 import Image from "next/image";
+import { useMutation } from "@apollo/client";
+
+import userOperations from "@/graphql/operations/users";
 
 type AuthProps = {
   session: Session | null;
@@ -13,20 +16,26 @@ type AuthProps = {
 
 function Auth({ session, reloadSession }: AuthProps) {
   const [username, setUsername] = useState("");
+  const [createUsername, { data, loading, error }] = useMutation<
+    CreateUsernameReturn,
+    CreateUsernameVariable
+  >(userOperations.Mutations.createUsername);
 
-  function onSubmit() {
+  async function onSubmit() {
+    if (!username) return;
+
+    try {
+      await createUsername({ variables: { username } });
+    } catch (error) {
+      console.log(error);
+    }
+
     console.log({ username });
   }
 
   return (
     <Center position="relative" height="100vh">
-      <Stack
-        bg="whiteAlpha.100"
-        border="1px slid grey"
-        p={30}
-        spacing={5}
-        align="center"
-      >
+      <Stack bg="whiteAlpha.100" p={30} spacing={5} align="center">
         <Image src="/icon.png" width={75} height={15} alt="swift logo" />
 
         {session ? (

@@ -3,7 +3,7 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 const uri =
   process.env.NODE_ENV === "development"
     ? "http://localhost:4000/graphql"
-    : "https://swift-mini.vercel.app/";
+    : "https://swift-mini.onrender.com/graphql";
 
 const httpLink = new HttpLink({
   uri,
