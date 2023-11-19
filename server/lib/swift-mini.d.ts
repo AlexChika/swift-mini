@@ -6,3 +6,12 @@ type GraphqlContext = {
   prisma: PrismaClient;
   // pubsub
 };
+
+/**
+ * return object when a username is created
+ */
+type CreateUsernameResponse = {
+  success: boolean;
+  error?: string;
+  username: string;
+};

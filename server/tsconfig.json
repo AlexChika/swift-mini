@@ -13,5 +13,5 @@
   },
   "include": ["/**/*.ts"],
   "exclude": ["node_modules"],
-  "files": ["./lib/next-auth.d.ts"]
+  "files": ["lib/next-auth.d.ts"]
 }

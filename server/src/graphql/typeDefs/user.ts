@@ -19,7 +19,7 @@ type Mutation {
 type CreateUserResponse {
     username:String!
     success:Boolean!
-    error:String!
+    error:String
 }
 
 `;
