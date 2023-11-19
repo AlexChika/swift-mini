@@ -12,5 +12,6 @@
     "moduleResolution": "Node"
   },
   "include": ["/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "files": ["./lib/next-auth.d.ts"]
 }

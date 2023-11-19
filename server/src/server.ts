@@ -8,9 +8,13 @@ import { useServer } from "graphql-ws/lib/use/ws";
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import cors from "cors";
+import pkg from "body-parser";
 
 import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
+import { getSession } from "../lib/helpers";
+import { GraphqlContext } from "../lib/swift-mini";
+const { json } = pkg;
 
 // configs
 dotenv.config();
@@ -32,8 +36,9 @@ const wsServer = new WebSocketServer({
 
 const serverCleanup = useServer({ schema }, wsServer);
 
-const server = new ApolloServer({
+const server = new ApolloServer<GraphqlContext>({
   schema,
+  csrfPrevention: true,
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
     {
@@ -54,7 +59,12 @@ app.use(
   "/graphql",
   cors<cors.CorsRequest>(corsOpts),
   express.json(),
-  expressMiddleware(server)
+  expressMiddleware(server, {
+    context: async ({ req }): Promise<GraphqlContext> => {
+      const session = await getSession(req, process.env.SESSION_URL);
+      return session;
+    },
+  })
 );
 
 const PORT = 4000;

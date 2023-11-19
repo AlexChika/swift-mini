@@ -1,7 +1,7 @@
 "use client";
 
 import { Session } from "next-auth";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useState } from "react";
 import { Button, Center, Input, Stack, Text, Image } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
@@ -51,6 +51,7 @@ function Auth({ session, reloadSession }: AuthProps) {
             <Button fontSize={14} w="full" onClick={onSubmit}>
               All Good
             </Button>
+            <Button onClick={() => signOut()}>logout</Button>
           </>
         ) : (
           <>
