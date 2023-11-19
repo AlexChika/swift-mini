@@ -14,17 +14,19 @@ type AuthProps = {
 };
 
 function Auth({ session, reloadSession }: AuthProps) {
-  const [username, setUsername] = useState("");
+  const [Username, setUsername] = useState("");
   const [createUsername, { data, loading, error }] = useMutation<
     CreateUsernameReturn,
     CreateUsernameVariable
   >(userOperations.Mutations.createUsername);
 
   async function onSubmit() {
+    const username = Username.trim();
     if (!username) return;
 
     try {
-      await createUsername({ variables: { username } });
+      const res = await createUsername({ variables: { username } });
+      console.log({ data: res?.data?.createUsername });
     } catch (error) {
       console.log(error);
     }
@@ -45,7 +47,7 @@ function Auth({ session, reloadSession }: AuthProps) {
             <Text>Create a username</Text>
             <Input
               onChange={(e) => setUsername(e.target.value)}
-              value={username}
+              value={Username}
               placeholder="Enter a username"
             />
             <Button fontSize={14} w="full" onClick={onSubmit}>
