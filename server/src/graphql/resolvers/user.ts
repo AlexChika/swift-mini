@@ -3,8 +3,8 @@ const resolvers = {
     searchUsers() {},
   },
   Mutation: {
-    createUsername(_, args) {
-      console.log(args);
+    createUsername(_: any, args: { username: string }, ctx: any) {
+      console.log({ ctx });
     },
   },
   // Subscription: {},

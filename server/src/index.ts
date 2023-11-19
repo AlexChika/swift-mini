@@ -11,7 +11,7 @@ import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
 
 const corsOpts = {
-  origin: process.env.CLIENT_ORIGIN,
+  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
   credentials: true,
 };
 

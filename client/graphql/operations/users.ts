@@ -16,7 +16,8 @@ const createUsername = gql`
   mutation CreateUsername($username: String!) {
     createUsername(username: $username) {
       username
-      successerror
+      success
+      error
     }
   }
 `;

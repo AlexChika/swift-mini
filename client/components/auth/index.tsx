@@ -3,8 +3,7 @@
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { Button, Center, Input, Stack, Text } from "@chakra-ui/react";
-import Image from "next/image";
+import { Button, Center, Input, Stack, Text, Image } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 
 import userOperations from "@/graphql/operations/users";
@@ -36,7 +35,7 @@ function Auth({ session, reloadSession }: AuthProps) {
   return (
     <Center position="relative" height="100vh">
       <Stack bg="whiteAlpha.100" p={30} spacing={5} align="center">
-        <Image src="/icon.png" width={75} height={15} alt="swift logo" />
+        <Image src="/icon.png" width="75px" alt="swift logo" />
 
         {session ? (
           <>

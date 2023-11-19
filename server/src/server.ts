@@ -15,9 +15,8 @@ import typeDefs from "./graphql/typeDefs";
 // configs
 dotenv.config();
 const schema = makeExecutableSchema({ typeDefs, resolvers });
-const corsOpts = {
-  origin:
-    process.env.NODE_ENV === "production" ? process.env.CLIENT_ORIGIN : "*",
+const corsOpts: cors.CorsOptions = {
+  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
   credentials: true,
 };
 
