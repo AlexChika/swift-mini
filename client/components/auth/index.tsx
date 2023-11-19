@@ -1,47 +1,78 @@
 "use client";
 
 import { Session } from "next-auth";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button, Center, Input, Stack, Text, Image } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 
 import userOperations from "@/graphql/operations/users";
+import toast from "react-hot-toast";
 
 type AuthProps = {
-  session: Session | null;
   reloadSession: () => void;
 };
 
-function Auth({ session, reloadSession }: AuthProps) {
+function Auth({ reloadSession }: AuthProps) {
+  const { data: session } = useSession();
+  console.log({ session });
+
   const [Username, setUsername] = useState("");
-  const [createUsername, { data, loading, error }] = useMutation<
+  const [createUsername, { loading, error }] = useMutation<
     CreateUsernameReturn,
     CreateUsernameVariable
   >(userOperations.Mutations.createUsername);
 
   async function onSubmit() {
-    const username = Username.trim();
+    const username = Username.trim().toLowerCase();
     if (!username) return;
+    toast.loading("loading", {
+      id: "createusername",
+    });
 
     try {
-      const res = await createUsername({ variables: { username } });
-      console.log({ data: res?.data?.createUsername });
-    } catch (error) {
-      console.log(error);
-    }
+      const { data } = await createUsername({ variables: { username } });
 
-    console.log({ username });
+      if (!data?.createUsername) {
+        throw new Error("Operation failed");
+      }
+
+      if (!data?.createUsername.success) {
+        const { error } = data.createUsername;
+        throw new Error(error);
+      }
+
+      toast.success("Username created successfully", {
+        id: "createusername",
+      });
+      reloadSession();
+    } catch (error) {
+      const e = error as unknown as { message: string };
+      toast.error(e?.message || "Unknown error occured", {
+        id: "createusername",
+      });
+    }
   }
+
+  const imageUrl = session
+    ? session?.user?.image
+      ? session?.user?.image
+      : "/icon.png"
+    : "/icon.png";
 
   return (
     <Center position="relative" height="100vh">
       <Stack bg="whiteAlpha.100" p={30} spacing={5} align="center">
-        <Image src="/icon.png" width="75px" alt="swift logo" />
+        <Image
+          src={imageUrl}
+          width="70px"
+          alt="swift logo"
+          rounded={session ? "100%" : ""}
+        />
 
         {session ? (
           <>
-            <Text noOfLines={1} textAlign="center" mb={-5}>
+            <Text fontSize="14px" noOfLines={1} textAlign="center" mb={-5}>
               Hi {session?.user.name}
             </Text>
             <Text>Create a username</Text>
@@ -53,7 +84,6 @@ function Auth({ session, reloadSession }: AuthProps) {
             <Button fontSize={14} w="full" onClick={onSubmit}>
               All Good
             </Button>
-            <Button onClick={() => signOut()}>logout</Button>
           </>
         ) : (
           <>

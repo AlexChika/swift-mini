@@ -16,8 +16,6 @@ const resolvers = {
       const { username } = args;
       const { session, prisma } = ctx;
 
-      console.log({ user: session.user });
-
       if (!session?.user)
         return {
           username,

@@ -1,22 +1,21 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
-import { Session } from "next-auth";
 import Chat from "../chat";
 import Auth from "../auth";
+import { useSession } from "next-auth/react";
 
-type Props = {
-  session: Session | null;
-};
+function HomePage() {
+  const { data: sess } = useSession();
 
-function HomePage({ session }: Props) {
+  function reloadSession() {
+    const event = new Event("visibilitychange");
+    document.dispatchEvent(event);
+  }
+
   return (
     <Box>
-      {session?.user.username ? (
-        <Chat />
-      ) : (
-        <Auth session={session} reloadSession={() => {}} />
-      )}
+      {sess?.user.username ? <Chat /> : <Auth reloadSession={reloadSession} />}
     </Box>
   );
 }
