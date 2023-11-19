@@ -6,7 +6,8 @@ const resolvers = {
   },
   Mutation: {
     createUsername(_: any, args: { username: string }, ctx: GraphqlContext) {
-      console.log(ctx.session.user.username);
+      const { username } = args;
+      const { session, prisma } = ctx;
     },
   },
   // Subscription: {},

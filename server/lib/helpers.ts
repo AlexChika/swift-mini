@@ -2,12 +2,8 @@ import { Session } from "next-auth";
 
 import axios from "axios";
 import express from "express";
-import { GraphqlContext } from "./swift-mini";
 
-async function getSession(
-  req: express.Request,
-  url: string
-): Promise<GraphqlContext> {
+async function getSession(req: express.Request, url: string): Promise<Session> {
   try {
     const fetchOptions = req ? { headers: { cookie: req.headers.cookie } } : {};
     const res = await axios.get<Session>(url, fetchOptions);
@@ -17,9 +13,9 @@ async function getSession(
       return null;
     }
 
-    return { session };
+    return session;
   } catch (e) {
-    return { session: null };
+    return null;
   }
 }
 

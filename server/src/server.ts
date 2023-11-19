@@ -14,10 +14,13 @@ import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
 import { getSession } from "../lib/helpers";
 import { GraphqlContext } from "../lib/swift-mini";
+import { PrismaClient } from "@prisma/client";
 const { json } = pkg;
 
 // configs
 dotenv.config();
+const prisma = new PrismaClient();
+
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const corsOpts: cors.CorsOptions = {
   origin: ["http://localhost:3000", "https://studio.apollographql.com"],
@@ -62,7 +65,7 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const session = await getSession(req, process.env.SESSION_URL);
-      return session;
+      return { session, prisma };
     },
   })
 );
