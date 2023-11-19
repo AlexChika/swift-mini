@@ -3,10 +3,9 @@ import { gql } from "@apollo/client";
 /* ------------------ queries ----------------- */
 const searchUsers = gql`
   query SearchUsers($username: String!) {
-    searchUsers {
+    searchUsers(username: $username) {
       id
-      name
-      email
+      username
     }
   }
 `;

@@ -1,14 +1,20 @@
 "use client";
 
-import { Button } from "@chakra-ui/react";
-import { signOut } from "next-auth/react";
+import { Flex } from "@chakra-ui/react";
+import Conversations from "./conversations";
+import Feeds from "./feeds";
+import { Session } from "next-auth";
 
-function Chat() {
+type ChatProps = {
+  session: Session;
+};
+
+function Chat({ session }: ChatProps) {
   return (
-    <div>
-      chat
-      <Button onClick={() => signOut()}>Logout</Button>
-    </div>
+    <Flex height="100vh">
+      <Conversations session={session} />
+      <Feeds session={session} />
+    </Flex>
   );
 }
 

@@ -6,7 +6,7 @@ import Auth from "../auth";
 import { useSession } from "next-auth/react";
 
 function HomePage() {
-  const { data: sess } = useSession();
+  const { data: session } = useSession();
 
   function reloadSession() {
     const event = new Event("visibilitychange");
@@ -15,7 +15,11 @@ function HomePage() {
 
   return (
     <Box>
-      {sess?.user.username ? <Chat /> : <Auth reloadSession={reloadSession} />}
+      {session?.user.username ? (
+        <Chat session={session} />
+      ) : (
+        <Auth session={session} reloadSession={reloadSession} />
+      )}
     </Box>
   );
 }

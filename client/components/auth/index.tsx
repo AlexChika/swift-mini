@@ -1,7 +1,7 @@
 "use client";
 
 import { Session } from "next-auth";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button, Center, Input, Stack, Text, Image } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
@@ -11,10 +11,10 @@ import toast from "react-hot-toast";
 
 type AuthProps = {
   reloadSession: () => void;
+  session: Session | null;
 };
 
-function Auth({ reloadSession }: AuthProps) {
-  const { data: session } = useSession();
+function Auth({ session, reloadSession }: AuthProps) {
   console.log({ session });
 
   const [Username, setUsername] = useState("");
@@ -56,7 +56,7 @@ function Auth({ reloadSession }: AuthProps) {
 
   const imageUrl = session
     ? session?.user?.image
-      ? session?.user?.image
+      ? session.user.image
       : "/icon.png"
     : "/icon.png";
 
@@ -67,7 +67,7 @@ function Auth({ reloadSession }: AuthProps) {
           src={imageUrl}
           width="70px"
           alt="swift logo"
-          rounded={session ? "100%" : ""}
+          rounded={session?.user?.image ? "100%" : ""}
         />
 
         {session ? (
@@ -81,7 +81,12 @@ function Auth({ reloadSession }: AuthProps) {
               value={Username}
               placeholder="Enter a username"
             />
-            <Button fontSize={14} w="full" onClick={onSubmit}>
+            <Button
+              isLoading={loading}
+              fontSize={14}
+              w="full"
+              onClick={onSubmit}
+            >
               All Good
             </Button>
           </>
