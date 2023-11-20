@@ -1,10 +1,10 @@
 const conversationDefs = `#graphql
 type Mutation {
-createConversation(participantIds:[String]):CreateConversationResponse
+createConversation(participantIds:[String!]!):CreateConversationResponse
 }
 
 type CreateConversationResponse {
-    conversationId:String
+    conversationId:String!
 }
 
 `;

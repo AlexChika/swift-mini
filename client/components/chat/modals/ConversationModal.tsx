@@ -15,16 +15,19 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import userOperations from "@/graphql/operations/users";
-import { useLazyQuery } from "@apollo/client";
+import convoOperations from "@/graphql/operations/conversations";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
+import { Session } from "next-auth";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  session: Session;
 };
 
-function ConversationModal({ onClose, isOpen }: Props) {
+function ConversationModal({ onClose, isOpen, session }: Props) {
   const [username, setUsername] = useState("");
   const [participants, setParticipants] = useState<SearchedUser[]>([]);
 
@@ -32,6 +35,11 @@ function ConversationModal({ onClose, isOpen }: Props) {
     SearchUsersReturn,
     SearchUsersVariable
   >(userOperations.Queries.searchUsers);
+
+  const [createConversation, { loading: createConversationLoading }] =
+    useMutation<CreateConversationReturn, CreateConversationVariable>(
+      convoOperations.Mutations.createConversation
+    );
 
   // functions
   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
@@ -54,7 +62,11 @@ function ConversationModal({ onClose, isOpen }: Props) {
   }
 
   async function onCreateConversation() {
+    const participantIds = [...participants.map((p) => p.id), session.user.id];
     try {
+      const { data } = await createConversation({
+        variables: { participantIds },
+      });
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
@@ -96,7 +108,13 @@ function ConversationModal({ onClose, isOpen }: Props) {
                 removeParticipant={removeParticipant}
                 participants={participants}
               />
-              <Button onClick={() => {}} w="100%" mt={6} colorScheme="blue">
+              <Button
+                isLoading={createConversationLoading}
+                onClick={() => onCreateConversation()}
+                w="100%"
+                mt={6}
+                colorScheme="blue"
+              >
                 Create Conversation
               </Button>
             </>

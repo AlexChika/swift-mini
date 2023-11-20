@@ -1,3 +1,5 @@
+// users
+
 type CreateUsernameReturn = {
   createUsername: {
     username: string;
@@ -19,6 +21,16 @@ type SearchUsersReturn = {
 };
 type SearchUsersVariable = {
   username: string;
+};
+
+// conversations
+type CreateConversationReturn = {
+  createConversation: {
+    conversationId: string;
+  };
+};
+type CreateConversationVariable = {
+  participantIds: string[];
 };
 
 type IconProp = {
