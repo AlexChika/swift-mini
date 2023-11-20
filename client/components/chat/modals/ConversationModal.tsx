@@ -8,10 +8,15 @@ import {
   Stack,
   Input,
   Button,
+  Text,
+  Avatar,
+  Flex,
+  IconButton,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import userOperations from "@/graphql/operations/users";
 import { useLazyQuery } from "@apollo/client";
+import CloseIcon from "@/lib/icons/CloseIcon";
 
 type Props = {
   isOpen: boolean;
@@ -20,11 +25,14 @@ type Props = {
 
 function ConversationModal({ onClose, isOpen }: Props) {
   const [username, setUsername] = useState("");
+  const [participants, setParticipants] = useState<SearchedUser[]>([]);
+
   const [searchUsers, { loading, data }] = useLazyQuery<
     SearchUsersReturn,
     SearchUsersVariable
   >(userOperations.Queries.searchUsers);
 
+  // functions
   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const name = username.trim().toLowerCase();
@@ -33,7 +41,16 @@ function ConversationModal({ onClose, isOpen }: Props) {
     searchUsers({ variables: { username: name } });
   }
 
-  console.log({ data });
+  function addParticipant(user: SearchedUser) {
+    const userExist = participants.find((p) => p.id === user.id);
+    if (userExist) return;
+
+    setParticipants((prev) => [...prev, user]);
+  }
+
+  function removeParticipant(userId: string) {
+    setParticipants((prev) => prev.filter((p) => p.id !== userId));
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -55,16 +72,101 @@ function ConversationModal({ onClose, isOpen }: Props) {
             </Stack>
           </form>
 
-          <UserSearchList users={data?.searchUsers} />
+          {data?.searchUsers && (
+            <UserSearchList
+              users={data?.searchUsers}
+              addParticipant={addParticipant}
+            />
+          )}
+
+          {participants.length > 0 && (
+            <Participants
+              removeParticipant={removeParticipant}
+              participants={participants}
+            />
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
   );
 }
 
-function UserSearchList({ users }: { users: SearchedUser[] | undefined }) {
-  if (!users) return <div>No user found</div>;
-  return <div>helli</div>;
+// border = "2px solid red";
+type ListProp = {
+  users: SearchedUser[];
+  addParticipant: (user: SearchedUser) => void;
+};
+
+function UserSearchList({ users, addParticipant }: ListProp) {
+  if (users.length < 1)
+    return (
+      <Text mt={5} textAlign="center" fontSize="14px" color="whiteAlpha.500">
+        No user found
+      </Text>
+    );
+
+  return (
+    <Stack mt={3}>
+      {users.map((user) => {
+        return (
+          <Stack
+            key={user.id}
+            direction="row"
+            align="center"
+            spacing={4}
+            py={2}
+            px={2}
+            borderRadius={4}
+            _hover={{ bg: "whiteAlpha.200" }}
+          >
+            <Avatar name={user.username} size={"sm"} />
+            <Flex align="center" justify="space-between" w="100%">
+              <Text>{user.username}</Text>
+              <Button
+                onClick={() => addParticipant(user)}
+                bg="brand.100"
+                _hover={{ bg: "brand.100" }}
+              >
+                Select
+              </Button>
+            </Flex>
+          </Stack>
+        );
+      })}
+    </Stack>
+  );
+}
+
+type ParticipantsProps = {
+  participants: SearchedUser[];
+  removeParticipant: (id: string) => void;
+};
+
+function Participants({ participants, removeParticipant }: ParticipantsProps) {
+  return (
+    <Flex mt={8} gap="10px" flexWrap="wrap">
+      {participants.map((p) => {
+        return (
+          <Stack
+            bg="whiteAlpha.200"
+            borderRadius={4}
+            p={2}
+            align="center"
+            key={p.id}
+            direction="row"
+          >
+            <Text>{p.username}</Text>
+            <IconButton
+              onClick={() => removeParticipant(p.id)}
+              variant="link"
+              aria-label="delete selected user button"
+              icon={<CloseIcon color="white" />}
+            />
+          </Stack>
+        );
+      })}
+    </Flex>
+  );
 }
 
 export default ConversationModal;

@@ -20,3 +20,9 @@ type SearchUsersReturn = {
 type SearchUsersVariable = {
   username: string;
 };
+
+type IconProp = {
+  className?: string;
+  style?: any;
+  color?: string;
+};
