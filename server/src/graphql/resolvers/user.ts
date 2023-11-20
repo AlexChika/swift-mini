@@ -1,12 +1,43 @@
+import { GraphQLError } from "graphql";
 import {
   CreateUsernameResponse,
   GraphqlContext,
 } from "../../../lib/swift-mini";
+import { User } from "@prisma/client";
 
 const resolvers = {
   Query: {
-    searchUsers() {},
+    searchUsers: async (
+      _: any,
+      args: { username: string },
+      ctx: GraphqlContext
+    ): Promise<User[]> => {
+      const { username: searchedUsername } = args;
+      const { session, prisma } = ctx;
+
+      if (!session?.user) throw new GraphQLError("User is not authenticated");
+
+      const { username: myUsername } = session.user;
+
+      try {
+        const users = prisma.user.findMany({
+          where: {
+            username: {
+              contains: searchedUsername,
+              not: myUsername,
+              mode: "insensitive",
+            },
+          },
+        });
+
+        return users;
+      } catch (error) {
+        console.log("searchUsers error", error);
+        throw new GraphQLError(error?.message);
+      }
+    },
   },
+
   Mutation: {
     createUsername: async (
       _: any,
@@ -65,6 +96,7 @@ const resolvers = {
       }
     },
   },
+
   // Subscription: {},
 };
 

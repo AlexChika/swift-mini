@@ -5,7 +5,18 @@ type CreateUsernameReturn = {
     error: string;
   };
 };
-
 type CreateUsernameVariable = {
+  username: string;
+};
+
+type SearchedUser = {
+  id: string;
+  username: string;
+};
+
+type SearchUsersReturn = {
+  searchUsers: SearchedUser[];
+};
+type SearchUsersVariable = {
   username: string;
 };
