@@ -17,6 +17,7 @@ import { useState } from "react";
 import userOperations from "@/graphql/operations/users";
 import { useLazyQuery } from "@apollo/client";
 import CloseIcon from "@/lib/icons/CloseIcon";
+import toast from "react-hot-toast";
 
 type Props = {
   isOpen: boolean;
@@ -52,6 +53,16 @@ function ConversationModal({ onClose, isOpen }: Props) {
     setParticipants((prev) => prev.filter((p) => p.id !== userId));
   }
 
+  async function onCreateConversation() {
+    try {
+    } catch (error) {
+      const e = error as unknown as { message: string };
+      toast.error(e?.message, {
+        id: "create conversation",
+      });
+    }
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -80,10 +91,15 @@ function ConversationModal({ onClose, isOpen }: Props) {
           )}
 
           {participants.length > 0 && (
-            <Participants
-              removeParticipant={removeParticipant}
-              participants={participants}
-            />
+            <>
+              <Participants
+                removeParticipant={removeParticipant}
+                participants={participants}
+              />
+              <Button onClick={() => {}} w="100%" mt={6} colorScheme="blue">
+                Create Conversation
+              </Button>
+            </>
           )}
         </ModalBody>
       </ModalContent>
@@ -123,9 +139,10 @@ function UserSearchList({ users, addParticipant }: ListProp) {
             <Flex align="center" justify="space-between" w="100%">
               <Text>{user.username}</Text>
               <Button
+                size="sm"
                 onClick={() => addParticipant(user)}
-                bg="brand.100"
-                _hover={{ bg: "brand.100" }}
+                colorScheme="blue"
+                variant="outline"
               >
                 Select
               </Button>
