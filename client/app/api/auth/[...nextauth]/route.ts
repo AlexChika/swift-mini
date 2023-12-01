@@ -67,6 +67,7 @@ export const authOptions: NextAuthOptions = {
             path: "/",
             secure: true,
             maxAge: 900,
+            domain: ".devarise.tech",
           },
         },
         state: {
@@ -77,6 +78,7 @@ export const authOptions: NextAuthOptions = {
             path: "/",
             secure: true,
             maxAge: 900,
+            domain: ".devarise.tech",
           },
         },
         nonce: {
@@ -86,6 +88,7 @@ export const authOptions: NextAuthOptions = {
             sameSite: "lax",
             path: "/",
             secure: true,
+            domain: ".devarise.tech",
           },
         },
       },
