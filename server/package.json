@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/dev.ts",
-    "watch": "npx nodemon src/server.ts"
+    "dev": "npx nodemon api/index.ts",
+    "watch": "nodemon api/server.ts"
   },
   "keywords": [],
   "author": "",
