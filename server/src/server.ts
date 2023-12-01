@@ -29,7 +29,7 @@ const corsOpts: cors.CorsOptions = {
     "https://studio.apollographql.com",
     // production
     "https://swift-mini.up.railway.app",
-    "https://swift-mini.vercel.app/",
+    "https://swift-mini.vercel.app",
   ],
   credentials: true,
 };
