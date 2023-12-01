@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const dev = process.env.NODE_ENV === "development";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -14,37 +15,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-        domain: ".devarise.tech",
-      },
-    },
-    callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
-      options: {
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-        domain: ".devarise.tech",
-      },
-    },
-    csrfToken: {
-      name: `__Host-next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-        domain: ".devarise.tech",
-      },
-    },
-  },
   callbacks: {
     async session({ session, user, token }) {
       return {
@@ -56,6 +26,39 @@ export const authOptions: NextAuthOptions = {
       };
     },
   },
+  cookies: dev
+    ? {}
+    : {
+        sessionToken: {
+          name: `__Secure-next-auth.session-token`,
+          options: {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            secure: true,
+            domain: ".devarise.tech",
+          },
+        },
+        callbackUrl: {
+          name: `__Secure-next-auth.callback-url`,
+          options: {
+            sameSite: "lax",
+            path: "/",
+            secure: true,
+            domain: ".devarise.tech",
+          },
+        },
+        csrfToken: {
+          name: `__Host-next-auth.csrf-token`,
+          options: {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            secure: true,
+            domain: ".devarise.tech",
+          },
+        },
+      },
 };
 
 const handler = NextAuth(authOptions);
