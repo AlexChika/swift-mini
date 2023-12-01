@@ -24,9 +24,12 @@ const prisma = new PrismaClient();
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const corsOpts: cors.CorsOptions = {
   origin: [
+    // development
     "http://localhost:3000",
     "https://studio.apollographql.com",
+    // production
     "https://swift-mini.up.railway.app",
+    "https://swift-mini.vercel.app/",
   ],
   credentials: true,
 };
