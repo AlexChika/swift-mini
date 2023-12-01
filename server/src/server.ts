@@ -23,7 +23,11 @@ const prisma = new PrismaClient();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const corsOpts: cors.CorsOptions = {
-  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+  origin: [
+    "http://localhost:3000",
+    "https://studio.apollographql.com",
+    "https://swift-mini.up.railway.app",
+  ],
   credentials: true,
 };
 
