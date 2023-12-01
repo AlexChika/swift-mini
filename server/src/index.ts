@@ -64,7 +64,7 @@ app.use(
   express.json(),
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
-      const session = await getSession(req, process.env.SESSION_URL);
+      const session = await getSession(req, process.env.SESSION_URL!);
       return { session, prisma };
     },
   })

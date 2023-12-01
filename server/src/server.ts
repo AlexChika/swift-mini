@@ -10,8 +10,8 @@ import { ApolloServer } from "@apollo/server";
 import cors from "cors";
 import pkg from "body-parser";
 
-import resolvers from "../src/graphql/resolvers";
-import typeDefs from "../src/graphql/typeDefs";
+import resolvers from "./graphql/resolvers";
+import typeDefs from "./graphql/typeDefs";
 import { getSession } from "../lib/helpers";
 import { GraphqlContext } from "../lib/swift-mini";
 import { PrismaClient } from "@prisma/client";
@@ -70,4 +70,8 @@ app.use(
   })
 );
 
-export default httpServer;
+const PORT = 4000;
+// Now that our HTTP server is fully set up, we can listen to it
+httpServer.listen(PORT, () => {
+  console.log(`Server is now running on http://localhost:${PORT}/graphql`);
+});
