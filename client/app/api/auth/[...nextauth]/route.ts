@@ -5,7 +5,10 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const dev = process.env.NODE_ENV === "development";
-const cookiePrefix = "swift";
+const domain = "devarise.tech";
+const cookiePrefix = "__Secure-";
+
+console.log({ dev });
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -31,22 +34,22 @@ export const authOptions: NextAuthOptions = {
     ? {}
     : {
         sessionToken: {
-          name: `__Secure-next-auth.session-token`,
+          name: `${cookiePrefix}next-auth.session-token`,
           options: {
             httpOnly: true,
             sameSite: "lax",
             path: "/",
             secure: true,
-            domain: ".devarise.tech",
+            domain,
           },
         },
         callbackUrl: {
-          name: `__Secure-next-auth.callback-url`,
+          name: `${cookiePrefix}next-auth.callback-url`,
           options: {
             sameSite: "lax",
             path: "/",
             secure: true,
-            domain: ".devarise.tech",
+            domain,
           },
         },
         csrfToken: {
@@ -56,41 +59,41 @@ export const authOptions: NextAuthOptions = {
             sameSite: "lax",
             path: "/",
             secure: true,
-            domain: ".devarise.tech",
+            domain,
           },
         },
-        pkceCodeVerifier: {
-          name: `${cookiePrefix}next-auth.pkce.code_verifier`,
-          options: {
-            httpOnly: true,
-            sameSite: "lax",
-            path: "/",
-            secure: true,
-            maxAge: 900,
-            domain: ".devarise.tech",
-          },
-        },
-        state: {
-          name: `${cookiePrefix}next-auth.state`,
-          options: {
-            httpOnly: true,
-            sameSite: "lax",
-            path: "/",
-            secure: true,
-            maxAge: 900,
-            domain: ".devarise.tech",
-          },
-        },
-        nonce: {
-          name: `${cookiePrefix}next-auth.nonce`,
-          options: {
-            httpOnly: true,
-            sameSite: "lax",
-            path: "/",
-            secure: true,
-            domain: ".devarise.tech",
-          },
-        },
+        // pkceCodeVerifier: {
+        //   name: `${cookiePrefix}next-auth.pkce.code_verifier`,
+        //   options: {
+        //     httpOnly: true,
+        //     sameSite: "lax",
+        //     path: "/",
+        //     secure: true,
+        //     maxAge: 900,
+        //     domain,
+        //   },
+        // },
+        // state: {
+        //   name: `${cookiePrefix}next-auth.state`,
+        //   options: {
+        //     httpOnly: true,
+        //     sameSite: "lax",
+        //     path: "/",
+        //     secure: true,
+        //     maxAge: 900,
+        //     domain,
+        //   },
+        // },
+        // nonce: {
+        //   name: `${cookiePrefix}next-auth.nonce`,
+        //   options: {
+        //     httpOnly: true,
+        //     sameSite: "lax",
+        //     path: "/",
+        //     secure: true,
+        //     domain,
+        //   },
+        // },
       },
 };
 
