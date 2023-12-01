@@ -62,38 +62,6 @@ export const authOptions: NextAuthOptions = {
             domain,
           },
         },
-        // pkceCodeVerifier: {
-        //   name: `${cookiePrefix}next-auth.pkce.code_verifier`,
-        //   options: {
-        //     httpOnly: true,
-        //     sameSite: "lax",
-        //     path: "/",
-        //     secure: true,
-        //     maxAge: 900,
-        //     domain,
-        //   },
-        // },
-        // state: {
-        //   name: `${cookiePrefix}next-auth.state`,
-        //   options: {
-        //     httpOnly: true,
-        //     sameSite: "lax",
-        //     path: "/",
-        //     secure: true,
-        //     maxAge: 900,
-        //     domain,
-        //   },
-        // },
-        // nonce: {
-        //   name: `${cookiePrefix}next-auth.nonce`,
-        //   options: {
-        //     httpOnly: true,
-        //     sameSite: "lax",
-        //     path: "/",
-        //     secure: true,
-        //     domain,
-        //   },
-        // },
       },
 };
 
