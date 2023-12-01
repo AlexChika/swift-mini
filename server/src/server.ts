@@ -28,8 +28,8 @@ const corsOpts: cors.CorsOptions = {
     "http://localhost:3000",
     "https://studio.apollographql.com",
     // production
-    "https://swift-mini.up.railway.app",
-    "https://swift-mini.vercel.app",
+    "https://swift-mini.devarise.tech",
+    "https://swift-mini-server.devarise.tech",
   ],
   credentials: true,
 };
