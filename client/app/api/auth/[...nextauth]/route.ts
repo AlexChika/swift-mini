@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const dev = process.env.NODE_ENV === "development";
+const cookiePrefix = "swift";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -56,6 +57,35 @@ export const authOptions: NextAuthOptions = {
             path: "/",
             secure: true,
             domain: ".devarise.tech",
+          },
+        },
+        pkceCodeVerifier: {
+          name: `${cookiePrefix}next-auth.pkce.code_verifier`,
+          options: {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            secure: true,
+            maxAge: 900,
+          },
+        },
+        state: {
+          name: `${cookiePrefix}next-auth.state`,
+          options: {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            secure: true,
+            maxAge: 900,
+          },
+        },
+        nonce: {
+          name: `${cookiePrefix}next-auth.nonce`,
+          options: {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+            secure: true,
           },
         },
       },
