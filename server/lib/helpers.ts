@@ -9,6 +9,8 @@ async function getSession(req: express.Request, url: string): Promise<Session> {
     const res = await axios.get<Session>(url, fetchOptions);
     const session = res.data;
 
+    console.log("inside getSession", session);
+
     if (Object.keys(session).length === 0 && session.constructor === Object) {
       return null;
     }
