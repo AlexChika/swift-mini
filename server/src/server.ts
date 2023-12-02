@@ -29,7 +29,7 @@ const corsOpts: cors.CorsOptions = {
     "https://studio.apollographql.com",
     // production
     "https://swift-mini.devarise.tech",
-    "https://swift-mini-server.devarise.tech",
+    // "https://swift-mini-server.devarise.tech",
   ],
   credentials: true,
 };
@@ -72,7 +72,6 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const session = await getSession(req, process.env.SESSION_URL!);
-      console.log("inside app.use", session);
       return { session, prisma };
     },
   })
