@@ -5,10 +5,10 @@
   "scripts": {
     "prisma": "npx prisma generate",
     "dev": "npx nodemon src/server.ts",
-    "start": "npm run prisma && npx ts-node src/server.ts"
+    "start": "npm run prisma && npx ts-node ./src/server.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Alex Chika",
   "license": "ISC",
   "description": "",
   "dependencies": {
