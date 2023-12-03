@@ -5,7 +5,8 @@
   "scripts": {
     "prisma": "npx prisma generate",
     "dev": "npx nodemon src/server.ts",
-    "start": "npm run prisma && npx ts-node --esm src/server.ts"
+    "start": "node --trace-warnings --experimental-specifier-resolution=node --loader ts-node/esm ./src/server.ts",
+    "deploy": "npm run prisma && npm run start"
   },
   "keywords": [],
   "author": "Alex Chika",
