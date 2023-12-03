@@ -23,14 +23,10 @@ const prisma = new PrismaClient();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const corsOpts: cors.CorsOptions = {
-  origin: [
-    // development
-    "http://localhost:3000",
-    "https://studio.apollographql.com",
-    // production
-    "https://swift-mini.devarise.tech",
-    // "https://swift-mini-server.devarise.tech",
-  ],
+  origin:
+    process.env.NODE_ENV === "development"
+      ? ["http://localhost:3000", "https://studio.apollographql.com"]
+      : ["https://swift-mini.devarise.tech"],
   credentials: true,
 };
 
@@ -80,5 +76,5 @@ app.use(
 const PORT = process.env.PORT || 4000;
 // Now that our HTTP server is fully set up, we can listen to it
 httpServer.listen(PORT, () => {
-  console.log(`Server is now running on http://localhost:${PORT}/graphql`);
+  console.log(`Server is now running.`, httpServer.address());
 });

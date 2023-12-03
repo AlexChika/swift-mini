@@ -8,8 +8,6 @@ const dev = process.env.NODE_ENV === "development";
 const domain = "devarise.tech";
 const cookiePrefix = "__Secure-";
 
-console.log({ dev });
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
