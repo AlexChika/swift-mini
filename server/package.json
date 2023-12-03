@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts"
+    "prisma": "npx prisma generate",
+    "dev": "nodemon src/server.ts",
+    "start": "npm run prisma && npm run dev"
   },
   "keywords": [],
   "author": "",
