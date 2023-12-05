@@ -12,7 +12,7 @@ const conversationResolver = {
       const { prisma, session } = ctx;
       const participantIds = args.participantIds;
 
-      console.log({ participantIds });
+      console.log({ participantIds, session });
     },
   },
   // Subscription: {},
