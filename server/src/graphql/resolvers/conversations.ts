@@ -1,4 +1,4 @@
-import { GraphQLError } from "graphql";
+// import { GraphQLError } from "graphql";
 import { GraphqlContext } from "../../../lib/swift-mini";
 
 const conversationResolver = {
