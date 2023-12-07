@@ -35,10 +35,12 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(auto()) @map("_id") @db.ObjectId
+    id            String                     @id @default(auto()) @map("_id") @db.ObjectId
     name          String?
-    email         String?   @unique
-    username      String?   @unique
+    email         String?                    @unique
+    username      String?                    @unique
+    conversations ConversationParticipants[]
+    messages      Message[]
     emailVerified DateTime?
     image         String?
     accounts      Account[]
@@ -52,4 +54,34 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Conversation {
+    id              String                     @id @default(auto()) @map("_id") @db.ObjectId
+    latestMessageId String                     @unique @db.ObjectId
+    messages        Message[]
+    participants    ConversationParticipants[]
+    createdAt       DateTime                   @default(now())
+    updatedAt       DateTime                   @updatedAt
+    latestMessage   Message?                   @relation(name: "conversationsLatestMessage", fields: [latestMessageId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+}
+
+model ConversationParticipants {
+    id                   String       @id @default(auto()) @map("_id") @db.ObjectId
+    userId               String       @db.ObjectId
+    conversationId       String       @db.ObjectId
+    hasSeenLatestMessage Boolean
+    user                 User         @relation(fields: [userId], references: [id])
+    conversation         Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Message {
+    id             String        @id @default(auto()) @map("_id") @db.ObjectId
+    senderId       String        @db.ObjectId
+    conversationId String        @db.ObjectId
+    user           User          @relation(fields: [senderId], references: [id])
+    conversation   Conversation  @relation(fields: [conversationId], references: [id])
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+    isLatestIn     Conversation? @relation(name: "conversationsLatestMessage")
 }
