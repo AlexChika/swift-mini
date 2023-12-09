@@ -58,7 +58,7 @@ model VerificationToken {
 
 model Conversation {
     id              String                     @id @default(auto()) @map("_id") @db.ObjectId
-    latestMessageId String                     @unique @db.ObjectId
+    latestMessageId String?                    @unique @db.ObjectId
     messages        Message[]
     participants    ConversationParticipants[]
     createdAt       DateTime                   @default(now())

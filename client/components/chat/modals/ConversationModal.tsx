@@ -20,6 +20,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
+import { useRouter } from "next/navigation";
 
 type Props = {
   isOpen: boolean;
@@ -28,6 +29,7 @@ type Props = {
 };
 
 function ConversationModal({ onClose, isOpen, session }: Props) {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [participants, setParticipants] = useState<SearchedUser[]>([]);
 
@@ -67,6 +69,15 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
       const { data } = await createConversation({
         variables: { participantIds },
       });
+
+      const { conversationId } = data?.createConversation || {};
+
+      if (!conversationId) throw new Error("Failed to create conversation");
+
+      router.replace(`/?conversationId=${conversationId}`);
+      setParticipants([]);
+      setUsername("");
+      onClose();
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
