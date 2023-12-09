@@ -5,11 +5,11 @@ import { Prisma } from "@prisma/client";
 const conversationResolver = {
   Query: {},
   Mutation: {
-    createConversation(
+    createConversation: async (
       _: any,
       args: { participantIds: string[] },
       ctx: GraphqlContext
-    ) {
+    ): Promise<{ conversationId: string }> => {
       const { prisma, session } = ctx;
       const { participantIds } = args;
       const { id: userId } = session.user;
@@ -17,7 +17,7 @@ const conversationResolver = {
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
       try {
-        const conversation = prisma.conversation.create({
+        const conversation = await prisma.conversation.create({
           data: {
             participants: {
               createMany: {
@@ -33,6 +33,8 @@ const conversationResolver = {
 
           include: conversationsPopulated,
         });
+
+        return { conversationId: conversation.id };
       } catch (error) {
         console.log("createConversation error", error);
         throw new GraphQLError(error?.message);
