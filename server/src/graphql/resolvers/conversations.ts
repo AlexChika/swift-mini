@@ -31,28 +31,7 @@ const conversationResolver = {
             },
           },
 
-          include: {
-            participants: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-            latestMessage: {
-              include: {
-                sender: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
+          include: conversationsPopulated,
         });
       } catch (error) {
         console.log("createConversation error", error);
@@ -63,6 +42,29 @@ const conversationResolver = {
   // Subscription: {},
 };
 
+export const participantsPopulated =
+  Prisma.validator<Prisma.ConversationParticipantsInclude>()({
+    user: {
+      select: {
+        id: true,
+        username: true,
+      },
+    },
+  });
 export const conversationsPopulated =
-  Prisma.validator<Prisma.ConversationInclude>()({});
+  Prisma.validator<Prisma.ConversationInclude>()({
+    participants: {
+      include: participantsPopulated,
+    },
+    latestMessage: {
+      include: {
+        sender: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    },
+  });
 export default conversationResolver;
