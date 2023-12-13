@@ -9,7 +9,7 @@ type Props = {
 function Feeds({ session }: Props) {
   const search = useSearchParams();
   const id = search.get("conversationId");
-  console.log({ id });
+  console.log({ id, session });
 
   if (!id)
     return (
