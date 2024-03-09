@@ -1,11 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
     "prisma": "npx prisma generate",
-    "dev": "npx nodemon src/server.ts",
-    "start": "node --watch --trace-warnings  --loader ts-node/esm ./src/server.ts",
+    "dev": "tsx src/server.ts",
+    "start": "tsc --watch --noEmit ./src & tsx watch --env-file=.env src/server.ts",
     "deploy": "npm run prisma && npm run start"
   },
   "keywords": [],
@@ -26,7 +26,7 @@
     "graphql-ws": "^5.14.2",
     "lodash.merge": "^4.6.2",
     "next-auth": "^4.24.5",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.7.1",
     "ws": "^8.14.2"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "@types/ws": "^8.5.9",
     "nodemon": "^3.0.1",
     "prisma": "^5.7.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.2"
   },
   "type": "module"
 }

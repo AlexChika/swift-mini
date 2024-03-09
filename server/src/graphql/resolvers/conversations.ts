@@ -34,6 +34,8 @@ const conversationResolver = {
           include: conversationsPopulated,
         });
 
+        // emit
+
         return { conversationId: conversation.id };
       } catch (error) {
         console.log("createConversation error", error);
@@ -53,6 +55,7 @@ export const participantsPopulated =
       },
     },
   });
+
 export const conversationsPopulated =
   Prisma.validator<Prisma.ConversationInclude>()({
     participants: {
