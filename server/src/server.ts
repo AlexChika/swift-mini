@@ -33,6 +33,9 @@ const corsOpts: cors.CorsOptions = {
 
 // http server
 const app = express();
+app.get("/cron", (_, res) => {
+  res.end("SERVER RUNING");
+});
 const httpServer = createServer(app);
 
 // websocket server

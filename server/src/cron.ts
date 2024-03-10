@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 
 import { CronJob } from "cron";
-import http from "https";
+import https from "https";
 
-const url = "https://server-swift-mini.devarise.tech/graphql";
+const url = "https://server-swift-mini.devarise.tech/cron";
 
 const restartJob = CronJob.from({
   cronTime: "*/14 * * * *",
   onTick() {
-    http.get(url, (res) => {
+    https.get(url, (res) => {
       if (res.statusCode === 200) {
         console.log(res.statusMessage);
         console.log("Server restarted");
