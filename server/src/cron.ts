@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { CronJob } from "cron";
-import http from "http";
+import http from "https";
 
 const url = "https://server-swift-mini.devarise.tech/graphql";
 
