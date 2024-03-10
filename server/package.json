@@ -4,8 +4,8 @@
   "main": "src/server.ts",
   "scripts": {
     "prisma": "npx prisma generate",
-    "dev": "tsx src/server.ts",
-    "start": "tsc --watch --noEmit ./src & tsx watch --env-file=.env src/server.ts",
+    "start": "tsx src/server.ts",
+    "dev": "tsc --watch --noEmit ./src & tsx watch --env-file=.env src/server.ts",
     "deploy": "npm run prisma && npm run start"
   },
   "keywords": [],

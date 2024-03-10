@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import Provider from "./Provider";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import "./globals.css";
-import { ColorModeScript } from "@chakra-ui/react";
 
 const inter = Inter({ subsets: ["latin"] });
 

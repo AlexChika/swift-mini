@@ -13,7 +13,7 @@ import pkg from "body-parser";
 import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
 import { getSession } from "../lib/helpers";
-import { GraphqlContext } from "../lib/swift-mini";
+import { GraphqlContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
 const { json } = pkg;
 

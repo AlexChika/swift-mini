@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { GraphqlContext } from "../../../lib/swift-mini";
+import { GraphqlContext } from "../../../swift-mini";
 import { Prisma } from "@prisma/client";
 
 const conversationResolver = {
@@ -12,9 +12,10 @@ const conversationResolver = {
     ): Promise<{ conversationId: string }> => {
       const { prisma, session } = ctx;
       const { participantIds } = args;
-      const { id: userId } = session.user;
 
       if (!session?.user) throw new GraphQLError("User is not authenticated");
+
+      const { id: userId } = session.user;
 
       try {
         const conversation = await prisma.conversation.create({
@@ -38,8 +39,9 @@ const conversationResolver = {
 
         return { conversationId: conversation.id };
       } catch (error) {
+        const err = error as unknown as { message: string };
         console.log("createConversation error", error);
-        throw new GraphQLError(error?.message);
+        throw new GraphQLError(err.message);
       }
     },
   },

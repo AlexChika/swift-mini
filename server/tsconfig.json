@@ -4,6 +4,7 @@
   "_version": "20.10.0",
 
   "exclude": ["node_modules"],
+  "include": ["./src", "./lib", "swift-mini.d.ts"],
 
   "compilerOptions": {
     "lib": ["es2023"],
