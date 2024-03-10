@@ -15,6 +15,7 @@ import typeDefs from "./graphql/typeDefs";
 import { getSession } from "../lib/helpers";
 import { GraphqlContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
+import restartJob from "./cron";
 const { json } = pkg;
 
 // configs
@@ -78,3 +79,5 @@ const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => {
   console.log(`Server is now running.`, httpServer.address());
 });
+
+process.env.NODE_ENV === "production" && restartJob.start();
