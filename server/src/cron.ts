@@ -3,7 +3,7 @@
 import { CronJob } from "cron";
 import http from "http";
 
-const url = "https://server-swift-mini.devarise.tech";
+const url = "https://server-swift-mini.devarise.tech/graphql";
 
 const restartJob = CronJob.from({
   cronTime: "*/14 * * * *",
