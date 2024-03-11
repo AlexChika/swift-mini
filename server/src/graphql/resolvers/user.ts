@@ -29,8 +29,9 @@ const resolvers = {
 
         return users;
       } catch (error) {
+        const e = error as unknown as { message: string };
         console.log("searchUsers error", error);
-        throw new GraphQLError(error?.message);
+        throw new GraphQLError(e?.message);
       }
     },
   },
@@ -52,7 +53,7 @@ const resolvers = {
         };
 
       const { id: userId } = session.user;
-      console.log({ userId });
+
       try {
         // check uniqueness of username
         const existingUser = await prisma.user.findUnique({
@@ -61,6 +62,7 @@ const resolvers = {
           },
         });
 
+        // user exists
         if (existingUser) {
           return {
             username,
@@ -79,16 +81,19 @@ const resolvers = {
           },
         });
 
+        //
         return {
           username,
           success: true,
+          error: undefined,
         };
       } catch (error) {
         console.log("createUsername error", error);
+        const e = error as unknown as { message: string };
         return {
           username,
           success: false,
-          error: error?.message,
+          error: e?.message,
         };
       }
     },

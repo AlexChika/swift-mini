@@ -10,9 +10,9 @@ import { ApolloServer } from "@apollo/server";
 import cors from "cors";
 import pkg from "body-parser";
 
-import resolvers from "./graphql/resolvers";
-import typeDefs from "./graphql/typeDefs";
-import { getSession } from "../lib/getSession";
+import resolvers from "#src/graphql/resolvers";
+import typeDefs from "#src/graphql/typeDefs";
+import { getSession } from "#lib/getSession";
 import { GraphqlContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
 import restartJob from "#lib/cron";
