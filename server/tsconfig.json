@@ -12,6 +12,11 @@
     "target": "es2022",
     "sourceMap": true,
     "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "#lib/*": ["lib/*"],
+      "#src/*": ["src/*"]
+    },
 
     "strict": true,
     "esModuleInterop": true,

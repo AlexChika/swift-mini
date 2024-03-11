@@ -12,10 +12,10 @@ import pkg from "body-parser";
 
 import resolvers from "./graphql/resolvers";
 import typeDefs from "./graphql/typeDefs";
-import { getSession } from "../lib/helpers";
+import { getSession } from "../lib/getSession";
 import { GraphqlContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
-import restartJob from "./cron";
+import restartJob from "#lib/cron";
 const { json } = pkg;
 
 // configs
@@ -33,9 +33,6 @@ const corsOpts: cors.CorsOptions = {
 
 // http server
 const app = express();
-app.get("/cron", (_, res) => {
-  res.end("SERVER RUNING");
-});
 const httpServer = createServer(app);
 
 // websocket server
@@ -77,10 +74,14 @@ app.use(
   })
 );
 
+app.get("/cron", (_, res) => {
+  res.end("SERVER RUNING");
+});
+
 const PORT = process.env.PORT || 4000;
-// Now that our HTTP server is fully set up, we can listen to it
 httpServer.listen(PORT, () => {
   console.log(`Server is now running.`, httpServer.address());
 });
 
+// Cron Jobs ... used to keep render servers busy
 process.env.NODE_ENV === "production" && restartJob.start();

@@ -1,9 +1,9 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
-import Chat from "../chat";
-import Auth from "../auth";
 import { useSession } from "next-auth/react";
+import Auth from "../auth";
+import Chat from "../chat";
 
 function HomePage() {
   const { data: session } = useSession();

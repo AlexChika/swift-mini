@@ -115,7 +115,7 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
 
           {participants.length > 0 && (
             <>
-              <Participants
+              <SelectedParticipants
                 removeParticipant={removeParticipant}
                 participants={participants}
               />
@@ -188,7 +188,10 @@ type ParticipantsProps = {
   removeParticipant: (id: string) => void;
 };
 
-function Participants({ participants, removeParticipant }: ParticipantsProps) {
+function SelectedParticipants({
+  participants,
+  removeParticipant,
+}: ParticipantsProps) {
   return (
     <Flex mt={8} gap="10px" flexWrap="wrap">
       {participants.map((p) => {

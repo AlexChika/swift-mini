@@ -25,7 +25,6 @@
     "graphql": "^16.8.1",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.14.2",
-    "lodash.merge": "^4.6.2",
     "next-auth": "^4.24.5",
     "tsx": "^4.7.1",
     "ws": "^8.14.2"
@@ -38,5 +37,9 @@
     "prisma": "^5.7.0",
     "typescript": "^5.4.2"
   },
-  "type": "module"
+  "type": "module",
+  "imports": {
+    "#lib": "./lib",
+    "#src": "./src"
+  }
 }
