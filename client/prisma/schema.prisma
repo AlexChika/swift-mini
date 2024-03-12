@@ -39,7 +39,7 @@ model User {
     name          String?
     email         String?   @unique
     username      String?   @unique
-    emailVerified DateTime?
+    emailVerified Boolean?
     image         String?
     accounts      Account[]
     sessions      Session[]

@@ -41,7 +41,7 @@ model User {
     username      String?                    @unique
     conversations ConversationParticipants[]
     messages      Message[]
-    emailVerified DateTime?
+    emailVerified Boolean?
     image         String?
     accounts      Account[]
     sessions      Session[]
