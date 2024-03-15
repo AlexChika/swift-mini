@@ -13,9 +13,6 @@ type Query {
     conversations: [Conversation!]
 }
 
-# type Message {
-# }
-
 type Participant {
     id:String!
     user: User!
@@ -24,7 +21,7 @@ type Participant {
 
 type Conversation {
     id:String!
-    # latestMessage:Message
+    latestMessage:Message
     participants:[Participant]!
     createdAt:Date!
     updatedAt:Date!

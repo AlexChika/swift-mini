@@ -1,4 +1,9 @@
-import { ThemeConfig, extendTheme } from "@chakra-ui/react";
+import {
+  SystemStyleObject,
+  ThemeConfig,
+  extendTheme,
+  styled,
+} from "@chakra-ui/react";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -38,3 +43,15 @@ const theme = extendTheme(
 );
 
 export default theme;
+
+// .hide_scroll_bar::-webkit-scrollbar {
+//   -webkit-appearance: none;
+//   appearance: none;
+//   display: none;
+// }
+
+const hideScrollbar: SystemStyleObject = {
+  scrollbarWidth: "none",
+};
+
+export { hideScrollbar };

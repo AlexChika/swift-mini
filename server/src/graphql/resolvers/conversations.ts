@@ -8,6 +8,7 @@ const conversationResolver = {
   Query: {
     conversations: async (_: any, __: any, ctx: GraphqlContext) => {
       const { session, prisma } = ctx;
+      console.log("I was hit");
 
       if (!session?.user.username) {
         throw new GraphQLError("User is not authenticated");
@@ -29,6 +30,8 @@ const conversationResolver = {
 
           include: conversationsPopulated,
         });
+        console.log({ convos });
+        return convos;
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("Conversation error", error);

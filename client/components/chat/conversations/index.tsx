@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Box } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import ConversationList from "./ConversationList";
+import StartConversationBtn from "./StartConversationBtn";
 
 type Props = {
   session: Session;
@@ -19,6 +20,7 @@ function Conversations({ session, id }: Props) {
       px={3}
     >
       {/* skeleton loader */}
+      <StartConversationBtn session={session} />
       <ConversationList session={session} />
     </Box>
   );
