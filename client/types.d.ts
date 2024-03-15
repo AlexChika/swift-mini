@@ -1,6 +1,6 @@
 // users
 
-type CreateUsernameReturn = {
+type CreateUsernameData = {
   createUsername: {
     username: string;
     success: boolen;
@@ -16,7 +16,7 @@ type SearchedUser = {
   username: string;
 };
 
-type SearchUsersReturn = {
+type SearchUsersData = {
   searchUsers: SearchedUser[];
 };
 type SearchUsersVariable = {
@@ -24,13 +24,45 @@ type SearchUsersVariable = {
 };
 
 // conversations
-type CreateConversationReturn = {
+type CreateConversationData = {
   createConversation: {
     conversationId: string;
   };
 };
 type CreateConversationVariable = {
   participantIds: string[];
+};
+
+type conversationsData = {
+  conversations: Conversation[];
+};
+
+type Conversation = {
+  participants: ({
+    user: {
+      id: string;
+      username: string | null;
+    };
+  } & {
+    id: string;
+    userId: string;
+    conversationId: string;
+    hasSeenLatestMessage: boolean;
+  })[];
+  latestMessage:
+    | ({
+        sender: {
+          id: string;
+          username: string | null;
+        };
+      } & {
+        createdAt: Date;
+        senderId: string;
+      })
+    | null;
+} & {
+  latestMessageId: string;
+  id: string;
 };
 
 type IconProp = {

@@ -34,12 +34,12 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
   const [participants, setParticipants] = useState<SearchedUser[]>([]);
 
   const [searchUsers, { loading, data }] = useLazyQuery<
-    SearchUsersReturn,
+    SearchUsersData,
     SearchUsersVariable
   >(userOperations.Queries.searchUsers);
 
   const [createConversation, { loading: createConversationLoading }] =
-    useMutation<CreateConversationReturn, CreateConversationVariable>(
+    useMutation<CreateConversationData, CreateConversationVariable>(
       convoOperations.Mutations.createConversation
     );
 

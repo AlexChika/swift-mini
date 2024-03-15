@@ -8,7 +8,7 @@ const conversationResolver = {
   Query: {
     conversations: async (_: any, __: any, ctx: GraphqlContext) => {
       const { session, prisma } = ctx;
-      console.log("I was hit");
+      console.log("I was hit again");
 
       if (!session?.user.username) {
         throw new GraphQLError("User is not authenticated");
@@ -20,7 +20,7 @@ const conversationResolver = {
         const convos = await prisma.conversation.findMany({
           where: {
             participants: {
-              every: {
+              some: {
                 userId: {
                   equals: id,
                 },
@@ -30,7 +30,7 @@ const conversationResolver = {
 
           include: conversationsPopulated,
         });
-        console.log({ convos });
+        console.log({ participants: convos[0].participants, convos });
         return convos;
       } catch (error) {
         const err = error as unknown as { message: string };
@@ -96,7 +96,18 @@ export const participantsPopulated =
 export const conversationsPopulated =
   Prisma.validator<Prisma.ConversationInclude>()({
     participants: {
-      include: participantsPopulated,
+      select: {
+        hasSeenLatestMessage: true,
+        conversationId: true,
+        userId: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      // include: participantsPopulated,
     },
     latestMessage: {
       include: {

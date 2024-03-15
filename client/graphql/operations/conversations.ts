@@ -5,23 +5,23 @@ const conversations = gql`
   query Conversations {
     conversations {
       id
+      updatedAt
       participants {
+        hasSeenLatestMessage
         user {
           id
           username
         }
-        hasSeenLastMessage
       }
       latestMessage {
+        body
+        createdAt
         id
         sender {
           id
           username
         }
-        body
-        createdAt
       }
-      updatedAt
     }
   }
 `;

@@ -17,7 +17,7 @@ type AuthProps = {
 function Auth({ session, reloadSession }: AuthProps) {
   const [Username, setUsername] = useState("");
   const [createUsername, { loading, error }] = useMutation<
-    CreateUsernameReturn,
+    CreateUsernameData,
     CreateUsernameVariable
   >(userOperations.Mutations.createUsername);
 

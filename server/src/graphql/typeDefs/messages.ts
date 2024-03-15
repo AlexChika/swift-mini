@@ -2,7 +2,7 @@ const messageDefs = `#graphql
 type Message {
     id:String!
     sender:User!
-    body:string
+    body:String
     createdAt:Date
 }
 `;

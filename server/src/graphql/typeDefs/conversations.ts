@@ -16,7 +16,7 @@ type Query {
 type Participant {
     id:String!
     user: User!
-    hasSeenLastMessage:Boolean!
+    hasSeenLatestMessage:Boolean!
 }
 
 type Conversation {
