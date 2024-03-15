@@ -15,16 +15,22 @@ function ConversationList({ session }: Props) {
 
   return (
     <Box w="100%">
+      {/* Box acts as Button */}
       <Box
         py={2}
-        px={4}
+        px={3}
         mb={4}
         bg="blackAlpha.300"
         borderRadius={4}
         cursor="pointer"
         onClick={() => onOpen()}
       >
-        <Text textAlign="center" color="whiteAlpha.800" fontWeight={500}>
+        <Text
+          textAlign="center"
+          color="whiteAlpha.800"
+          fontSize={{ base: "14px", md: "16px" }}
+          fontWeight={500}
+        >
           Find or start a conversation
         </Text>
 

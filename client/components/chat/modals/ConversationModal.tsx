@@ -89,7 +89,7 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent bg="#2d2d2d" pb={4}>
+      <ModalContent mx={2} bg="#2d2d2d" pb={4}>
         <ModalHeader>Create a conversation</ModalHeader>
         <ModalCloseButton />
         <ModalBody>

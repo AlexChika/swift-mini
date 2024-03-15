@@ -1,4 +1,12 @@
 const userDefs = `#graphql
+type User {
+  id:String
+  name:String
+  username:String
+  email:String
+  image:String
+}
+
   type SearchedUser {
     id: String!
     username: String!

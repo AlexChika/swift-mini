@@ -1,11 +1,27 @@
 import { gql } from "@apollo/client";
 
 /* ------------------ queries ----------------- */
-const fetchConversations = gql`
-  query SearchUsers($username: String!) {
-    searchUsers(username: $username) {
+const conversations = gql`
+  query Conversations {
+    conversations {
       id
-      username
+      participants {
+        user {
+          id
+          username
+        }
+        hasSeenLastMessage
+      }
+      latestMessage {
+        id
+        sender {
+          id
+          username
+        }
+        body
+        createdAt
+      }
+      updatedAt
     }
   }
 `;
@@ -20,7 +36,7 @@ const createConversation = gql`
 `;
 
 const Queries = {
-  fetchConversations,
+  conversations,
 };
 
 const Mutations = {

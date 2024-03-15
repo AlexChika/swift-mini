@@ -1,26 +1,26 @@
 import { Center, Flex, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import { useSearchParams } from "next/navigation";
 
 type Props = {
   session: Session;
+  id: string | null; //conversationID
 };
 
-function Feeds({ session }: Props) {
-  const search = useSearchParams();
-  const id = search.get("conversationId");
-  console.log({ id, session });
+// border={"2px solid yellow"}
 
+function Feeds({ session, id }: Props) {
   if (!id)
     return (
-      <Center w="100%">
+      <Center display={{ base: "none", xmd: "flex" }} w="100%">
         <Text>No conversation selected</Text>
       </Center>
     );
 
   return (
-    <Flex w="100%" border="1px solid red">
+    <Flex w="100%">
       <Text>{id}</Text>
+
+      <Text>Build In Progress</Text>
     </Flex>
   );
 }

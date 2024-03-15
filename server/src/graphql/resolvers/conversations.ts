@@ -1,9 +1,41 @@
 import { GraphQLError } from "graphql";
 import { GraphqlContext } from "../../../swift-mini";
 import { Prisma } from "@prisma/client";
+import { dateScalar } from "./scalers";
 
 const conversationResolver = {
-  Query: {},
+  Date: dateScalar,
+  Query: {
+    conversations: async (_: any, __: any, ctx: GraphqlContext) => {
+      const { session, prisma } = ctx;
+
+      if (!session?.user.username) {
+        throw new GraphQLError("User is not authenticated");
+      }
+
+      const { id } = session.user;
+
+      try {
+        const convos = await prisma.conversation.findMany({
+          where: {
+            participants: {
+              every: {
+                userId: {
+                  equals: id,
+                },
+              },
+            },
+          },
+
+          include: conversationsPopulated,
+        });
+      } catch (error) {
+        const err = error as unknown as { message: string };
+        console.log("Conversation error", error);
+        throw new GraphQLError(err.message);
+      }
+    },
+  },
   Mutation: {
     createConversation: async (
       _: any,
