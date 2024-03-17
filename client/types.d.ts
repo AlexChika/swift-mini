@@ -38,31 +38,28 @@ type conversationsData = {
 };
 
 type Conversation = {
-  participants: ({
+  latestMessageId: string | null;
+  id: string;
+
+  participants: {
+    userId: string;
+    conversationId: string;
+    hasSeenLatestMessage: boolean;
     user: {
       id: string;
       username: string | null;
     };
-  } & {
+  }[];
+
+  latestMessage: {
     id: string;
-    userId: string;
-    conversationId: string;
-    hasSeenLatestMessage: boolean;
-  })[];
-  latestMessage:
-    | ({
-        sender: {
-          id: string;
-          username: string | null;
-        };
-      } & {
-        createdAt: Date;
-        senderId: string;
-      })
-    | null;
-} & {
-  latestMessageId: string;
-  id: string;
+    createdAt: Date;
+    senderId: string;
+    sender: {
+      id: string;
+      username: string | null;
+    };
+  } | null;
 };
 
 type IconProp = {

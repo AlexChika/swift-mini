@@ -1,5 +1,7 @@
 import { conversationsPopulated } from "#src/graphql/resolvers/conversations";
 import { Prisma, PrismaClient } from "@prisma/client";
+import { PubSub } from "graphql-subscriptions";
+import { Context } from "graphql-ws";
 import nextAuth, { Session, DefaultSession } from "next-auth";
 
 declare module "next-auth" {
@@ -12,11 +14,18 @@ declare module "next-auth" {
   }
 }
 
+// Server Context Configuration
 type GraphqlContext = {
   session: Session | null;
   prisma: PrismaClient;
-  // pubsub
+  pubsub: PubSub;
 };
+
+interface SubscriptionContext extends Context {
+  connectionParams: {
+    session: Session | null;
+  };
+}
 
 /**
  * return object when a username is created
@@ -32,31 +41,28 @@ type ConversationPopulated = Prisma.ConversationGetPayload<{
 }>;
 
 type Conversation = {
-  participants: ({
+  latestMessageId: string | null;
+  id: string;
+
+  participants: {
+    userId: string;
+    conversationId: string;
+    hasSeenLatestMessage: boolean;
     user: {
       id: string;
       username: string | null;
     };
-  } & {
+  }[];
+
+  latestMessage: {
     id: string;
-    userId: string;
-    conversationId: string;
-    hasSeenLatestMessage: boolean;
-  })[];
-  latestMessage:
-    | ({
-        sender: {
-          id: string;
-          username: string | null;
-        };
-      } & {
-        createdAt: Date;
-        senderId: string;
-      })
-    | null;
-} & {
-  latestMessageId: string | null;
-  id: string;
+    createdAt: Date;
+    senderId: string;
+    sender: {
+      id: string;
+      username: string | null;
+    };
+  } | null;
 };
 
 type A = Conversation extends ConversationPopulated ? number : string;

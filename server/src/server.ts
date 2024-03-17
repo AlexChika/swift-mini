@@ -13,14 +13,16 @@ import pkg from "body-parser";
 import resolvers from "#src/graphql/resolvers";
 import typeDefs from "#src/graphql/typeDefs";
 import { getSession } from "#lib/getSession";
-import { GraphqlContext } from "../swift-mini";
+import { GraphqlContext, SubscriptionContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
 import restartJob from "#lib/cron";
+import { PubSub } from "graphql-subscriptions";
 const { json } = pkg;
 
 // configs
 dotenv.config();
 const prisma = new PrismaClient();
+const pubsub = new PubSub();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const corsOpts: cors.CorsOptions = {
@@ -41,7 +43,16 @@ const wsServer = new WebSocketServer({
   path: "/subscriptions",
 });
 
-const serverCleanup = useServer({ schema }, wsServer);
+const serverCleanup = useServer(
+  {
+    schema,
+    context: async (ctx: SubscriptionContext): Promise<GraphqlContext> => {
+      const { session } = ctx?.connectionParams || {};
+      return { session, pubsub, prisma };
+    },
+  },
+  wsServer
+);
 
 const server = new ApolloServer<GraphqlContext>({
   schema,
@@ -70,7 +81,7 @@ app.use(
     context: async ({ req }): Promise<GraphqlContext> => {
       const session = await getSession(req, process.env.SESSION_URL!);
       console.log("always calling");
-      return { session, prisma };
+      return { session, prisma, pubsub };
     },
   })
 );

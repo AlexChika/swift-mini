@@ -1,4 +1,4 @@
-import { GraphQLError } from "graphql";
+import { GraphQLError, subscribe } from "graphql";
 import { GraphqlContext } from "../../../swift-mini";
 import { Prisma } from "@prisma/client";
 import { dateScalar } from "./scalers";
@@ -45,7 +45,7 @@ const conversationResolver = {
       args: { participantIds: string[] },
       ctx: GraphqlContext
     ): Promise<{ conversationId: string }> => {
-      const { prisma, session } = ctx;
+      const { prisma, session, pubsub } = ctx;
       const { participantIds } = args;
 
       if (!session?.user) throw new GraphQLError("User is not authenticated");
@@ -70,7 +70,10 @@ const conversationResolver = {
           include: conversationsPopulated,
         });
 
-        // emit
+        // emit create subscription event
+        pubsub.publish("CONVERSATION_CREATED", {
+          conversationCreated: conversation,
+        });
 
         return { conversationId: conversation.id };
       } catch (error) {
@@ -80,7 +83,14 @@ const conversationResolver = {
       }
     },
   },
-  // Subscription: {},
+  Subscription: {
+    conversationCreated: {
+      subscribe(_: any, __: any, ctx: GraphqlContext) {
+        const { pubsub } = ctx;
+        return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+      },
+    },
+  },
 };
 
 export const participantsPopulated =

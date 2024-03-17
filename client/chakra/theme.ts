@@ -31,13 +31,13 @@ const theme = extendTheme(
         // ...
         900: "#1a202c",
       },
-      styles: {
-        global: () => ({
-          body: {
-            bg: "whiteAlpha.200",
-          },
-        }),
-      },
+      // styles: {
+      //   global: () => ({
+      //     body: {
+      //       bg: "whiteAlpha.200",
+      //     },
+      //   }),
+      // },
     },
   }
 );

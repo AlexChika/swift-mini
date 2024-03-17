@@ -35,6 +35,32 @@ const createConversation = gql`
   }
 `;
 
+/* ----------------- subscriptiond ---------------- */
+const conversationCreated = gql`
+  subscription ConversationCreated {
+    conversationCreated {
+      id
+      updatedAt
+      participants {
+        hasSeenLatestMessage
+        user {
+          id
+          username
+        }
+      }
+      latestMessage {
+        body
+        createdAt
+        id
+        sender {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
 const Queries = {
   conversations,
 };
@@ -43,7 +69,9 @@ const Mutations = {
   createConversation,
 };
 
-const Subscriptions = {};
+const Subscriptions = {
+  conversationCreated,
+};
 
 const conversationOperations = { Queries, Mutations, Subscriptions };
 export default conversationOperations;
