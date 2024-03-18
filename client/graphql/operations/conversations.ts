@@ -10,6 +10,7 @@ const conversations = gql`
         hasSeenLatestMessage
         user {
           id
+          image
           username
         }
       }
@@ -45,6 +46,7 @@ const conversationCreated = gql`
         hasSeenLatestMessage
         user {
           id
+          image
           username
         }
       }

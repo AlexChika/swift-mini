@@ -13,6 +13,8 @@ function Conversations({ session, id }: Props) {
   return (
     <Box
       bg="whiteAlpha.50"
+      borderRight="2px"
+      borderColor="whiteAlpha.50"
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"
       maxW={{ xmd: "260px", lg: "350px" }}

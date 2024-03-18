@@ -67,6 +67,7 @@ function ConversationList({ session }: Props) {
               {...{
                 conversationOnClick,
                 conversation: c,
+                session,
               }}
             />
           );

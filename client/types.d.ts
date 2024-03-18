@@ -38,8 +38,9 @@ type conversationsData = {
 };
 
 type Conversation = {
-  latestMessageId: string | null;
   id: string;
+  updatedAt: string | number | Date;
+  latestMessageId: string | null;
 
   participants: {
     userId: string;
@@ -47,6 +48,7 @@ type Conversation = {
     hasSeenLatestMessage: boolean;
     user: {
       id: string;
+      image: string | null;
       username: string | null;
     };
   }[];

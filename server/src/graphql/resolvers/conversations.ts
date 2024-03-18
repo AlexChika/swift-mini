@@ -30,7 +30,6 @@ const conversationResolver = {
 
           include: conversationsPopulated,
         });
-
         return convos;
       } catch (error) {
         const err = error as unknown as { message: string };
@@ -112,10 +111,6 @@ const conversationResolver = {
   },
 };
 
-interface C {
-  conversationCreated: Conversation;
-}
-
 export const participantsPopulated =
   Prisma.validator<Prisma.ConversationParticipantsInclude>()({
     user: {
@@ -136,6 +131,7 @@ export const conversationsPopulated =
         user: {
           select: {
             id: true,
+            image: true,
             username: true,
           },
         },
