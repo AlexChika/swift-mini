@@ -62,6 +62,11 @@ type Conversation = {
   } | null;
 };
 
+// The update query subscription data for create conversations
+type ConversationUpdate = {
+  subscriptionData: { data?: { conversationCreated: Conversation } };
+};
+
 type IconProp = {
   className?: string;
   style?: any;

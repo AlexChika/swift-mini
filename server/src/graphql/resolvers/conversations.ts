@@ -1,14 +1,14 @@
-import { GraphQLError, subscribe } from "graphql";
-import { GraphqlContext } from "../../../swift-mini";
+import { GraphQLError } from "graphql";
+import { Conversation, GraphqlContext } from "../../../swift-mini";
 import { Prisma } from "@prisma/client";
 import { dateScalar } from "./scalers";
+import { withFilter } from "graphql-subscriptions";
 
 const conversationResolver = {
   Date: dateScalar,
   Query: {
     conversations: async (_: any, __: any, ctx: GraphqlContext) => {
       const { session, prisma } = ctx;
-      console.log("I was hit again");
 
       if (!session?.user.username) {
         throw new GraphQLError("User is not authenticated");
@@ -30,7 +30,7 @@ const conversationResolver = {
 
           include: conversationsPopulated,
         });
-        console.log({ participants: convos[0].participants, convos });
+
         return convos;
       } catch (error) {
         const err = error as unknown as { message: string };
@@ -85,13 +85,36 @@ const conversationResolver = {
   },
   Subscription: {
     conversationCreated: {
-      subscribe(_: any, __: any, ctx: GraphqlContext) {
-        const { pubsub } = ctx;
-        return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
-      },
+      subscribe: withFilter(
+        (_: any, __: any, ctx: GraphqlContext) => {
+          const { pubsub } = ctx;
+          return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+        },
+        (
+          payload: { conversationCreated: Conversation },
+          _: any,
+          ctx: GraphqlContext
+        ) => {
+          const { session } = ctx;
+          const { participants } = payload.conversationCreated;
+          const userIsParticipant = !!participants.find(
+            (p) => p.userId === session?.user.id
+          );
+          return userIsParticipant;
+        }
+      ),
+
+      // subscribe: (_: any, __: any, ctx: GraphqlContext) => {
+      //   const { pubsub } = ctx;
+      //   return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+      // },
     },
   },
 };
+
+interface C {
+  conversationCreated: Conversation;
+}
 
 export const participantsPopulated =
   Prisma.validator<Prisma.ConversationParticipantsInclude>()({

@@ -36,33 +36,6 @@ type CreateUsernameResponse = {
   username: string;
 };
 
-type ConversationPopulated = Prisma.ConversationGetPayload<{
+type Conversation = Prisma.ConversationGetPayload<{
   include: typeof conversationsPopulated;
 }>;
-
-type Conversation = {
-  latestMessageId: string | null;
-  id: string;
-
-  participants: {
-    userId: string;
-    conversationId: string;
-    hasSeenLatestMessage: boolean;
-    user: {
-      id: string;
-      username: string | null;
-    };
-  }[];
-
-  latestMessage: {
-    id: string;
-    createdAt: Date;
-    senderId: string;
-    sender: {
-      id: string;
-      username: string | null;
-    };
-  } | null;
-};
-
-type A = Conversation extends ConversationPopulated ? number : string;

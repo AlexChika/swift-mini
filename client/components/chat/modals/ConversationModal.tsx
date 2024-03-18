@@ -136,7 +136,6 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
   );
 }
 
-// border = "2px solid red";
 type ListProp = {
   users: SearchedUser[];
   addParticipant: (user: SearchedUser) => void;

@@ -1,9 +1,11 @@
 import { hideScrollbar } from "@/chakra/theme";
-import { Box, Stack, StackItem, Text } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import Conversation from "./ConversationItem";
 
 type Props = {
   session: Session;
@@ -11,39 +13,44 @@ type Props = {
 
 function ConversationList({ session }: Props) {
   const {
-    data: convdata,
+    data,
     error: convError,
     loading: convLoading,
     subscribeToMore,
   } = useQuery<conversationsData>(conversationOperations.Queries.conversations);
 
+  const router = useRouter();
+  const runEffect = useRef(true);
+
   function subToNewConversation() {
     subscribeToMore({
       document: conversationOperations.Subscriptions.conversationCreated,
-      updateQuery: (
-        prev,
-        {
-          subscriptionData,
-        }: { subscriptionData: { data: { conversationCreated: Conversation } } }
-      ) => {
-        if (!subscriptionData.data) return prev;
+      updateQuery: (prev, update: ConversationUpdate) => {
+        if (!update.subscriptionData.data) return prev;
 
-        const newConversation = subscriptionData.data.conversationCreated;
-        console.log({ newConversation });
-        console.log({ prev });
+        const newConversation =
+          update.subscriptionData.data.conversationCreated;
 
         return Object.assign({}, prev, {
-          conversations: [newConversation, ...prev.conversations],
+          conversations: [...prev.conversations, newConversation],
         });
       },
     });
   }
 
+  async function conversationOnClick(conversationId: string) {
+    router.replace(`/?conversationId=${conversationId}`);
+    // mark Convo as read
+  }
+
   useEffect(() => {
-    // subscribe to new conversations on mount
+    if (!runEffect.current) return;
+
+    runEffect.current = false;
     subToNewConversation();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // effect is forced to run once rather than twice
 
   return (
     <Box
@@ -53,25 +60,19 @@ function ConversationList({ session }: Props) {
       h="calc(100vh - 90px)"
     >
       <Stack>
-        {convdata?.conversations.map((c, i) => {
-          return <Conversation key={i} conversation={c} />;
+        {[...(data?.conversations || [])].reverse().map((c) => {
+          return (
+            <Conversation
+              key={c.id}
+              {...{
+                conversationOnClick,
+                conversation: c,
+              }}
+            />
+          );
         })}
       </Stack>
     </Box>
-  );
-}
-
-type Prop = {
-  conversation: Conversation;
-};
-function Conversation(prop: Prop) {
-  const { id, latestMessage, participants, latestMessageId } =
-    prop.conversation;
-
-  return (
-    <StackItem p={3} _hover={{ bg: "whiteAlpha.200" }}>
-      {id}
-    </StackItem>
   );
 }
 
