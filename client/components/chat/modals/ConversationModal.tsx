@@ -56,6 +56,7 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
     const userExist = participants.find((p) => p.id === user.id);
     if (userExist) return;
 
+    setUsername("");
     setParticipants((prev) => [...prev, user]);
   }
 

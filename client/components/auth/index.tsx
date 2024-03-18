@@ -16,6 +16,8 @@ type AuthProps = {
 
 function Auth({ session, reloadSession }: AuthProps) {
   const [Username, setUsername] = useState("");
+  const [err, setErr] = useState(false); // input error
+
   const [createUsername, { loading, error }] = useMutation<
     CreateUsernameData,
     CreateUsernameVariable
@@ -23,7 +25,8 @@ function Auth({ session, reloadSession }: AuthProps) {
 
   async function onSubmit() {
     const username = Username.trim().toLowerCase();
-    if (!username) return;
+    if (err || !username) return;
+
     toast.loading("loading", {
       id: "createusername",
     });
@@ -75,12 +78,19 @@ function Auth({ session, reloadSession }: AuthProps) {
             </Text>
             <Text>Create a username</Text>
             <Input
-              onChange={(e) => setUsername(e.target.value)}
+              isInvalid={err}
+              errorBorderColor="red.600"
+              onChange={(e) => {
+                const regex = /[^A-Za-z0-9]/;
+                e.target.value.match(regex) ? setErr(true) : setErr(false);
+                setUsername(e.target.value);
+              }}
               value={Username}
               placeholder="Enter a username"
             />
             <Button
               isLoading={loading}
+              disabled={err}
               fontSize={14}
               w="full"
               onClick={onSubmit}

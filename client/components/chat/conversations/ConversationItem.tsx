@@ -25,9 +25,9 @@ function Conversation(props: Props) {
     session.user.id
   );
 
-  // functions
   return (
     <StackItem
+      title={usernames}
       cursor="pointer"
       onClick={() => conversationOnClick(id)}
       px={3}
@@ -51,7 +51,7 @@ function Conversation(props: Props) {
           </Text>
         </Flex>
 
-        <Text minW="65px" fontSize={13} opacity="50%">
+        <Text minW="50px" fontSize={11} opacity="50%">
           {time}
         </Text>
       </Flex>
