@@ -94,6 +94,10 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
         <ModalHeader>Create a conversation</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          {/*
+           *
+           *
+           * Username Input Form */}
           <form onSubmit={handleSearchUsers}>
             <Stack spacing={4}>
               <Input
@@ -106,14 +110,20 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
               </Button>
             </Stack>
           </form>
-
+          {/*
+           *
+           *
+           Search Result List */}
           {data?.searchUsers && (
             <UserSearchList
               users={data?.searchUsers}
               addParticipant={addParticipant}
             />
           )}
-
+          {/*
+           *
+           *
+           Selected users {participants}*/}
           {participants.length > 0 && (
             <>
               <SelectedParticipants
@@ -136,12 +146,13 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
     </Modal>
   );
 }
-
+/*
+ *
+ */
 type ListProp = {
   users: SearchedUser[];
   addParticipant: (user: SearchedUser) => void;
 };
-
 function UserSearchList({ users, addParticipant }: ListProp) {
   if (users.length < 1)
     return (
@@ -183,11 +194,13 @@ function UserSearchList({ users, addParticipant }: ListProp) {
   );
 }
 
+/*
+ *
+ */
 type ParticipantsProps = {
   participants: SearchedUser[];
   removeParticipant: (id: string) => void;
 };
-
 function SelectedParticipants({
   participants,
   removeParticipant,

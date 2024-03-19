@@ -1,5 +1,7 @@
 import { Center, Flex, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
+import MessagesHeader from "./MessagesHeader";
+import Messages from "./Messages";
 
 type Props = {
   session: Session;
@@ -12,14 +14,16 @@ function Feeds({ session, id }: Props) {
   if (!id)
     return (
       <Center display={{ base: "none", xmd: "flex" }} w="100%">
-        <Text>No conversation selected</Text>
+        <Text userSelect="none" color="whiteAlpha.500">
+          No conversation selected
+        </Text>
       </Center>
     );
 
   return (
-    <Flex w="100%">
-      <Text>{id}</Text>
-
+    <Flex direction="column" w="100%">
+      <MessagesHeader {...{ id, userId: session.user.id }} />
+      <Messages />
       <Text>Build In Progress</Text>
     </Flex>
   );

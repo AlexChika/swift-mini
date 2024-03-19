@@ -37,7 +37,7 @@ function Conversation(props: Props) {
       bg={isSelected ? "whiteAlpha.200" : ""}
       _hover={{ bg: "whiteAlpha.200" }}
     >
-      <Flex align="center" justify="space-between">
+      <Flex align="center" gap={2} justify="space-between">
         <Flex isTruncated align="center" gap={2}>
           <Avatar
             background="Highlight"
@@ -51,7 +51,7 @@ function Conversation(props: Props) {
           </Text>
         </Flex>
 
-        <Text minW="50px" fontSize={11} opacity="50%">
+        <Text minW="52px" fontSize={11} opacity="50%">
           {time}
         </Text>
       </Flex>

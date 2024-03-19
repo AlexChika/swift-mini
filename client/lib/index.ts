@@ -1,7 +1,15 @@
 function formatUserNames(
   participants: Conversation["participants"],
-  id: string
+  id: string,
+  type?: "long"
 ) {
+  if (participants.length < 1)
+    return {
+      usernames: "",
+      avatar: "",
+      name: "",
+    };
+
   //   sort array to put name of lastmessage sender at the begining
   let sorted: Conversation["participants"] = [];
   participants.forEach((p) => {
@@ -19,6 +27,7 @@ function formatUserNames(
       .filter((name) => name.length > 1) // filter empty names
       .join(", "); // join using comma
   }
+
   function capitalize(str: string) {
     return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
@@ -27,10 +36,30 @@ function formatUserNames(
     return length < 3 ? "" : ",";
   }
 
-  let usernames: string = "";
-
   // filter out current user's participantObject
   const thisUser = participants.find((p) => p.user.id === id);
+  let usernames: string = "";
+
+  if (type === "long") {
+    let name: string;
+    let usernames: string;
+    let avatar: string | undefined = sorted[0].user.image || undefined;
+
+    if (thisUser && thisUser.hasSeenLatestMessage) {
+      name = "You";
+      usernames = joinUserNames(sorted);
+    } else {
+      const [first, ...rest] = sorted;
+      name = capitalize(first.user.username || "");
+      usernames = `${joinUserNames(rest)}, You`;
+    }
+
+    return {
+      name,
+      usernames,
+      avatar,
+    };
+  }
 
   if (participants.length < 4) {
     if (thisUser && thisUser.hasSeenLatestMessage) {

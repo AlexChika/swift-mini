@@ -18,7 +18,7 @@ function Conversations({ session, id }: Props) {
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"
       maxW={{ xmd: "260px", lg: "350px" }}
-      py={6}
+      py={4}
       px={3}
     >
       {/* skeleton loader */}
