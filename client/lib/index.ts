@@ -16,8 +16,8 @@ function formatUserNames(
     p.hasSeenLatestMessage ? sorted.unshift(p) : sorted.push(p);
   });
 
-  function joinUserNames(p: Conversation["participants"]) {
-    return p
+  function joinUserNames(c: Conversation["participants"]) {
+    return c
       .map((p) => {
         if (p.user.id === id) return "";
         const username = p.user.username!;
@@ -84,7 +84,7 @@ function formatUserNames(
     if (thisUser && thisUser.hasSeenLatestMessage) {
       usernames = `You, ${names} ${lastUserName}`;
     } else {
-      usernames = `${names} You ${lastUserName}`;
+      usernames = `${names}, You ${lastUserName}`;
     }
   }
 
@@ -162,13 +162,56 @@ function dateFormatter(rawdate: string | number | Date) {
     month: "short",
     year: "numeric",
     day: "numeric",
-  });
+  }); // full date
+
+  function getTimePassed() {
+    const milliseconds = Date.now() - d.getTime();
+    const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
+
+    // under a day
+    if (days < 1) {
+      const seconds = milliseconds / 1000;
+      const mins = seconds / 60;
+      const hours = mins / 60;
+
+      // its being seconds
+      if (hours < 1 && mins < 1) return `${Math.floor(seconds)} seconds ago`;
+
+      // its being minutes
+      if (hours < 1 && mins < 2) return `a minute ago`;
+      if (hours < 1 && mins < 60) return `${Math.floor(mins)} minutes ago`;
+
+      // its being hours
+      if (hours > 1 && hours < 2) return `an hour ago`;
+      if (hours > 1 && hours < 24) return `${Math.floor(hours)} hours ago`;
+    }
+
+    // days ago
+    if (days < 2) return `one day ago`;
+    if (days < 7) return `${days} days ago`;
+
+    // weeks ago
+    const weeks = days / 7;
+    if (weeks < 2) return `a week ago`;
+    if (weeks < 4) return `${Math.floor(weeks)} weeks ago`;
+
+    // months ago
+    const months = weeks / 4;
+    if (months < 2) return `a month ago`;
+    if (months < 52) return `${Math.floor(months)} months ago`;
+
+    // years ago
+    const years = months / 12;
+    if (years < 2) return `a year ago`;
+    else return `${Math.floor(years)} years ago`;
+  }
 
   return {
     meridian,
     dayPeriod,
     date,
     time,
+    getTimePassed,
   };
 }
 

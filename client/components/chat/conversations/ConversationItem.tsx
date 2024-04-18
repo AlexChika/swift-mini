@@ -9,7 +9,7 @@ type Props = {
   conversationOnClick: (conversationId: string) => Promise<void>;
 };
 
-function Conversation(props: Props) {
+function ConversationItem(props: Props) {
   const { conversation, conversationOnClick, session } = props;
   const { id, latestMessage, participants, latestMessageId, updatedAt } =
     conversation;
@@ -19,7 +19,7 @@ function Conversation(props: Props) {
 
   // variable depends on stateful values,
   const isSelected = id === conversationId;
-  const { time } = dateFormatter(updatedAt);
+  const { time, getTimePassed } = dateFormatter(updatedAt);
   const { usernames, avatar, name } = formatUserNames(
     participants,
     session.user.id
@@ -51,8 +51,8 @@ function Conversation(props: Props) {
           </Text>
         </Flex>
 
-        <Text minW="52px" fontSize={11} opacity="50%">
-          {time}
+        <Text minW="60px" fontSize={11} opacity="50%">
+          {getTimePassed()}
         </Text>
       </Flex>
     </StackItem>
@@ -61,4 +61,4 @@ function Conversation(props: Props) {
 
 // .....
 
-export default Conversation;
+export default ConversationItem;

@@ -5,7 +5,7 @@ import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Conversation from "./ConversationItem";
+import ConversationItem from "./ConversationItem";
 
 type Props = {
   session: Session;
@@ -44,13 +44,14 @@ function ConversationList({ session }: Props) {
   }
 
   useEffect(() => {
+    // effect is forced to run once rather than twice
     if (!runEffect.current) return;
 
     runEffect.current = false;
     subToNewConversation();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // effect is forced to run once rather than twice
+  }, []);
 
   return (
     <Box
@@ -62,7 +63,7 @@ function ConversationList({ session }: Props) {
       <Stack>
         {[...(data?.conversations || [])].reverse().map((c) => {
           return (
-            <Conversation
+            <ConversationItem
               key={c.id}
               {...{
                 conversationOnClick,
