@@ -1,8 +1,9 @@
 import { formatUserNames } from "@/lib";
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Center, Flex, Text } from "@chakra-ui/react";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
+import { LeftArrowIcon } from "@/lib/icons";
 
 type Props = {
   id: string; // this is conversationId
@@ -27,21 +28,32 @@ function MessagesHeader({ id, userId }: Props) {
     userId,
     "long"
   );
+
+  // bg = "whiteAlpha.50";
   return (
     <Flex
-      h="65px"
-      bg="whiteAlpha.50"
-      mb={50}
-      // border="2px"
-      borderBottomColor="whiteAlpha.50"
+      h="60px"
+      bg="blackAlpha.300"
+      borderBottom="2px"
+      borderColor="whiteAlpha.50"
     >
       {/* Back button for small screens  */}
-      <Box></Box>
+      <Center display={{ base: "flex", xmd: "none" }} bg="blackAlpha.200">
+        <Button
+          onClick={() => router.replace("/")}
+          w="10px"
+          minW="unset"
+          mr={-2}
+          bg="none"
+        >
+          <LeftArrowIcon color="whiteAlpha.500" />
+        </Button>
+      </Center>
 
       {/* latest message sender username and avatar */}
-      <Flex bg="blackAlpha.200" align="center" px={3} py={4} h="100%" gap={2}>
+      <Flex align="center" px={3} py={4} h="100%" gap={2}>
         <Avatar src={avatar} size="sm" />
-        <Text ml={2}>{name}</Text>
+        <Text>{name}</Text>
         <Text color="gray.500">{"to:"}</Text>
       </Flex>
 

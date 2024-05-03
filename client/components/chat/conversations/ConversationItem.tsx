@@ -19,7 +19,7 @@ function ConversationItem(props: Props) {
 
   // variable depends on stateful values,
   const isSelected = id === conversationId;
-  const { time, getTimePassed } = dateFormatter(updatedAt);
+  const { getTimePassed } = dateFormatter(updatedAt);
   const { usernames, avatar, name } = formatUserNames(
     participants,
     session.user.id
@@ -30,14 +30,15 @@ function ConversationItem(props: Props) {
       title={usernames}
       cursor="pointer"
       onClick={() => conversationOnClick(id)}
-      px={3}
+      px={2}
       py={2}
       borderBottom="2px"
-      borderBottomColor="whiteAlpha.50"
+      borderBottomColor="blackAlpha.300"
       bg={isSelected ? "whiteAlpha.200" : ""}
-      _hover={{ bg: "whiteAlpha.200" }}
+      _hover={{ bg: "whiteAlpha.50" }}
     >
       <Flex align="center" gap={2} justify="space-between">
+        {/* avatar and usernames */}
         <Flex isTruncated align="center" gap={2}>
           <Avatar
             background="Highlight"
@@ -46,12 +47,13 @@ function ConversationItem(props: Props) {
             size={"sm"}
           />
 
-          <Text isTruncated fontSize={15}>
+          <Text isTruncated fontSize={14}>
             {usernames}
           </Text>
         </Flex>
 
-        <Text minW="60px" fontSize={11} opacity="50%">
+        {/* time passed */}
+        <Text minW="80px" fontSize={11} opacity="50%" textAlign="right">
           {getTimePassed()}
         </Text>
       </Flex>

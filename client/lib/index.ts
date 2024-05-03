@@ -164,9 +164,17 @@ function dateFormatter(rawdate: string | number | Date) {
     day: "numeric",
   }); // full date
 
-  function getTimePassed() {
+  /**
+   *
+   * @param limit when time in days is greater than limit in days passed, a datestring is returned rather than the time passeed
+   * @returns a datestring or time passed
+   */
+  function getTimePassed(limit?: number) {
     const milliseconds = Date.now() - d.getTime();
     const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
+
+    // return date if days is greter than limit
+    if (limit && Math.floor(days) > limit) return date;
 
     // under a day
     if (days < 1) {

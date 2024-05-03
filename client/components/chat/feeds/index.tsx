@@ -23,8 +23,7 @@ function Feeds({ session, id }: Props) {
   return (
     <Flex direction="column" w="100%">
       <MessagesHeader {...{ id, userId: session.user.id }} />
-      <Messages />
-      <Text>Build In Progress</Text>
+      <Messages {...{ session, id }} />
     </Flex>
   );
 }

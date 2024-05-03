@@ -17,14 +17,14 @@ function StartConversationBtn({ session }: Props) {
     <Box
       py={2}
       mb={4}
-      bg="blackAlpha.300"
+      bg="whiteAlpha.100"
       borderRadius={4}
       cursor="pointer"
       onClick={() => onOpen()}
     >
       <Text
         textAlign="center"
-        color="whiteAlpha.800"
+        color="whiteAlpha.700"
         fontSize={{ base: "14px", md: "15px" }}
         fontWeight={500}
       >

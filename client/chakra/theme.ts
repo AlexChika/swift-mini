@@ -10,10 +10,20 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 };
 
+const styles = {
+  global: () => ({
+    "[contenteditable]": {
+      outline: "0px solid transparent",
+    },
+  }),
+};
+
 const theme = extendTheme(
   { config },
 
   {
+    styles,
+
     breakpoints: {
       base: "0px",
       xs: "320px",
@@ -31,13 +41,6 @@ const theme = extendTheme(
         // ...
         900: "#1a202c",
       },
-      // styles: {
-      //   global: () => ({
-      //     body: {
-      //       bg: "whiteAlpha.200",
-      //     },
-      //   }),
-      // },
     },
   }
 );

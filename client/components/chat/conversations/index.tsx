@@ -12,13 +12,13 @@ type Props = {
 function Conversations({ session, id }: Props) {
   return (
     <Box
-      bg="whiteAlpha.50"
+      bg="blackAlpha.200"
       borderRight="2px"
       borderColor="whiteAlpha.50"
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"
       maxW={{ xmd: "260px", lg: "350px" }}
-      py={4}
+      py={3}
       px={3}
     >
       {/* skeleton loader */}
