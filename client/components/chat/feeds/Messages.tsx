@@ -11,7 +11,7 @@ type Props = {
 function Messages({ session, id }: Props) {
   return (
     // calc(100% - 65px) => 65px accounts for the MessageHeader
-    <Stack pos="relative" h="calc(100% - 60px)" overflowY="auto">
+    <Stack h="calc(100% - 60px)" overflowY="auto">
       <Box
         bg="blackAlpha.100"
         pb="10px"

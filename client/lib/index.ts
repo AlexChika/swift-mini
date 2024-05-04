@@ -51,7 +51,7 @@ function formatUserNames(
     } else {
       const [first, ...rest] = sorted;
       name = capitalize(first.user.username || "");
-      usernames = `${joinUserNames(rest)}, You`;
+      usernames = `${joinUserNames(rest)}${comma(sorted.length)} You`;
     }
 
     return {

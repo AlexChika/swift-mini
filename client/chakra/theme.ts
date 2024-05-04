@@ -1,9 +1,4 @@
-import {
-  SystemStyleObject,
-  ThemeConfig,
-  extendTheme,
-  styled,
-} from "@chakra-ui/react";
+import { SystemStyleObject, ThemeConfig, extendTheme } from "@chakra-ui/react";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -14,6 +9,9 @@ const styles = {
   global: () => ({
     "[contenteditable]": {
       outline: "0px solid transparent",
+    },
+    "[contenteditable] *": {
+      textWrap: "wrap !important",
     },
   }),
 };

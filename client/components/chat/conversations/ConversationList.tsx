@@ -1,5 +1,14 @@
 import { hideScrollbar } from "@/chakra/theme";
-import { Box, Stack } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Center,
+  Spinner,
+  Stack,
+} from "@chakra-ui/react";
 import { Session } from "next-auth";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
@@ -55,25 +64,58 @@ function ConversationList({ session }: Props) {
 
   return (
     <Box
-      sx={{ ...hideScrollbar, padding: "10px 0px" }}
-      overflowY="auto"
+      sx={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
-      h="calc(100vh - 90px)"
+      pb="10px"
+      h="calc(100vh - 70px)"
     >
-      <Stack>
-        {[...(data?.conversations || [])].reverse().map((c) => {
-          return (
-            <ConversationItem
-              key={c.id}
-              {...{
-                conversationOnClick,
-                conversation: c,
-                session,
-              }}
-            />
-          );
-        })}
-      </Stack>
+      {/* loading */}
+      {convLoading && (
+        <Center h="100%">
+          <Box>
+            <Spinner />
+          </Box>
+        </Center>
+      )}
+
+      {/* error */}
+      {convError && (
+        <Center h="100%">
+          <Alert
+            bg="transparent"
+            color="whiteAlpha.500"
+            status="error"
+            flexDirection="column"
+            textAlign="center"
+          >
+            <AlertIcon color="whiteAlpha.500" boxSize="40px" mr={0} />
+            <AlertTitle mt={4} fontSize="sm">
+              Something Went Wrong!
+            </AlertTitle>
+            <AlertDescription fontSize="small" maxWidth="sm">
+              Please Refresh The browser
+            </AlertDescription>
+          </Alert>
+        </Center>
+      )}
+
+      {/* data */}
+      {data && (
+        <Stack>
+          {[...data.conversations].reverse().map((c) => {
+            return (
+              <ConversationItem
+                key={c.id}
+                {...{
+                  conversationOnClick,
+                  conversation: c,
+                  session,
+                }}
+              />
+            );
+          })}
+        </Stack>
+      )}
     </Box>
   );
 }
