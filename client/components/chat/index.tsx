@@ -12,8 +12,6 @@ type ChatProps = {
   session: Session;
 };
 
-// border={"2px solid yellow"}
-
 function Chat({ session }: ChatProps) {
   const search = useSearchParams();
   const id = search.get("conversationId");

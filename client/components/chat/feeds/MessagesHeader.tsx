@@ -39,19 +39,13 @@ function MessagesHeader({ id, userId }: Props) {
     >
       {/* Back button for small screens  */}
       <Center display={{ base: "flex", xmd: "none" }} bg="blackAlpha.200">
-        <Button
-          onClick={() => router.replace("/")}
-          w="10px"
-          minW="unset"
-          mr={-2}
-          bg="none"
-        >
+        <Button onClick={() => router.replace("/")} minW="unset" bg="none">
           <LeftArrowIcon color="whiteAlpha.500" />
         </Button>
       </Center>
 
       {/* latest message sender username and avatar */}
-      <Flex align="center" px={3} py={4} h="100%" gap={2}>
+      <Flex align="center" px={0} py={4} h="100%" gap={2}>
         <Avatar src={avatar} size="sm" />
         <Text>{name}</Text>
         <Text color="gray.500">{"to:"}</Text>

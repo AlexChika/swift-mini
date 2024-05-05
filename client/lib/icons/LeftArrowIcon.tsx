@@ -5,8 +5,8 @@ function LeftArrowIcon({ className, style, color = "currentColor" }: IconProp) {
     <Box color={color}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
+        width="25"
+        height="25"
         fill="currentColor"
         style={style}
         className={className}
