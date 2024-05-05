@@ -80,7 +80,7 @@ const messageResolver = {
         });
 
         // find the current participant object
-        const participant = await prisma.conversationParticipants.findUnique({
+        const participant = await prisma.conversationParticipants.findFirst({
           where: {
             conversationId,
             userId,
@@ -106,7 +106,7 @@ const messageResolver = {
               updateMany: {
                 where: {
                   NOT: {
-                    id: participant?.id || "",
+                    userId,
                   },
                 },
                 data: {

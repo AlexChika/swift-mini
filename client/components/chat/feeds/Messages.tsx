@@ -33,10 +33,9 @@ function Messages({ session, id }: Props) {
     },
   });
 
-  const runEffect = useRef(true);
-
-  function subToNewMessage() {
+  function subToNewMessage(id: string) {
     subscribeToMore({
+      variables: { conversationId: id },
       document: messageOperations.Subscriptions.messageSent,
       updateQuery: (prev, update: MessageUpdate) => {
         if (!update.subscriptionData.data) return prev;
@@ -50,15 +49,20 @@ function Messages({ session, id }: Props) {
     });
   }
 
+  const listIds = useRef<string[]>([]);
+
   useEffect(() => {
     // effect is forced to run once rather than twice
-    if (!runEffect.current) return;
+    // if (!runEffect.current) return;
 
-    runEffect.current = false;
-    subToNewMessage();
+    if (listIds.current.find((ids) => ids === id)) return;
+    listIds.current.push(id);
+
+    // runEffect.current = false;
+    subToNewMessage(id);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   return (
     // calc(100% - 65px) => 65px accounts for the MessageHeader

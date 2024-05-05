@@ -5,6 +5,8 @@ import { Session } from "next-auth";
 import { useSearchParams } from "next/navigation";
 import Conversations from "./conversations";
 import Feeds from "./feeds";
+import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
+import { useRef } from "react";
 
 type ChatProps = {
   session: Session;
@@ -16,8 +18,11 @@ function Chat({ session }: ChatProps) {
   const search = useSearchParams();
   const id = search.get("conversationId");
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  useDynamicHeight(containerRef);
+
   return (
-    <Flex height="100vh" margin={0} gap={0}>
+    <Flex ref={containerRef} height="100vh" margin={0} gap={0}>
       <Conversations id={id} session={session} />
       <Feeds id={id} session={session} />
     </Flex>
