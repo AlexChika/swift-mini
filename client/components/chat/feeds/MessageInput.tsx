@@ -38,6 +38,11 @@ function MessageInput(props: Props) {
 
   function sendMessage(str: string) {
     console.log({ str });
+
+    try {
+    } catch (error: any) {
+      console.log("onMessageError", error);
+    }
   }
 
   function handleOnSubmit() {

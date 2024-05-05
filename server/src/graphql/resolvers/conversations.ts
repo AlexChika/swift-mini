@@ -28,8 +28,9 @@ const conversationResolver = {
             },
           },
 
-          include: conversationsPopulated,
+          include: conversationsInclude,
         });
+        console.log({ part: convos[3].participants });
         return convos;
       } catch (error) {
         const err = error as unknown as { message: string };
@@ -66,7 +67,7 @@ const conversationResolver = {
             },
           },
 
-          include: conversationsPopulated,
+          include: conversationsInclude,
         });
 
         // emit create subscription event
@@ -111,7 +112,7 @@ const conversationResolver = {
   },
 };
 
-export const participantsPopulated =
+export const participantsInclude =
   Prisma.validator<Prisma.ConversationParticipantsInclude>()({
     user: {
       select: {
@@ -121,7 +122,7 @@ export const participantsPopulated =
     },
   });
 
-export const conversationsPopulated =
+export const conversationsInclude =
   Prisma.validator<Prisma.ConversationInclude>()({
     participants: {
       select: {

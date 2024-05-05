@@ -1,4 +1,5 @@
-import { conversationsPopulated } from "#src/graphql/resolvers/conversations";
+import { conversationsInclude } from "#src/graphql/resolvers/conversations";
+import { MessageInclude } from "#src/graphql/resolvers/message";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { PubSub } from "graphql-subscriptions";
 import { Context } from "graphql-ws";
@@ -27,15 +28,11 @@ interface SubscriptionContext extends Context {
   };
 }
 
-/**
- * return object when a username is created
- */
-type CreateUsernameResponse = {
-  success: boolean;
-  error?: string;
-  username: string;
-};
-
+// Types
 type Conversation = Prisma.ConversationGetPayload<{
-  include: typeof conversationsPopulated;
+  include: typeof conversationsInclude;
+}>;
+
+type Message = Prisma.MessageGetPayload<{
+  include: typeof MessageInclude;
 }>;

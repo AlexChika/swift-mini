@@ -1,6 +1,12 @@
 import { GraphQLError } from "graphql";
-import { CreateUsernameResponse, GraphqlContext } from "../../../swift-mini";
+import { GraphqlContext } from "../../../swift-mini";
 import { User } from "@prisma/client";
+
+type CreateUsernameResponse = {
+  success: boolean;
+  error?: string;
+  username: string;
+};
 
 const resolvers = {
   Query: {
