@@ -30,7 +30,6 @@ const conversationResolver = {
 
           include: conversationsInclude,
         });
-        console.log({ part: convos[3].participants });
         return convos;
       } catch (error) {
         const err = error as unknown as { message: string };

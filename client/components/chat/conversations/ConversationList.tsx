@@ -15,6 +15,7 @@ import { useQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import ConversationItem from "./ConversationItem";
+import SkeletonLoader from "@/components/general/SkeletonLoader";
 
 type Props = {
   session: Session;
@@ -71,11 +72,14 @@ function ConversationList({ session }: Props) {
     >
       {/* loading */}
       {convLoading && (
-        <Center h="100%">
-          <Box>
-            <Spinner />
-          </Box>
-        </Center>
+        <Stack h="100%" gap={3}>
+          <SkeletonLoader duration={1} no={10} height="calc(100% / 10)" />
+        </Stack>
+        // <Center h="100%">
+        //   <Box>
+        //     <Spinner />
+        //   </Box>
+        // </Center>
       )}
 
       {/* error */}

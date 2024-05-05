@@ -1,43 +1,49 @@
+import messageOperations from "@/graphql/operations/messages";
 import { SendIcon } from "@/lib/icons";
+import { useMutation } from "@apollo/client";
 import { Flex, IconButton, Box } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { useRef } from "react";
 
 type Props = {
   session: Session;
-  id: string | null; //conversationID
+  id: string; //conversationID
 };
 
 function MessageInput(props: Props) {
+  const { id, session } = props;
+
+  // send message mutation
+  const [send] = useMutation<sendMessageData, sendMessageVariable>(
+    messageOperations.Mutations.sendMessage
+  );
+
+  // ref
   const InputBox = useRef<null | HTMLDivElement>(null);
 
-  function onInputHandler(e: React.FormEvent) {
-    e.preventDefault();
+  function onKeyDownHandler(e: React.KeyboardEvent) {
+    const el = e.currentTarget as HTMLDivElement;
 
-    // register contenteditable to a Ref
-    if (InputBox.current) return;
-    InputBox.current = e.currentTarget as HTMLDivElement;
+    const textString = el.textContent?.trim();
+    if (!textString) return;
 
-    // add listener to send message when enterKey is pressed
-    InputBox.current.addEventListener("keydown", (e) => {
-      const el = e.currentTarget as HTMLDivElement;
+    if (e.key === "Enter") {
+      if (e.shiftKey) return; // shiftKey is active: go to newline
 
-      const textString = el.textContent?.trim();
-      if (!textString) return;
-
-      if (e.key === "Enter") {
-        if (e.shiftKey) return; // shiftKey is active: go to newline
-
-        // send the message : enter key alone was pressed
-        sendMessage(textString);
-        e.preventDefault(); // Don't go to newline
-        el.innerHTML = ""; // clear inputBox
-      }
-    });
+      sendMessage(textString); // send the message : enter key alone was pressed
+      e.preventDefault(); // Don't go to newline
+      el.innerHTML = ""; // clear inputBox
+    }
   }
 
-  function sendMessage(str: string) {
-    console.log({ str });
+  // called by the submit and enter btn:sends message
+  async function sendMessage(str: string) {
+    // console.log("id from send message", id);
+    const { data } = await send({
+      variables: { body: str, conversationId: id, senderId: session.user.id },
+    });
+
+    // console.log({ data });
 
     try {
     } catch (error: any) {
@@ -45,10 +51,46 @@ function MessageInput(props: Props) {
     }
   }
 
+  //  async function onSubmit() {
+  //    const username = Username.trim().toLowerCase();
+  //    if (err || !username) return;
+
+  //    toast.loading("loading", {
+  //      id: "createusername",
+  //    });
+
+  //    try {
+  //      const { data } = await createUsername({ variables: { username } });
+
+  //      if (!data?.createUsername) {
+  //        throw new Error("Operation failed");
+  //      }
+
+  //      if (!data?.createUsername.success) {
+  //        const { error } = data.createUsername;
+  //        throw new Error(error);
+  //      }
+
+  //      toast.success("Username created successfully", {
+  //        id: "createusername",
+  //      });
+  //      reloadSession();
+  //    } catch (error) {
+  //      const e = error as unknown as { message: string };
+  //      toast.error(e?.message || "Unknown error occured", {
+  //        id: "createusername",
+  //      });
+  //    }
+  //  }
+
+  // btn : submit handler
   function handleOnSubmit() {
-    const textString = InputBox.current?.textContent?.trim();
+    if (!InputBox.current) return;
+
+    const textString = InputBox.current.textContent?.trim();
     if (!textString) return;
 
+    InputBox.current.innerHTML = "";
     sendMessage(textString);
   }
 
@@ -68,7 +110,8 @@ function MessageInput(props: Props) {
         gap={{ base: 2, xmd: 3 }}
       >
         <Box
-          onInput={onInputHandler}
+          ref={InputBox}
+          onKeyDown={onKeyDownHandler}
           sx={{
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",

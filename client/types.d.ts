@@ -1,4 +1,4 @@
-// users
+/* --------------------- users --------------------- */
 
 type CreateUsernameData = {
   createUsername: {
@@ -23,7 +23,7 @@ type SearchUsersVariable = {
   username: string;
 };
 
-// conversations
+/* ----------------- conversations ----------------- */
 type CreateConversationData = {
   createConversation: {
     conversationId: string;
@@ -35,6 +35,11 @@ type CreateConversationVariable = {
 
 type conversationsData = {
   conversations: Conversation[];
+};
+
+// The update query subscription data for create conversations
+type ConversationUpdate = {
+  subscriptionData: { data?: { conversationCreated: Conversation } };
 };
 
 type Conversation = {
@@ -64,9 +69,30 @@ type Conversation = {
   } | null;
 };
 
-// The update query subscription data for create conversations
-type ConversationUpdate = {
-  subscriptionData: { data?: { conversationCreated: Conversation } };
+/* -------------------- Messages ------------------- */
+type MessagesData = {
+  messages: Message[];
+};
+
+type sendMessageData = boolean;
+type sendMessageVariable = {
+  body: string;
+  conversationId: string;
+  senderId: string;
+};
+
+type MessageUpdate = {
+  subscriptionData: { data?: { messageSent: Message } };
+};
+
+type Message = {
+  id: string;
+  body: string;
+  createdAt: number;
+  sender: {
+    id: string;
+    username: string;
+  };
 };
 
 type IconProp = {

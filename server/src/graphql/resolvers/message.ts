@@ -79,17 +79,24 @@ const messageResolver = {
           include: MessageInclude,
         });
 
-        const conversation = prisma.conversation.update({
+        // find the current participant object
+        const participant = await prisma.conversationParticipants.findUnique({
+          where: {
+            conversationId,
+            userId,
+          },
+        });
+
+        const conversation = await prisma.conversation.update({
           where: {
             id: conversationId,
           },
-
           data: {
             latestMessageId: newMessage.id,
             participants: {
               update: {
                 where: {
-                  id: senderId,
+                  id: participant?.id || "",
                 },
                 data: {
                   hasSeenLatestMessage: true,
@@ -99,7 +106,7 @@ const messageResolver = {
               updateMany: {
                 where: {
                   NOT: {
-                    userId: senderId,
+                    id: participant?.id || "",
                   },
                 },
                 data: {
@@ -121,7 +128,7 @@ const messageResolver = {
         //   conversationUpdated: conversation,
         // });
 
-        console.log({ newMessage });
+        console.log({ newMessage, conversation });
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("sendMessage error", error);
@@ -131,6 +138,7 @@ const messageResolver = {
       return true;
     },
   },
+
   Subscription: {
     messageSent: {
       subscribe: withFilter(
@@ -143,6 +151,9 @@ const messageResolver = {
           args: { conversationId: string },
           ___: any
         ) => {
+          console.log({
+            sub: payload.messageSent.conversationId === args.conversationId,
+          });
           return payload.messageSent.conversationId === args.conversationId;
         }
       ),
