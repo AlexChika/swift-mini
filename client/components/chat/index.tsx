@@ -20,7 +20,7 @@ function Chat({ session }: ChatProps) {
   useDynamicHeight(containerRef);
 
   return (
-    <Flex ref={containerRef} height="100vh" margin={0} gap={0}>
+    <Flex ref={containerRef} margin={0} gap={0}>
       <Conversations id={id} session={session} />
       <Feeds id={id} session={session} />
     </Flex>
