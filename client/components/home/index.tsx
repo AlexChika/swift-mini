@@ -5,6 +5,7 @@ import { Box } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import Auth from "../auth";
 import Chat from "../chat";
+import StartScreen from "./StartScreen";
 
 function HomePage() {
   const { data: session } = useSession();
@@ -23,7 +24,7 @@ function HomePage() {
   return (
     <Box>
       {session?.user.username ? (
-        <Chat session={session} />
+        <StartScreen Child={<Chat session={session} />} />
       ) : (
         <Auth session={session} reloadSession={reloadSession} />
       )}

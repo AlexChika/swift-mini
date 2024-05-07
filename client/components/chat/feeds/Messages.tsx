@@ -28,9 +28,6 @@ function Messages({ session, id }: Props) {
     { conversationId: string }
   >(messageOperations.Queries.messages, {
     variables: { conversationId: id },
-    onError: (err) => {
-      toast.error("");
-    },
   });
 
   function subToNewMessage(id: string) {

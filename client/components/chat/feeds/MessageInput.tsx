@@ -1,9 +1,10 @@
 import messageOperations from "@/graphql/operations/messages";
 import { SendIcon } from "@/lib/icons";
-import { useMutation } from "@apollo/client";
+import { ApolloError, useMutation } from "@apollo/client";
 import { Flex, IconButton, Box } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { useRef } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
   session: Session;
@@ -14,7 +15,7 @@ function MessageInput(props: Props) {
   const { id, session } = props;
 
   // send message mutation
-  const [send] = useMutation<sendMessageData, sendMessageVariable>(
+  const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
     messageOperations.Mutations.sendMessage
   );
 
@@ -38,16 +39,20 @@ function MessageInput(props: Props) {
 
   // called by the submit and enter btn:sends message
   async function sendMessage(str: string) {
-    // console.log("id from send message", id);
-    const { data } = await send({
-      variables: { body: str, conversationId: id, senderId: session.user.id },
-    });
-
-    // console.log({ data });
-
     try {
-    } catch (error: any) {
-      console.log("onMessageError", error);
+      await send({
+        variables: {
+          body: str,
+          conversationId: id,
+          senderId: session.user.id,
+        },
+      });
+
+      if (error) toast.error("Could not send");
+    } catch (error) {
+      const err = error as ApolloError;
+      toast.error("Could not send");
+      console.log("onMessageError", err);
     }
   }
 
