@@ -40,8 +40,9 @@ function StartScreen({ Child }: Props) {
       </Center>
     );
 
+  // loading....
   return (
-    <Center opacity="0.6" flexDirection="column" h="100vh">
+    <Center opacity="0.9" flexDirection="column" h="100vh">
       <AspectRatio
         overflow="hidden"
         borderRadius="50%"

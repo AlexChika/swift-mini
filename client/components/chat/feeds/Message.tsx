@@ -8,7 +8,7 @@ type Props = {
 function Message(props: Props) {
   const { body } = props;
   return (
-    <Box>
+    <Box m={{ base: 3, xmd: 4 }}>
       <Text>{body}</Text>
     </Box>
   );

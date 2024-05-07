@@ -21,7 +21,7 @@ function Feeds({ session, id }: Props) {
     );
 
   return (
-    <Flex direction="column" w="100%">
+    <Flex justifyContent="space-between" direction="column" w="100%">
       <MessagesHeader {...{ id, userId: session.user.id }} />
       <Messages {...{ session, id }} />
     </Flex>

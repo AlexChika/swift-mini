@@ -62,8 +62,8 @@ function Messages({ session, id }: Props) {
   }, [id]);
 
   return (
-    // calc(100% - 65px) => 65px accounts for the MessageHeader
-    <Stack h="calc(100% - 60px)" overflowY="auto">
+    // calc(100% - 60px) => 60px accounts for the MessageHeader
+    <Stack maxH="calc(100% - 60px)" overflowY="auto">
       <Box
         h="100%"
         bg="blackAlpha.100"
