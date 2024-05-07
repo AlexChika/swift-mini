@@ -23,6 +23,9 @@ function MessageInput(props: Props) {
   const InputBox = useRef<null | HTMLDivElement>(null);
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
+    // disable send on enter for mobile device
+    if (window.innerWidth < 768) return;
+
     const el = e.currentTarget as HTMLDivElement;
 
     const textString = el.textContent?.trim();
@@ -56,38 +59,6 @@ function MessageInput(props: Props) {
     }
   }
 
-  //  async function onSubmit() {
-  //    const username = Username.trim().toLowerCase();
-  //    if (err || !username) return;
-
-  //    toast.loading("loading", {
-  //      id: "createusername",
-  //    });
-
-  //    try {
-  //      const { data } = await createUsername({ variables: { username } });
-
-  //      if (!data?.createUsername) {
-  //        throw new Error("Operation failed");
-  //      }
-
-  //      if (!data?.createUsername.success) {
-  //        const { error } = data.createUsername;
-  //        throw new Error(error);
-  //      }
-
-  //      toast.success("Username created successfully", {
-  //        id: "createusername",
-  //      });
-  //      reloadSession();
-  //    } catch (error) {
-  //      const e = error as unknown as { message: string };
-  //      toast.error(e?.message || "Unknown error occured", {
-  //        id: "createusername",
-  //      });
-  //    }
-  //  }
-
   // btn : submit handler
   function handleOnSubmit() {
     if (!InputBox.current) return;
@@ -105,13 +76,14 @@ function MessageInput(props: Props) {
       borderColor="whiteAlpha.50"
       bg="blackAlpha.300"
       px={{ base: "10px", xmd: "30px" }}
-      py={2}
+      py={5}
       w="100%"
     >
       <Flex
         justifyContent="space-between"
         maxW="100%"
         w="100%"
+        mb={2}
         gap={{ base: 2, xmd: 3 }}
       >
         <Box
@@ -137,7 +109,7 @@ function MessageInput(props: Props) {
           onClick={handleOnSubmit}
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
-          color="blackAlpha.100"
+          color="blackAlpha.50"
           borderRadius={10}
           aria-label="Send Message Icon"
           icon={<SendIcon color="whiteAlpha.700" />}

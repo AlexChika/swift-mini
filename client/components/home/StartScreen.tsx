@@ -59,7 +59,9 @@ function StartScreen({ Child }: Props) {
         />
       </AspectRatio>
 
-      <Text mt={5}>Loading... Please wait </Text>
+      <Text fontStyle="italic" mt={5}>
+        Loading... Please wait{" "}
+      </Text>
     </Center>
   );
 }

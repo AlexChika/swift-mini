@@ -19,7 +19,7 @@ const messageResolver = {
       args: { conversationId: string },
       ctx: GraphqlContext
     ): Promise<Message[]> => {
-      const { session, prisma, pubsub } = ctx;
+      const { session, prisma } = ctx;
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
       const { id: userId } = session.user;
@@ -45,7 +45,7 @@ const messageResolver = {
           },
           include: MessageInclude,
           orderBy: {
-            createdAt: "desc",
+            createdAt: "asc",
           },
         });
 
@@ -73,11 +73,19 @@ const messageResolver = {
       if (senderId !== userId)
         throw new GraphQLError("User is not authenticated");
 
+      console.time("create mesage");
       try {
         const newMessage = await prisma.message.create({
           data: { body, conversationId, senderId },
           include: MessageInclude,
         });
+        console.timeEnd("create mesage");
+
+        // publish events to users
+        pubsub.publish("MESSAGE_SENT", {
+          messageSent: newMessage,
+        });
+        console.log(new Date().getSeconds(), "published 1");
 
         // find the current participant object
         const participant = await prisma.conversationParticipants.findFirst({
@@ -119,16 +127,9 @@ const messageResolver = {
           include: conversationsInclude,
         });
 
-        // publish events to users
-        pubsub.publish("MESSAGE_SENT", {
-          messageSent: newMessage,
-        });
-
         // pubsub.publish("CONVERSATION_UPDATED", {
         //   conversationUpdated: conversation,
         // });
-
-        console.log({ newMessage, conversation });
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("sendMessage error", error);
@@ -151,9 +152,7 @@ const messageResolver = {
           args: { conversationId: string },
           ___: any
         ) => {
-          console.log({
-            sub: payload.messageSent.conversationId === args.conversationId,
-          });
+          console.log(new Date().getSeconds(), "subscription 2 ");
           return payload.messageSent.conversationId === args.conversationId;
         }
       ),

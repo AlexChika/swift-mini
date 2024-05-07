@@ -21,7 +21,14 @@ function Feeds({ session, id }: Props) {
     );
 
   return (
-    <Flex justifyContent="space-between" direction="column" w="100%">
+    <Flex
+      borderRight="2px"
+      borderColor="whiteAlpha.50"
+      justifyContent="space-between"
+      bg="blackAlpha.100"
+      direction="column"
+      w="100%"
+    >
       <MessagesHeader {...{ id, userId: session.user.id }} />
       <Messages {...{ session, id }} />
     </Flex>

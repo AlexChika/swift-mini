@@ -5,6 +5,7 @@ type Props = {
   body: string;
   createdAt?: string;
 };
+
 function Message(props: Props) {
   const { body } = props;
   return (

@@ -14,7 +14,6 @@ import { hideScrollbar } from "@/chakra/theme";
 import Message from "./Message";
 import { useQuery } from "@apollo/client";
 import messageOperations from "@/graphql/operations/messages";
-import toast from "react-hot-toast";
 import { useEffect, useRef } from "react";
 
 type Props = {
@@ -39,6 +38,7 @@ function Messages({ session, id }: Props) {
 
         const newMessage = update.subscriptionData.data.messageSent;
 
+        console.log(new Date().getSeconds(), "sub func 3");
         return Object.assign({}, prev, {
           messages: [...prev.messages, newMessage],
         });
@@ -46,27 +46,35 @@ function Messages({ session, id }: Props) {
     });
   }
 
-  const listIds = useRef<string[]>([]);
-
+  const subscribedCoversationIds = useRef<string[]>([]);
   useEffect(() => {
-    // effect is forced to run once rather than twice
-    // if (!runEffect.current) return;
+    // if a conversation has been subscribed... we return
+    if (subscribedCoversationIds.current.find((ids) => ids === id)) return;
+    subscribedCoversationIds.current.push(id);
 
-    if (listIds.current.find((ids) => ids === id)) return;
-    listIds.current.push(id);
-
-    // runEffect.current = false;
-    subToNewMessage(id);
+    subToNewMessage(id); // sub to conversation
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const BoxRef = useRef<null | HTMLDivElement>(null);
+  useEffect(() => {
+    if (BoxRef.current) {
+      BoxRef.current.scrollTo(0, Number(BoxRef.current.scrollHeight));
+    }
+  }, [data]);
+
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
-    <Stack maxH="calc(100% - 60px)" overflowY="auto">
+    <Stack
+      justifyContent="space-between"
+      h="calc(100% - 60px)"
+      overflowY="auto"
+    >
       <Box
-        h="100%"
-        bg="blackAlpha.100"
+        ref={BoxRef}
+        // h="100%"
+        // bg="blackAlpha.100"
         pb="10px"
         sx={{ ...hideScrollbar }}
         overflowY="auto"

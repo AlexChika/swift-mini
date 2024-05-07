@@ -12,7 +12,7 @@ type Props = {
 function Conversations({ session, id }: Props) {
   return (
     <Box
-      bg="blackAlpha.200"
+      bg="blackAlpha.400"
       borderRight="2px"
       borderColor="whiteAlpha.50"
       display={{ base: id ? "none" : "block", xmd: "block" }}

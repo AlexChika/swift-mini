@@ -45,7 +45,7 @@ function MessagesHeader({ id, userId }: Props) {
       </Center>
 
       {/* latest message sender username and avatar */}
-      <Flex align="center" px={0} py={4} h="100%" gap={2}>
+      <Flex align="center" mx={{ base: 3, xmd: 4 }} py={4} h="100%" gap={2}>
         <Avatar src={avatar} size="sm" />
         <Text>{name}</Text>
         <Text color="gray.500">{"to:"}</Text>
