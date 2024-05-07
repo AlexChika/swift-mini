@@ -1,13 +1,17 @@
 import { useEffect } from "react";
 
 // Mobile....
-/*Hooks is used to dynamically set the height of an element to the visible browser height excluding browse-nav-bars using the window.innerHeight aproach */
+
 type Ref = React.MutableRefObject<HTMLDivElement | null>;
+type Condition = boolean | (() => boolean);
 
-const useDynamicHeight = (ref: Ref, sub = 0) => {
-  // elementRef is an html element ref from useRef
-  // sub is the height to deduct which could account for navbars, footer that are static on a page when useDynamicHeight is used inside a div containing navs or any otherr element
-
+/**
+ * Hooks is used to dynamically set the height of an element to the visible browser height excluding browse-nav-bars using the window.innerHeight aproach
+ * @param condition a function that return a bool, which defines when the {sub} shoul be deducted or not. conditon can also be a boolean. a true would mean always deduct while a false and undefined will mean never deduct
+ * @param ref the react ref of target element
+ * @param sub the height to deduct which could account for navbars, footer that are static on a page when useDynamicHeight is used inside a div containing navs or any otherr element
+ */
+const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
   /* -- dynamic  Wrapper Height logic - */
   useEffect(() => {
     const refElement = ref.current;
@@ -16,11 +20,15 @@ const useDynamicHeight = (ref: Ref, sub = 0) => {
     function set(_height: number) {
       if (!refElement) return;
 
-      if (window.innerWidth > 767) {
-        refElement.style.height = `${_height}px`;
-      } else {
-        refElement.style.height = `${_height - sub}px`;
-      }
+      if (typeof condition === "function") {
+        condition()
+          ? (refElement.style.height = `${_height - sub}px`)
+          : (refElement.style.height = `${_height - 0}px`);
+      } else if (typeof condition === "boolean") {
+        condition
+          ? (refElement.style.height = `${_height - sub}px`)
+          : (refElement.style.height = `${_height - 0}px`);
+      } else refElement.style.height = `${_height - sub}px`;
     }
 
     let _height = window.innerHeight;

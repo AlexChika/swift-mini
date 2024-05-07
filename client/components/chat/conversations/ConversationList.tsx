@@ -16,6 +16,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import ConversationItem from "./ConversationItem";
 import SkeletonLoader from "@/components/general/SkeletonLoader";
+import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 
 type Props = {
   session: Session;
@@ -28,9 +29,6 @@ function ConversationList({ session }: Props) {
     loading: convLoading,
     subscribeToMore,
   } = useQuery<conversationsData>(conversationOperations.Queries.conversations);
-
-  const router = useRouter();
-  const runEffect = useRef(true);
 
   function subToNewConversation() {
     subscribeToMore({
@@ -53,6 +51,8 @@ function ConversationList({ session }: Props) {
     // mark Convo as read
   }
 
+  const router = useRouter();
+  const runEffect = useRef(true);
   useEffect(() => {
     // effect is forced to run once rather than twice
     if (!runEffect.current) return;
@@ -63,12 +63,15 @@ function ConversationList({ session }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const BoxRef = useRef<null | HTMLDivElement>(null);
+  useDynamicHeight(BoxRef, 70);
+
   return (
     <Box
+      ref={BoxRef}
       sx={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
       pb="10px"
-      h="calc(100vh - 70px)"
     >
       {/* loading */}
       {convLoading && (
