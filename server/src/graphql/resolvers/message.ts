@@ -157,31 +157,6 @@ const messageResolver = {
         }
       ),
     },
-    // conversationCreated: {
-    //   subscribe: withFilter(
-    //     (_: any, __: any, ctx: GraphqlContext) => {
-    //       const { pubsub } = ctx;
-    //       return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
-    //     },
-    //     (
-    //       payload: { conversationCreated: Conversation },
-    //       _: any,
-    //       ctx: GraphqlContext
-    //     ) => {
-    //       const { session } = ctx;
-    //       const { participants } = payload.conversationCreated;
-    //       const userIsParticipant = !!participants.find(
-    //         (p) => p.userId === session?.user.id
-    //       );
-    //       return userIsParticipant;
-    //     }
-    //   ),
-
-    //   // subscribe: (_: any, __: any, ctx: GraphqlContext) => {
-    //   //   const { pubsub } = ctx;
-    //   //   return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
-    //   // },
-    // },
   },
 };
 
@@ -192,6 +167,7 @@ export const MessageInclude = Prisma.validator<Prisma.MessageInclude>()({
     select: {
       id: true,
       username: true,
+      image: true,
     },
   },
 });

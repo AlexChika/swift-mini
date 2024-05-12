@@ -63,6 +63,7 @@ function formatUserNames(
     };
   }
 
+  //  shortened usernames
   if (thisUser && thisUser.hasSeenLatestMessage) {
     const length = sorted.length - 3; // first two names + user's name = 3 names
     const lastUserName = length > 0 ? `and ${length} other(s)` : "";
@@ -98,33 +99,10 @@ function formatUserNames(
 function dateFormatter(rawdate: string | number | Date) {
   const d = new Date(rawdate);
 
-  /* -----------  minute and hour ----------- */
-  // example   Hour :  Minute
-  //            06  :  45
-  // where => hour1 = 0, hour2 = 6, min1 = 4, min2 = 5
-  let hour1 = "0"; //   hour boxes
-  let hour2;
-  let min1 = "0"; //   min boxes
-  let min2;
-
-  const hourArray = d.getHours().toString().split("");
-  const minArray = d.getMinutes().toString().split("");
-
-  if (hourArray.length > 1) {
-    [hour1, hour2] = hourArray;
-  } else {
-    [hour2] = hourArray;
-  }
-
-  if (minArray.length > 1) {
-    [min1, min2] = minArray;
-  } else {
-    [min2] = minArray;
-  }
-
   /* ------------ // time of day ----------- */
   const hour = d.getHours();
-  let dayPeriod = "";
+  const min = d.getMinutes();
+  let timeOfDay = "";
   let meridian: "AM" | "PM" = "PM";
 
   if (hour < 12) {
@@ -132,29 +110,27 @@ function dateFormatter(rawdate: string | number | Date) {
   }
 
   if (hour < 6) {
-    dayPeriod = "Night";
+    timeOfDay = "Night";
   } // 12 (00) am <=> 5:59 am
 
   if (hour >= 6 && hour < 12) {
-    dayPeriod = "Morning";
+    timeOfDay = "Morning";
   } // 6am <=> 11:59am
 
   if (hour >= 12 && hour < 18) {
-    dayPeriod = "Afternoon";
+    timeOfDay = "Afternoon";
   } // 12pm <=>5:59pm
 
   if (hour >= 18 && hour < 21) {
-    dayPeriod = "Evening";
+    timeOfDay = "Evening";
   } // 6pm <=> 8:59pm
 
   if (hour >= 22) {
-    dayPeriod = "Night";
+    timeOfDay = "Night";
   } // 9pm <=> 11:59pm
 
   /* ------------  time ----------- */
-  const time = `${
-    Number(hour1) ? hour1 : ""
-  }${hour2}:${min1}${min2} ${meridian}`;
+  const time = `${hour > 12 ? hour - 12 : hour}:${min} ${meridian}`;
 
   /* ------------  date ----------- */
   const date = d.toLocaleDateString("en-US", {
@@ -166,7 +142,7 @@ function dateFormatter(rawdate: string | number | Date) {
 
   /**
    *
-   * @param limit (max no of days when timepassed is returned) when time in days is greater than limit in days passed, a datestring is returned rather than the time passeed
+   * @param limit (a number that specifies the max no of days when timepassed is returned) when time in days is greater than limit in days passed, a datestring is returned rather than the time passeed
    * @returns a datestring or time passed
    */
   function getTimePassed(limit?: number) {
@@ -214,12 +190,41 @@ function dateFormatter(rawdate: string | number | Date) {
     else return `${Math.floor(years)} years ago`;
   }
 
+  /**
+   *
+   * @param limit ( a number that specifies the max no of days when timepassed is returned) when time in days is greater than limit in days passed, a datestring is returned rather than the time of week
+   * @returns a datestring or time passed
+   */
+  function getTimeOfWeek(limit?: number) {
+    const milliseconds = Date.now() - d.getTime();
+    const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
+
+    // return date if days is greter than limit
+    if (limit && Math.floor(days) > limit) return date;
+
+    if (days <= 1) return "Today";
+    if (days > 1 && days <= 2) return "Tomorrow";
+    if (days > 2 && days <= 7)
+      return [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ][d.getDay()];
+
+    return date;
+  }
+
   return {
     meridian,
-    dayPeriod,
+    timeOfDay,
     date,
     time,
     getTimePassed,
+    getTimeOfWeek,
   };
 }
 

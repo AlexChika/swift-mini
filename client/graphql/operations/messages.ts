@@ -7,6 +7,7 @@ const messageFields = `
       sender {
         id
         username
+        image
       }
 `;
 

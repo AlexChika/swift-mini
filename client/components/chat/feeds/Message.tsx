@@ -1,33 +1,45 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { dateFormatter } from "@/lib";
 import React from "react";
 
 type Props = {
   message: Message;
   sentByMe: boolean;
+  usersFirstMessageAfterOthers: boolean;
 };
 
 function Message(props: Props) {
-  const { message, sentByMe } = props;
-  const { createdAt, body } = message;
+  const { message, sentByMe, usersFirstMessageAfterOthers } = props;
+  const { createdAt, body, sender } = message;
 
   return (
     <Flex
-      gap={1}
       mx={{ base: 3, xmd: 12 }}
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
       maxWidth={{ base: "70%", xmd: "60%", xl: "55%" }}
-      // w="full"
-      // border="2px solid green"
     >
+      {/* other users */}
+      {usersFirstMessageAfterOthers && !sentByMe && (
+        <Avatar
+          mr={2}
+          size="2xs"
+          name={sender.username}
+          bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
+          color={sentByMe ? "blackAlpha.800" : "whiteAlpha.600"}
+          src={sender.image}
+        />
+      )}
+
       <Box
-        borderRadius={sentByMe ? "8px" : "12px"}
+        borderRadius="8px"
         color={sentByMe ? "black" : "white"}
         _hover={{ opacity: sentByMe ? "0.8" : "0.7" }}
         bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
         pt={1}
         pb={2}
         px={3}
+        ml={!usersFirstMessageAfterOthers && !sentByMe ? 6 : ""}
+        mr={!usersFirstMessageAfterOthers && sentByMe ? 6 : ""}
       >
         {/* message body */}
         <Text
@@ -51,12 +63,23 @@ function Message(props: Props) {
           lineHeight={0}
           fontSize="9px"
           minW="100%"
-          // border="2px solid red"
-          color={sentByMe ? "gray" : "#404040"}
+          color={sentByMe ? "gray" : "#595959"}
         >
-          {dateFormatter(createdAt).getTimePassed(7)}
+          {dateFormatter(createdAt).time}
         </Text>
       </Box>
+
+      {/* current useres */}
+      {usersFirstMessageAfterOthers && sentByMe && (
+        <Avatar
+          ml={2}
+          size="2xs"
+          name={sender.username}
+          bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
+          color={sentByMe ? "blackAlpha.800" : "whiteAlpha.600"}
+          src={sender.image}
+        />
+      )}
     </Flex>
   );
 }

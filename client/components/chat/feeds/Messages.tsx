@@ -8,6 +8,7 @@ import {
   Flex,
   Spinner,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import MessageInput from "./MessageInput";
 import { Session } from "next-auth";
@@ -16,6 +17,7 @@ import Message from "./Message";
 import { useQuery } from "@apollo/client";
 import messageOperations from "@/graphql/operations/messages";
 import { useEffect, useRef } from "react";
+import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
 
 type Props = {
   session: Session;
@@ -65,6 +67,8 @@ function Messages({ session, id }: Props) {
     }
   }, [data]);
 
+  const renderObj = renderObjectForDateDemacator(data?.messages || []);
+
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
@@ -72,7 +76,13 @@ function Messages({ session, id }: Props) {
       h="calc(100% - 60px)"
       overflowY="auto"
     >
-      <Stack ref={BoxRef} py="10px" sx={{ ...hideScrollbar }} overflowY="auto">
+      <Stack
+        gap="3px"
+        ref={BoxRef}
+        py="10px"
+        sx={{ ...hideScrollbar }}
+        overflowY="auto"
+      >
         {/* loading */}
         {loading && (
           <Center h="100%">
@@ -107,11 +117,21 @@ function Messages({ session, id }: Props) {
         {data &&
           data.messages.map((m, i) => {
             return (
-              <Message
-                message={m}
-                sentByMe={session.user.id === m.sender.id}
-                key={i}
-              />
+              <>
+                <DateDemacator shouldRender={renderObj[m.id]} />
+                <Message
+                  usersFirstMessageAfterOthers={(() => {
+                    const prevMessage = data.messages[i - 1];
+                    if (!prevMessage) return true;
+
+                    if (m.sender.id === prevMessage.sender.id) return false;
+                    return true;
+                  })()}
+                  message={m}
+                  sentByMe={session.user.id === m.sender.id}
+                  key={i}
+                />
+              </>
             );
           })}
       </Stack>
