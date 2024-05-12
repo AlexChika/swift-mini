@@ -58,15 +58,7 @@ type Conversation = {
     };
   }[];
 
-  latestMessage: {
-    id: string;
-    createdAt: Date;
-    senderId: string;
-    sender: {
-      id: string;
-      username: string | null;
-    };
-  } | null;
+  latestMessage: Message | null;
 };
 
 /* -------------------- Messages ------------------- */

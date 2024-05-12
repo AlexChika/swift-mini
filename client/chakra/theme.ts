@@ -13,6 +13,14 @@ const styles = {
     "[contenteditable] *": {
       textWrap: "wrap !important",
     },
+    "@keyframes spin": {
+      to: {
+        transform: "rotate(360deg)",
+      },
+    },
+    ".animate-spin": {
+      animation: "spin 0.6s linear infinite",
+    },
   }),
 };
 

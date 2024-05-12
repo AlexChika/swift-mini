@@ -12,10 +12,12 @@ function formatUserNames(
 
   //   sort array to put name of lastmessage sender at the begining
   let sorted: Conversation["participants"] = [];
+
   participants.forEach((p) => {
     p.hasSeenLatestMessage ? sorted.unshift(p) : sorted.push(p);
   });
 
+  /** Joins usernames into a comma separated strings while ommitting the current user */
   function joinUserNames(c: Conversation["participants"]) {
     return c
       .map((p) => {
@@ -61,31 +63,29 @@ function formatUserNames(
     };
   }
 
-  if (participants.length < 4) {
-    if (thisUser && thisUser.hasSeenLatestMessage) {
-      let names = joinUserNames(sorted.slice(0, sorted.length - 1));
-      const lastUserName = sorted[sorted.length - 1].user.username!;
+  if (thisUser && thisUser.hasSeenLatestMessage) {
+    const length = sorted.length - 3; // first two names + user's name = 3 names
+    const lastUserName = length > 0 ? `and ${length} other(s)` : "";
 
-      usernames = `You${comma(sorted.length)} ${names} and ${capitalize(
-        lastUserName
-      )}`;
-    } else {
-      let names = joinUserNames(sorted);
-      usernames = `${names} and You`;
-    }
-  } else {
-    const length = participants.length - 3; // first two names + user's name = 3 names
-    const lastUserName = `and ${length} others`;
-
-    let names = joinUserNames(
+    let fewNames = joinUserNames(
       sorted.filter((p) => p.user.id !== id).slice(0, 2) // first two names
     );
 
-    if (thisUser && thisUser.hasSeenLatestMessage) {
-      usernames = `You, ${names} ${lastUserName}`;
-    } else {
-      usernames = `${names}, You ${lastUserName}`;
-    }
+    usernames = `You to ${fewNames} ${lastUserName}`;
+  } else {
+    const [first, ...rest] = sorted;
+    const length = rest.length - 3; // first two names + user's name = 3 names
+
+    let fewNames = joinUserNames(
+      rest.filter((p) => p.user.id !== id).slice(0, 2) // first two names
+    );
+
+    let firstUserName = capitalize(first.user.username || "");
+    const lastUserName = length > 0 ? `and ${length} others` : "";
+
+    usernames = `${firstUserName} to You${comma(
+      sorted.length
+    )} ${fewNames} ${lastUserName}`;
   }
 
   return {
@@ -166,7 +166,7 @@ function dateFormatter(rawdate: string | number | Date) {
 
   /**
    *
-   * @param limit when time in days is greater than limit in days passed, a datestring is returned rather than the time passeed
+   * @param limit (max no of days when timepassed is returned) when time in days is greater than limit in days passed, a datestring is returned rather than the time passeed
    * @returns a datestring or time passed
    */
   function getTimePassed(limit?: number) {

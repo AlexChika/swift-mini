@@ -5,6 +5,7 @@ import {
   AlertTitle,
   Box,
   Center,
+  Flex,
   Spinner,
   Stack,
 } from "@chakra-ui/react";
@@ -71,14 +72,7 @@ function Messages({ session, id }: Props) {
       h="calc(100% - 60px)"
       overflowY="auto"
     >
-      <Box
-        ref={BoxRef}
-        // h="100%"
-        // bg="blackAlpha.100"
-        pb="10px"
-        sx={{ ...hideScrollbar }}
-        overflowY="auto"
-      >
+      <Stack ref={BoxRef} py="10px" sx={{ ...hideScrollbar }} overflowY="auto">
         {/* loading */}
         {loading && (
           <Center h="100%">
@@ -112,9 +106,15 @@ function Messages({ session, id }: Props) {
         {/* data */}
         {data &&
           data.messages.map((m, i) => {
-            return <Message key={i} {...{ body: m.body }} />;
+            return (
+              <Message
+                message={m}
+                sentByMe={session.user.id === m.sender.id}
+                key={i}
+              />
+            );
           })}
-      </Box>
+      </Stack>
 
       <MessageInput {...{ session, id }} />
     </Stack>

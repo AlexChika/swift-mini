@@ -75,9 +75,10 @@ function MessageInput(props: Props) {
       borderTop="2px"
       borderColor="whiteAlpha.50"
       bg="blackAlpha.300"
-      px={{ base: "10px", xmd: "30px" }}
-      py={5}
+      px={{ base: 3, xmd: 12 }}
+      py={4}
       w="100%"
+      // border="2px solid red"
     >
       <Flex
         justifyContent="space-between"

@@ -38,22 +38,38 @@ function ConversationItem(props: Props) {
       _hover={{ bg: "whiteAlpha.50" }}
     >
       <Flex align="center" gap={2} justify="space-between">
-        {/* avatar and usernames */}
+        {/* avatar,  usernames, latest message */}
         <Flex isTruncated align="center" gap={2}>
-          <Avatar
-            background="Highlight"
-            src={avatar}
-            name={avatar ? "" : name}
-            size={"sm"}
-          />
+          {/* user profile pic */}
+          <Avatar background="Highlight" src={avatar} name={name} size={"sm"} />
 
-          <Text isTruncated fontSize={14}>
-            {usernames}
-          </Text>
+          {/* user names & latest message */}
+          <Flex flexDir="column">
+            {/* usernames */}
+            <Text isTruncated fontSize={14}>
+              {usernames}
+            </Text>
+
+            {/* latest messages */}
+            <Text
+              opacity="70%"
+              textOverflow="ellipsis"
+              noOfLines={1}
+              fontSize="11px"
+            >
+              {latestMessage?.body}
+            </Text>
+          </Flex>
         </Flex>
 
         {/* time passed */}
-        <Text minW="80px" fontSize={11} opacity="50%" textAlign="right">
+        <Text
+          minW="80px"
+          fontSize={11}
+          opacity="50%"
+          alignSelf="flex-end"
+          textAlign="right"
+        >
           {getTimePassed()}
         </Text>
       </Flex>

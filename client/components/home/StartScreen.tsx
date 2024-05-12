@@ -1,13 +1,14 @@
 import useFetchConversation from "@/lib/hooks/useFetchConversation";
+import { Image } from "@chakra-ui/react";
 import {
   Center,
-  AspectRatio,
-  Text,
   Alert,
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Text,
 } from "@chakra-ui/react";
+import Spinner from "../general/Spinner";
 
 type Props = {
   Child: JSX.Element;
@@ -43,24 +44,22 @@ function StartScreen({ Child }: Props) {
   // loading....
   return (
     <Center opacity="0.9" flexDirection="column" h="100vh">
-      <AspectRatio
-        overflow="hidden"
-        borderRadius="50%"
-        w="100%"
-        maxWidth="120px"
-        ratio={1}
-      >
-        <video
-          loop
-          muted
-          playsInline
-          autoPlay={true}
-          src="/clockloadingbg.mp4"
-        />
-      </AspectRatio>
+      {/* swift logo */}
+      <Image maxW="200px" alt="Logo Image" src="/icon.png" />
 
-      <Text fontStyle="italic" mt={5}>
-        Loading... Please wait{" "}
+      {/* loading spinner */}
+      <Spinner absolute secondaryColor={"black"} />
+
+      <Text
+        top="58%"
+        pos="absolute"
+        letterSpacing="2px"
+        textAlign="center"
+        fontStyle="italic"
+        fontSize="13px"
+        textColor="gray"
+      >
+        Loading Please Wait...
       </Text>
     </Center>
   );
