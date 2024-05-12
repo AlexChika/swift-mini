@@ -42,13 +42,31 @@ function MessageInput(props: Props) {
 
   // called by the submit and enter btn:sends message
   async function sendMessage(str: string) {
+    const newMessage = {
+      body: str,
+      conversationId: id,
+      senderId: session.user.id,
+    };
+
     try {
       await send({
         variables: {
-          body: str,
-          conversationId: id,
-          senderId: session.user.id,
+          ...newMessage,
         },
+        // optimisticResponse: true,
+        // update:(cache)=>{
+        //   const existing = cache.readQuery<MessagesData>({
+        //     query: messageOperations.Queries.messages,
+        //     variables: {conversationId:id}
+        //   })
+
+        //   cache.writeQuery<MessagesData, { conversationId: string }>({
+        //     query: messageOperations.Queries.messages,
+        //     variables: {conversationId:id },
+        //     data: {...existing, messages:[{...newMessage}, ...existing?.messages || []]}
+        //   });
+
+        // }
       });
 
       if (error) toast.error("Could not send");

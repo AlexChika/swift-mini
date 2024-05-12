@@ -5,7 +5,7 @@ import React from "react";
 type Props = {
   message: Message;
   sentByMe: boolean;
-  usersFirstMessageAfterOthers: boolean;
+  usersFirstMessageAfterOthers: boolean; // a bolean indicating if a message is the first message a user sends immediately after another user
 };
 
 function Message(props: Props) {
@@ -18,7 +18,7 @@ function Message(props: Props) {
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
       maxWidth={{ base: "70%", xmd: "60%", xl: "55%" }}
     >
-      {/* other users */}
+      {/* other users image */}
       {usersFirstMessageAfterOthers && !sentByMe && (
         <Avatar
           mr={2}
@@ -30,46 +30,64 @@ function Message(props: Props) {
         />
       )}
 
-      <Box
-        borderRadius="8px"
-        color={sentByMe ? "black" : "white"}
-        _hover={{ opacity: sentByMe ? "0.8" : "0.7" }}
-        bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
-        pt={1}
-        pb={2}
-        px={3}
+      {/* message body */}
+      <Flex
         ml={!usersFirstMessageAfterOthers && !sentByMe ? 6 : ""}
         mr={!usersFirstMessageAfterOthers && sentByMe ? 6 : ""}
+        flexDir="column"
       >
-        {/* message body */}
-        <Text
-          fontSize={{ base: "13px" }}
-          lineHeight="20px"
-          fontWeight={500}
-          sx={{
-            wordWrap: "break-word",
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-          }}
-        >
-          {body}
-        </Text>
+        {/* username */}
+        {usersFirstMessageAfterOthers && !sentByMe && (
+          <Text
+            fontSize="9px"
+            minW="100%"
+            color={sentByMe ? "gray" : "#595959"}
+          >
+            {sender.username}
+          </Text>
+        )}
 
-        {/* message time */}
-        <Text
-          pt={0.5}
-          pl={9}
-          textAlign={"right"}
-          lineHeight={0}
-          fontSize="9px"
-          minW="100%"
-          color={sentByMe ? "gray" : "#595959"}
+        {/* message and time container */}
+        <Box
+          w="full"
+          borderRadius="6px"
+          color={sentByMe ? "black" : "white"}
+          _hover={{ opacity: sentByMe ? "0.8" : "0.7" }}
+          bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
+          pt={1}
+          pb={2}
+          px={3}
         >
-          {dateFormatter(createdAt).time}
-        </Text>
-      </Box>
+          {/* message body */}
+          <Text
+            fontSize={{ base: "13px" }}
+            lineHeight="20px"
+            fontWeight={500}
+            sx={{
+              wordWrap: "break-word",
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {body}
+          </Text>
 
-      {/* current useres */}
+          {/* message time */}
+          <Text
+            pt={0.5}
+            pl={9}
+            textAlign={"right"}
+            lineHeight={0}
+            fontSize="9px"
+            minW="100%"
+            color={sentByMe ? "gray" : "#595959"}
+          >
+            {dateFormatter(createdAt).time}
+          </Text>
+        </Box>
+      </Flex>
+
+      {/* current usere image */}
       {usersFirstMessageAfterOthers && sentByMe && (
         <Avatar
           ml={2}
