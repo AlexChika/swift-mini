@@ -1,3 +1,5 @@
+// rewrite logic. Logic should beb based on first username is the sender of last messsage...wether seen or not
+
 function formatUserNames(
   participants: Conversation["participants"],
   id: string,
@@ -94,7 +96,7 @@ function formatUserNames(
     avatar: sorted[0].user.image || undefined,
     name: usernames.substring(0, 1),
   };
-}
+} // bugs in  func
 
 function dateFormatter(rawdate: string | number | Date) {
   const d = new Date(rawdate);
@@ -190,32 +192,33 @@ function dateFormatter(rawdate: string | number | Date) {
     else return `${Math.floor(years)} years ago`;
   }
 
-  /**
-   *
-   * @param limit ( a number that specifies the max no of days when timepassed is returned) when time in days is greater than limit in days passed, a datestring is returned rather than the time of week
-   * @returns a datestring or time passed
-   */
-  function getTimeOfWeek(limit?: number) {
+  function getTimeOfWeek() {
     const milliseconds = Date.now() - d.getTime();
     const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
 
-    // return date if days is greter than limit
-    if (limit && Math.floor(days) > limit) return date;
+    const weekDays = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
 
-    if (days <= 1) return "Today";
-    if (days > 1 && days <= 2) return "Tomorrow";
-    if (days > 2 && days <= 7)
-      return [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ][d.getDay()];
+    if (Math.floor(days) >= 7) return date; // its been a week
 
-    return date;
+    // currDay = day of tweet ... actualDay = day of viewing
+    const currDay = new Date(Date.now()).getDay();
+    const actualDay = d.getDay();
+
+    //  time differece is less or equalto 24 hrs
+    if (days <= 1) {
+      if (currDay === actualDay) return "Today";
+      else return "Yesterday";
+    }
+
+    return weekDays[actualDay];
   }
 
   return {
