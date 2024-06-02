@@ -46,7 +46,7 @@ function ConversationItem(props: Props) {
           {/* user names & latest message */}
           <Flex flexDir="column">
             {/* usernames */}
-            <Text isTruncated fontSize={14}>
+            <Text isTruncated fontSize={15}>
               {usernames}
             </Text>
 

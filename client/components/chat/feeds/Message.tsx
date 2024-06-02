@@ -24,8 +24,8 @@ function Message(props: Props) {
           mr={2}
           size="2xs"
           name={sender.username}
-          bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
-          color={sentByMe ? "blackAlpha.800" : "whiteAlpha.600"}
+          bg="whiteAlpha.900"
+          color="blackAlpha.900"
           src={sender.image}
         />
       )}
@@ -39,9 +39,10 @@ function Message(props: Props) {
         {/* username */}
         {usersFirstMessageAfterOthers && !sentByMe && (
           <Text
-            fontSize="9px"
+            fontSize={{ base: "9px", xmd: "11px" }}
             minW="100%"
-            color={sentByMe ? "gray" : "#595959"}
+            color="#acacac"
+            textTransform="capitalize"
           >
             {sender.username}
           </Text>
@@ -51,16 +52,16 @@ function Message(props: Props) {
         <Box
           w="full"
           borderRadius="6px"
-          color={sentByMe ? "black" : "white"}
+          color={sentByMe ? "black" : "black"}
           _hover={{ opacity: sentByMe ? "0.8" : "0.7" }}
-          bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
+          bg={sentByMe ? "whiteAlpha.900" : "teal.50"}
           pt={1}
           pb={2}
           px={3}
         >
           {/* message body */}
           <Text
-            fontSize={{ base: "13px" }}
+            fontSize={{ base: "14px", xmd: "15px" }}
             lineHeight="20px"
             fontWeight={500}
             sx={{
@@ -93,8 +94,8 @@ function Message(props: Props) {
           ml={2}
           size="2xs"
           name={sender.username}
-          bg={sentByMe ? "whiteAlpha.800" : "blackAlpha.600"}
-          color={sentByMe ? "blackAlpha.800" : "whiteAlpha.600"}
+          bg="whiteAlpha.800"
+          color="blackAlpha.900"
           src={sender.image}
         />
       )}
