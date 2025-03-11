@@ -29,7 +29,7 @@ const corsOpts: cors.CorsOptions = {
   origin:
     process.env.NODE_ENV === "development"
       ? ["http://localhost:3000", "https://studio.apollographql.com"]
-      : ["https://swiftmini.globalstack.dev"],
+      : ["https://swiftmini.globalstack.dev", "https://swift-mini.vercel.app"],
   credentials: true,
 };
 
