@@ -118,7 +118,7 @@ function Messages({ session, id }: Props) {
           data.messages.map((m, i) => {
             return (
               <>
-                <DateDemacator shouldRender={renderObj[m.id]} />
+                <DateDemacator key={m.id} demacatorText={renderObj[m.id]} />
                 <Message
                   usersFirstMessageAfterOthers={(() => {
                     const prevMessage = data.messages[i - 1];
@@ -129,7 +129,7 @@ function Messages({ session, id }: Props) {
                   })()}
                   message={m}
                   sentByMe={session.user.id === m.sender.id}
-                  key={i}
+                  key={m.id + i}
                 />
               </>
             );

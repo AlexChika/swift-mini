@@ -3,7 +3,7 @@
 import { CronJob } from "cron";
 import https from "https";
 
-const url = "https://server-swift-mini.devarise.tech/cron";
+const url = "https://server-swiftmini.globalstack.dev/cron";
 
 const restartJob = CronJob.from({
   cronTime: "*/14 * * * *",

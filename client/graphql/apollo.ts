@@ -7,12 +7,12 @@ import { getSession } from "next-auth/react";
 const uri =
   process.env.NODE_ENV === "development"
     ? "http://localhost:4000/graphql"
-    : "https://server-swift-mini.devarise.tech/graphql";
+    : "https://server-swiftmini.globalstack.dev/graphql";
 
 const wsUrl =
   process.env.NODE_ENV === "development"
     ? "ws://localhost:4000/subscriptions"
-    : "wss://server-swift-mini.devarise.tech/subscriptions";
+    : "wss://server-swiftmini.globalstack.dev/subscriptions";
 
 const httpLink = new HttpLink({
   uri,

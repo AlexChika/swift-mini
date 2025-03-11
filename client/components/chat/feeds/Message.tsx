@@ -1,6 +1,5 @@
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { dateFormatter } from "@/lib";
-import React from "react";
 
 type Props = {
   message: Message;

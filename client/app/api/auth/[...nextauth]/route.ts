@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const dev = process.env.NODE_ENV === "development";
-const domain = "devarise.tech";
+const domain = "globalstack.dev";
 const cookiePrefix = "__Secure-";
 
 export const authOptions: NextAuthOptions = {

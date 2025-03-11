@@ -3,7 +3,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 
 export function renderObjectForDateDemacator(msgs: Message[]) {
   const control: Record<string, boolean> = {};
-  const render: Record<string, string | number> = {};
+  const render: Record<string, string> = {};
 
   msgs.forEach((m) => {
     const time = m.createdAt;
@@ -18,11 +18,11 @@ export function renderObjectForDateDemacator(msgs: Message[]) {
 }
 
 type Props = {
-  shouldRender: string | number | undefined;
+  demacatorText: string | undefined;
 };
 
-function DateDemacator({ shouldRender }: Props) {
-  if (!shouldRender) return "";
+function DateDemacator({ demacatorText }: Props) {
+  if (!demacatorText) return "";
 
   return (
     <Text
@@ -36,7 +36,7 @@ function DateDemacator({ shouldRender }: Props) {
       textTransform="capitalize"
       fontSize={13}
     >
-      {shouldRender}
+      {demacatorText}
     </Text>
   );
 
@@ -65,7 +65,7 @@ function DateDemacator({ shouldRender }: Props) {
         textTransform="capitalize"
         fontSize={13}
       >
-        {shouldRender}
+        {demacatorText}
       </Text>
       <Box
         h="0"
