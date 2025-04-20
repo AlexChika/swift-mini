@@ -7,7 +7,7 @@ type Condition = boolean | (() => boolean);
 
 /**
  * Hooks is used to dynamically set the height of an element to the visible browser height excluding browse-nav-bars using the window.innerHeight aproach
- * @param condition a function that return a bool, which defines when the {sub} should be deducted or not. conditon can also be a boolean. a true would mean always deduct while a false and undefined will mean never deduct
+ * @param condition a bool or function that return a bool, which defines when the {sub} should be deducted or not. conditon can also be a boolean. a true would mean always deduct while a false and undefined will mean never deduct
  * @param ref the react ref of target element
  * @param sub the height to deduct which could account for navbars, footer that are static on a page when useDynamicHeight is used inside a div containing navs or any otherr element
  */
@@ -54,7 +54,7 @@ const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
       refElement.removeEventListener("scroll", handleScrollEvent);
       window.removeEventListener("resize", handleResizeEvent);
     };
-  }, [ref, sub]);
+  }, [ref, sub, condition]);
 };
 
 export default useDynamicHeight;
