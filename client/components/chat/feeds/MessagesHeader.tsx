@@ -46,14 +46,17 @@ function MessagesHeader({ id, userId }: Props) {
 
       {/* latest message sender username and avatar */}
       <Flex align="center" mx={{ base: 3, xmd: 4 }} py={4} h="100%" gap={2}>
-        <Avatar src={avatar} size="sm" />
+        <Avatar.Root size="sm">
+          <Avatar.Fallback />
+          <Avatar.Image src={avatar} />
+        </Avatar.Root>
         <Text>{name}</Text>
         <Text color="gray.500">{"to:"}</Text>
       </Flex>
 
       {/* Rest of participants usernames */}
-      <Flex isTruncated align="center" px={3} py={4}>
-        <Text fontSize={14} color="gray.500" isTruncated>
+      <Flex truncate align="center" px={3} py={4}>
+        <Text fontSize={14} color="gray.500" truncate>
           {usernames}
         </Text>
       </Flex>

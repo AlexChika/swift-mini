@@ -1,40 +1,56 @@
+import { ColorMode } from "@/lib/helpers";
 import {
   Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  Dialog,
   Progress,
   Text,
-  useDisclosure,
+  Portal,
+  CloseButton,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
 function InProgressModal() {
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+  const [open, setOpen] = useState(true);
 
   return (
     <>
       {/* <Button onClick={onOpen}>Trigger modal</Button> */}
 
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader textAlign="center"></ModalHeader>
-          <ModalCloseButton />
-          <ModalBody textAlign="center">
-            <Text> Swift mini App is in progress</Text>
-            <Progress mt={6} size="sm" hasStripe value={47} />
-          </ModalBody>
+      <Dialog.Root
+        placement="center"
+        lazyMount
+        open={open}
+        onOpenChange={(e) => setOpen(e.open)}
+      >
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title></Dialog.Title>
+              </Dialog.Header>
 
-          <ModalFooter>
-            {/* <Progress hasStripe value={47} /> */}
-            {/* <Button onClick={onClose}>Close</Button> */}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              <Dialog.Body textAlign="center">
+                <Text> Swift mini App is in progress</Text>
+                <Progress.Root size="md">
+                  <Progress.Track>
+                    <Progress.Range />
+                  </Progress.Track>
+                </Progress.Root>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.ActionTrigger asChild>
+                  <Button variant="outline">Cancel</Button>
+                </Dialog.ActionTrigger>
+              </Dialog.Footer>
+              <ColorMode.ThemeButton />
+              <Dialog.CloseTrigger asChild>
+                <CloseButton size="sm" />
+              </Dialog.CloseTrigger>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }

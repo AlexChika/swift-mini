@@ -1,10 +1,4 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
   Stack,
   Input,
   Button,
@@ -12,8 +6,10 @@ import {
   Avatar,
   Flex,
   IconButton,
+  Dialog,
+  Portal,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import React from "react";
 import userOperations from "@/graphql/operations/users";
 import convoOperations from "@/graphql/operations/conversations";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -24,14 +20,14 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   isOpen: boolean;
-  onClose: () => void;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   session: Session;
 };
 
-function ConversationModal({ onClose, isOpen, session }: Props) {
+function ConversationModal({ isOpen, setIsOpen, session }: Props) {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [participants, setParticipants] = useState<SearchedUser[]>([]);
+  const [username, setUsername] = React.useState("");
+  const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
 
   const [searchUsers, { loading, data }] = useLazyQuery<
     SearchUsersData,
@@ -78,7 +74,7 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
       router.replace(`/?conversationId=${conversationId}`);
       setParticipants([]);
       setUsername("");
-      onClose();
+      setIsOpen(false);
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
@@ -88,62 +84,72 @@ function ConversationModal({ onClose, isOpen, session }: Props) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent mx={2} bg="#2d2d2d" pb={4}>
-        <ModalHeader>Create a conversation</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          {/*
-           *
-           *
-           * Username Input Form */}
-          <form onSubmit={handleSearchUsers}>
-            <Stack spacing={4}>
-              <Input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter a username"
-              />
-              <Button isLoading={loading} isDisabled={!username} type="submit">
-                Search
-              </Button>
-            </Stack>
-          </form>
-          {/*
+    <Dialog.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content mx={2} bg="#2d2d2d" pb={4}>
+            <Dialog.Header>
+              <Dialog.Title>Create a conversation</Dialog.Title>
+            </Dialog.Header>
+
+            {/* <ModalCloseButton /> */}
+
+            <Dialog.Body>
+              {/*
+               *
+               *
+               * Username Input Form */}
+              <form onSubmit={handleSearchUsers}>
+                <Stack gap={4}>
+                  <Input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter a username"
+                  />
+                  <Button loading={loading} disabled={!username} type="submit">
+                    Search
+                  </Button>
+                </Stack>
+              </form>
+
+              {/*
            *
            *
            Search Result List */}
-          {data?.searchUsers && (
-            <UserSearchList
-              users={data?.searchUsers}
-              addParticipant={addParticipant}
-            />
-          )}
-          {/*
+              {data?.searchUsers && (
+                <UserSearchList
+                  users={data?.searchUsers}
+                  addParticipant={addParticipant}
+                />
+              )}
+
+              {/*
            *
            *
            Selected users {participants}*/}
-          {participants.length > 0 && (
-            <>
-              <SelectedParticipants
-                removeParticipant={removeParticipant}
-                participants={participants}
-              />
-              <Button
-                isLoading={createConversationLoading}
-                onClick={() => onCreateConversation()}
-                w="100%"
-                mt={6}
-                colorScheme="blue"
-              >
-                Create Conversation
-              </Button>
-            </>
-          )}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+              {participants.length > 0 && (
+                <>
+                  <SelectedParticipants
+                    removeParticipant={removeParticipant}
+                    participants={participants}
+                  />
+                  <Button
+                    loading={createConversationLoading}
+                    onClick={() => onCreateConversation()}
+                    w="100%"
+                    mt={6}
+                    colorScheme="blue"
+                  >
+                    Create Conversation
+                  </Button>
+                </>
+              )}
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 }
 /*
@@ -169,13 +175,15 @@ function UserSearchList({ users, addParticipant }: ListProp) {
             key={user.id}
             direction="row"
             align="center"
-            spacing={4}
+            gap={4}
             py={2}
             px={2}
             borderRadius={4}
             _hover={{ bg: "whiteAlpha.200" }}
           >
-            <Avatar name={user.username} size={"sm"} />
+            <Avatar.Root size={"sm"} variant="solid">
+              <Avatar.Fallback name={user.username} />
+            </Avatar.Root>
             <Flex align="center" justify="space-between" w="100%">
               <Text>{user.username}</Text>
               <Button
@@ -220,10 +228,11 @@ function SelectedParticipants({
             <Text>{p.username}</Text>
             <IconButton
               onClick={() => removeParticipant(p.id)}
-              variant="link"
+              variant="plain"
               aria-label="delete selected user button"
-              icon={<CloseIcon color="white" />}
-            />
+            >
+              <CloseIcon color="white" />
+            </IconButton>
           </Stack>
         );
       })}

@@ -22,12 +22,13 @@ function Feeds({ session, id }: Props) {
 
   return (
     <Flex
-      borderRight="2px"
-      borderColor="whiteAlpha.50"
+      // borderRight="2px"
+      // borderColor="whiteAlpha.50"
       justifyContent="space-between"
-      bg="blackAlpha.100"
+      bg="bg"
       direction="column"
       w="100%"
+      css={{ border: "2px solid red" }}
     >
       <MessagesHeader {...{ id, userId: session.user.id }} />
       <Messages {...{ session, id }} />

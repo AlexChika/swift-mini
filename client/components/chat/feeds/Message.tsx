@@ -19,14 +19,15 @@ function Message(props: Props) {
     >
       {/* other users image */}
       {usersFirstMessageAfterOthers && !sentByMe && (
-        <Avatar
+        <Avatar.Root
           mr={2}
           size="2xs"
-          name={sender.username}
           bg="whiteAlpha.900"
           color="blackAlpha.900"
-          src={sender.image}
-        />
+        >
+          <Avatar.Fallback name={sender.username} />
+          <Avatar.Image src={sender.image} />
+        </Avatar.Root>
       )}
 
       {/* message body */}
@@ -63,7 +64,7 @@ function Message(props: Props) {
             fontSize={{ base: "14px", xmd: "15px" }}
             lineHeight="20px"
             fontWeight={500}
-            sx={{
+            css={{
               wordWrap: "break-word",
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
@@ -89,14 +90,10 @@ function Message(props: Props) {
 
       {/* current usere image */}
       {usersFirstMessageAfterOthers && sentByMe && (
-        <Avatar
-          ml={2}
-          size="2xs"
-          name={sender.username}
-          bg="whiteAlpha.800"
-          color="blackAlpha.900"
-          src={sender.image}
-        />
+        <Avatar.Root ml={2} size="2xs" color="blackAlpha.900">
+          <Avatar.Fallback name={sender.username} />
+          <Avatar.Image src={sender.image} />
+        </Avatar.Root>
       )}
     </Flex>
   );

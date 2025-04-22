@@ -3,7 +3,15 @@
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { Button, Center, Input, Stack, Text, Image } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Input,
+  Stack,
+  Text,
+  Image,
+  Field,
+} from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 
 import userOperations from "@/graphql/operations/users";
@@ -63,7 +71,7 @@ function Auth({ session, reloadSession }: AuthProps) {
 
   return (
     <Center position="relative" height="100vh">
-      <Stack bg="whiteAlpha.100" p={30} spacing={5} align="center">
+      <Stack bg="whiteAlpha.100" p={30} gap={5} align="center">
         <Image
           src={imageUrl}
           width="70px"
@@ -73,13 +81,17 @@ function Auth({ session, reloadSession }: AuthProps) {
 
         {session ? (
           <>
-            <Text fontSize="14px" noOfLines={1} textAlign="center" mb={-5}>
+            <Text fontSize="14px" lineClamp={1} textAlign="center" mb={-5}>
               Hi {session?.user.name}
             </Text>
             <Text>Create a username</Text>
+
+            <Field.Root invalid={err}>
+              <Input placeholder="Enter a username" />
+              <Field.ErrorText>This field is required</Field.ErrorText>
+            </Field.Root>
             <Input
-              isInvalid={err}
-              errorBorderColor="red.600"
+              css={{ "--error-color": "red.600" }}
               onChange={(e) => {
                 const regex = /[^A-Za-z0-9]/;
                 e.target.value.match(regex) ? setErr(true) : setErr(false);
@@ -89,7 +101,7 @@ function Auth({ session, reloadSession }: AuthProps) {
               placeholder="Enter a username"
             />
             <Button
-              isLoading={loading}
+              loading={loading}
               disabled={err}
               fontSize={14}
               w="full"
@@ -101,18 +113,13 @@ function Auth({ session, reloadSession }: AuthProps) {
         ) : (
           <>
             <Text>You are not signed in</Text>
-            <Button
-              fontSize={14}
-              onClick={() => signIn("google")}
-              leftIcon={
-                <Image
-                  src="/google.png"
-                  alt="Google Logo"
-                  height={30}
-                  width={30}
-                />
-              }
-            >
+            <Button fontSize={14} onClick={() => signIn("google")}>
+              <Image
+                src="/google.png"
+                alt="Google Logo"
+                height={30}
+                width={30}
+              />{" "}
               Continue with Google
             </Button>
           </>

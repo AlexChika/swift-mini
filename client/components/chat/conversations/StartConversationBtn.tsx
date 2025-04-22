@@ -1,17 +1,14 @@
+import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import ConversationModal from "../modals/ConversationModal";
-import { useState } from "react";
 
 type Props = {
   session: Session;
 };
 
 function StartConversationBtn({ session }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onOpen = () => setIsOpen(true);
-  const onClose = () => setIsOpen(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <Box
@@ -20,7 +17,7 @@ function StartConversationBtn({ session }: Props) {
       bg="whiteAlpha.100"
       borderRadius={4}
       cursor="pointer"
-      onClick={() => onOpen()}
+      onClick={() => setIsOpen(true)}
     >
       <Text
         textAlign="center"
@@ -31,7 +28,11 @@ function StartConversationBtn({ session }: Props) {
         Find or start a conversation
       </Text>
 
-      <ConversationModal session={session} isOpen={isOpen} onClose={onClose} />
+      <ConversationModal
+        session={session}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </Box>
   );
 }

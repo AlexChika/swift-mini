@@ -1,4 +1,4 @@
-import { Avatar, Flex, StackItem, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { useSearchParams } from "next/navigation";
 import { formatUserNames, dateFormatter } from "@/lib";
@@ -26,7 +26,7 @@ function ConversationItem(props: Props) {
   );
 
   return (
-    <StackItem
+    <Box
       title={usernames}
       cursor="pointer"
       onClick={() => conversationOnClick(id)}
@@ -39,14 +39,17 @@ function ConversationItem(props: Props) {
     >
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
-        <Flex isTruncated align="center" gap={2}>
+        <Flex truncate align="center" gap={2}>
           {/* user profile pic */}
-          <Avatar background="Highlight" src={avatar} name={name} size={"sm"} />
+          <Avatar.Root size="sm">
+            <Avatar.Fallback name={name} />
+            <Avatar.Image background="Highlight" src={avatar} />
+          </Avatar.Root>
 
           {/* user names & latest message */}
           <Flex flexDir="column">
             {/* usernames */}
-            <Text isTruncated fontSize={15}>
+            <Text truncate fontSize={15}>
               {usernames}
             </Text>
 
@@ -54,7 +57,7 @@ function ConversationItem(props: Props) {
             <Text
               opacity="70%"
               textOverflow="ellipsis"
-              noOfLines={1}
+              lineClamp={1}
               fontSize="11px"
             >
               {latestMessage?.body}
@@ -73,7 +76,7 @@ function ConversationItem(props: Props) {
           {getTimePassed()}
         </Text>
       </Flex>
-    </StackItem>
+    </Box>
   );
 }
 

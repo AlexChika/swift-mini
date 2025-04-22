@@ -1,35 +1,29 @@
-import { SystemStyleObject, ThemeConfig, extendTheme } from "@chakra-ui/react";
+import {
+  SystemStyleObject,
+  createSystem,
+  defaultConfig,
+  defineConfig,
+} from "@chakra-ui/react";
 
-const config: ThemeConfig = {
-  initialColorMode: "dark",
-  useSystemColorMode: false,
-};
-
-const styles = {
-  global: () => ({
+const config = defineConfig({
+  cssVarsPrefix: "swft",
+  globalCss: {
+    html: {
+      margin: 0,
+      padding: 0,
+      boxSizing: "border-box",
+    },
     "[contenteditable]": {
       outline: "0px solid transparent",
     },
     "[contenteditable] *": {
       textWrap: "wrap !important",
     },
-    "@keyframes spin": {
-      to: {
-        transform: "rotate(360deg)",
-      },
-    },
     ".animate-spin": {
       animation: "spin 0.6s linear infinite",
     },
-  }),
-};
-
-const theme = extendTheme(
-  { config },
-
-  {
-    styles,
-
+  },
+  theme: {
     breakpoints: {
       base: "0px",
       xs: "320px",
@@ -41,17 +35,47 @@ const theme = extendTheme(
       "2xl": "1536px",
     },
 
-    colors: {
-      brand: {
-        100: "#3d84f7",
-        // ...
-        900: "#1a202c",
+    tokens: {
+      colors: {
+        red: {
+          DEFAULT: { value: "#EE0F0F" },
+        },
       },
     },
-  }
-);
+    semanticTokens: {
+      colors: {
+        bg: {
+          value: {
+            base: "{colors.blue.400}",
+            _dark: "{colors.blue.900}",
+          },
+        },
 
-export default theme;
+        color: {
+          DEFAULT: {
+            value: { base: "{colors.red}", _dark: "{colors.darkred}" },
+          },
+        },
+
+        brand: {
+          100: { value: "3d84f7" },
+          900: { value: "1a202c" },
+        },
+      },
+    },
+
+    keyframes: {
+      spin: {
+        from: { transform: "rotate(0deg)" },
+        to: { transform: "rotate(360deg)" },
+      },
+    },
+  },
+});
+
+const system = createSystem(defaultConfig, config);
+
+export default system;
 
 // .hide_scroll_bar::-webkit-scrollbar {
 //   -webkit-appearance: none;

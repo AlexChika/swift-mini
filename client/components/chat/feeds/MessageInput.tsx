@@ -108,7 +108,7 @@ function MessageInput(props: Props) {
         <Box
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
-          sx={{
+          css={{
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word",
@@ -131,8 +131,9 @@ function MessageInput(props: Props) {
           color="blackAlpha.50"
           borderRadius={10}
           aria-label="Send Message Icon"
-          icon={<SendIcon color="whiteAlpha.700" />}
-        />
+        >
+          <SendIcon color="whiteAlpha.700" />
+        </IconButton>
       </Flex>
     </Box>
   );
