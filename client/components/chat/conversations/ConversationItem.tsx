@@ -34,8 +34,9 @@ function ConversationItem(props: Props) {
       py={2}
       borderBottom="2px"
       borderBottomColor="blackAlpha.300"
-      bg={isSelected ? "whiteAlpha.200" : ""}
+      bg={isSelected ? "#02041b4d" : "secondaryBg"}
       _hover={{ bg: "whiteAlpha.50" }}
+      color="primaryText"
     >
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}

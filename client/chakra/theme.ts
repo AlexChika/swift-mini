@@ -7,11 +7,18 @@ import {
 
 const config = defineConfig({
   cssVarsPrefix: "swft",
+  strictTokens: true,
   globalCss: {
     html: {
       margin: 0,
       padding: 0,
       boxSizing: "border-box",
+      backgroundColor: "{colors.htmlBg}",
+    },
+    body: {
+      maxWidth: "1600px",
+      margin: "0 auto",
+      backgroundColor: "{colors.primaryBg}",
     },
     "[contenteditable]": {
       outline: "0px solid transparent",
@@ -44,7 +51,54 @@ const config = defineConfig({
     },
     semanticTokens: {
       colors: {
+        htmlBg: {
+          value: {
+            base: "#ededee",
+            _dark: "#82828a",
+          },
+        },
+
         bg: {
+          value: {
+            base: "#3d3d46",
+            _dark: "#3d3d46",
+          },
+        },
+
+        primaryBg: {
+          value: {
+            base: "whitesmoke",
+            _dark: "#3d3d46",
+          },
+        },
+        secondaryBg: {
+          value: {
+            base: "#02041b4d",
+            _dark: "#02041b4d",
+          },
+        },
+
+        primaryText: {
+          value: {
+            base: "#000000",
+            _dark: "#ffffff",
+          },
+        },
+
+        userTextBg: {
+          value: {
+            base: "#ffffff",
+            _dark: "#16153393",
+          },
+        },
+        otherUserTextBg: {
+          value: {
+            base: "#ffffff",
+            _dark: "#00000046",
+          },
+        },
+
+        conversationTextHover: {
           value: {
             base: "{colors.blue.400}",
             _dark: "{colors.blue.900}",

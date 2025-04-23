@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { dateFormatter } from "@/lib";
 
 type Props = {
@@ -15,82 +15,123 @@ function Message(props: Props) {
     <Flex
       mx={{ base: 3, xmd: 12 }}
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
-      maxWidth={{ base: "70%", xmd: "60%", xl: "55%" }}
+      maxWidth={{ base: "70%", xmd: "65%", xl: "55%" }}
     >
       {/* other users image */}
       {usersFirstMessageAfterOthers && !sentByMe && (
         <Avatar.Root
           mr={2}
           size="2xs"
-          bg="whiteAlpha.900"
-          color="blackAlpha.900"
+          bg="{colors.otherUserTextBg}"
+          color="{colors.primaryText}"
         >
           <Avatar.Fallback name={sender.username} />
           <Avatar.Image src={sender.image} />
         </Avatar.Root>
       )}
 
-      {/* message body */}
-      <Flex
-        ml={!usersFirstMessageAfterOthers && !sentByMe ? 6 : ""}
-        mr={!usersFirstMessageAfterOthers && sentByMe ? 6 : ""}
-        flexDir="column"
+      {/* use this as group message ui later */}
+      <VStack
+        ml={!usersFirstMessageAfterOthers && !sentByMe ? 8 : ""}
+        mr={!usersFirstMessageAfterOthers && sentByMe ? 8 : ""}
+        color="{colors.primaryText}"
+        bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
+        gap={0}
+        borderRadius={"10px"}
       >
-        {/* username */}
-        {usersFirstMessageAfterOthers && !sentByMe && (
-          <Text
-            fontSize={{ base: "9px", xmd: "11px" }}
-            minW="100%"
-            color="#acacac"
-            textTransform="capitalize"
-          >
-            {sender.username}
-          </Text>
+        {usersFirstMessageAfterOthers && (
+          <>
+            <HStack
+              justifyContent="space-between"
+              padding="13px 10px 0px 10px"
+              marginBottom="7px"
+              w="100%"
+              color="gray"
+            >
+              {/* user name */}
+              <Text
+                fontWeight={600}
+                fontSize={{ base: "12px" }}
+                textTransform="capitalize"
+                lineHeight={0}
+              >
+                {sender.username}
+              </Text>
+
+              {/* time */}
+              <Text
+                // pt={0.5}
+                // pl={9}
+                textAlign={"right"}
+                lineHeight={0}
+                fontSize="10px"
+
+                // color={sentByMe ? "gray" : "#595959"}
+              >
+                {dateFormatter(createdAt).time}
+              </Text>
+            </HStack>
+
+            <Text
+              fontSize={{ base: "14px" }}
+              lineHeight="20px"
+              fontWeight={500}
+              css={{
+                wordWrap: "break-word",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+              alignSelf="flex-start"
+              padding={
+                usersFirstMessageAfterOthers ? "0px 10px 5px 10px" : "5px 10px"
+              }
+            >
+              {body}
+            </Text>
+          </>
         )}
 
-        {/* message and time container */}
-        <Box
-          w="full"
-          borderRadius="6px"
-          color={sentByMe ? "black" : "black"}
-          _hover={{ opacity: sentByMe ? "0.8" : "0.7" }}
-          bg={sentByMe ? "whiteAlpha.900" : "teal.50"}
-          pt={1}
-          pb={2}
-          px={3}
-        >
-          {/* message body */}
-          <Text
-            fontSize={{ base: "14px", xmd: "15px" }}
-            lineHeight="20px"
-            fontWeight={500}
-            css={{
-              wordWrap: "break-word",
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-          >
-            {body}
-          </Text>
+        {!usersFirstMessageAfterOthers && (
+          <Box padding="5px 10px">
+            <Text
+              display="inline"
+              fontSize={{ base: "14px" }}
+              lineHeight="20px"
+              fontWeight={500}
+              css={{
+                wordWrap: "break-word",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+              alignSelf="flex-start"
+            >
+              {body}
+            </Text>
+            {"  "}
+            <Text
+              display="inline"
+              whiteSpace="nowrap"
+              textAlign={"right"}
+              lineHeight={0}
+              fontSize="10px"
+              color="gray"
 
-          {/* message time */}
-          <Text
-            pt={0.5}
-            pl={9}
-            textAlign={"right"}
-            lineHeight={0}
-            fontSize="9px"
-            minW="100%"
-            color={sentByMe ? "gray" : "#595959"}
-          >
-            {dateFormatter(createdAt).time}
-          </Text>
-        </Box>
-      </Flex>
+              // color={sentByMe ? "gray" : "#595959"}
+            >
+              {dateFormatter(createdAt).time}
+            </Text>
+          </Box>
+        )}
+      </VStack>
 
       {/* current usere image */}
       {usersFirstMessageAfterOthers && sentByMe && (
-        <Avatar.Root ml={2} size="2xs" color="blackAlpha.900">
+        <Avatar.Root
+          ml={2}
+          size="2xs"
+          bg="{colors.userTextBg}"
+          color="{colors.primaryText}"
+        >
           <Avatar.Fallback name={sender.username} />
           <Avatar.Image src={sender.image} />
         </Avatar.Root>

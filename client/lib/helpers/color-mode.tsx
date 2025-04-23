@@ -5,6 +5,7 @@ import { ClientOnly, IconButton, Skeleton, Span } from "@chakra-ui/react";
 import { useTheme as useThemes } from "@/components/Providers/ThemeProvider";
 import * as React from "react";
 import { LuMoon, LuSun } from "react-icons/lu";
+import system from "@/chakra/theme";
 
 export type Theme = "light" | "dark";
 
@@ -33,7 +34,11 @@ export function useThemeValue<T>(light: T, dark: T) {
 
 export function ThemeIcon() {
   const { theme } = useTheme();
-  return theme === "dark" ? <LuMoon /> : <LuSun />;
+  return theme === "dark" ? (
+    <LuMoon color={system.token("colors.primaryText")} />
+  ) : (
+    <LuSun color={system.token("colors.primaryText")} />
+  );
 }
 
 interface ThemeButtonProps extends Omit<IconButtonProps, "aria-label"> {}
@@ -47,7 +52,7 @@ export const ThemeButton = React.forwardRef<
     <ClientOnly fallback={<Skeleton boxSize="8" />}>
       <IconButton
         onClick={() => toggleTheme()}
-        variant="ghost"
+        variant="plain"
         aria-label="Toggle color mode"
         size="sm"
         ref={ref}

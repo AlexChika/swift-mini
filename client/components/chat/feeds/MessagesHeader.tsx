@@ -1,9 +1,18 @@
 import { formatUserNames } from "@/lib";
-import { Avatar, Box, Button, Center, Flex, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Center,
+  Flex,
+  HStack,
+  Text,
+} from "@chakra-ui/react";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { LeftArrowIcon } from "@/lib/icons";
+import { ColorMode } from "@/lib/helpers";
 
 type Props = {
   id: string; // this is conversationId
@@ -29,23 +38,18 @@ function MessagesHeader({ id, userId }: Props) {
     "long"
   );
 
-  // bg = "whiteAlpha.50";
   return (
-    <Flex
+    <HStack
+      px={3}
+      w="100%"
       h="60px"
-      bg="blackAlpha.300"
-      borderBottom="2px"
-      borderColor="whiteAlpha.50"
+      bg="{colors.primaryBg}"
+      borderTopRadius="inherit"
     >
       {/* Back button for small screens  */}
-      <Center display={{ base: "flex", xmd: "none" }} bg="blackAlpha.200">
-        <Button onClick={() => router.replace("/")} minW="unset" bg="none">
-          <LeftArrowIcon color="whiteAlpha.500" />
-        </Button>
-      </Center>
 
       {/* latest message sender username and avatar */}
-      <Flex align="center" mx={{ base: 3, xmd: 4 }} py={4} h="100%" gap={2}>
+      <Flex align="center" py={4} h="100%" gap={2}>
         <Avatar.Root size="sm">
           <Avatar.Fallback />
           <Avatar.Image src={avatar} />
@@ -55,15 +59,26 @@ function MessagesHeader({ id, userId }: Props) {
       </Flex>
 
       {/* Rest of participants usernames */}
-      <Flex truncate align="center" px={3} py={4}>
+      <Center h="100%" truncate py={4}>
         <Text fontSize={14} color="gray.500" truncate>
           {usernames}
         </Text>
-      </Flex>
+      </Center>
 
       {/* action buttons */}
-      <Box></Box>
-    </Flex>
+      <Center gap={2} h="100%" ml="auto">
+        <ColorMode.ThemeButton />
+
+        <IconButton
+          display={{ base: "flex", xmd: "none" }}
+          variant="plain"
+          onClick={() => router.replace("/")}
+          minW="unset"
+        >
+          <LeftArrowIcon color="{colors.primaryText}" />
+        </IconButton>
+      </Center>
+    </HStack>
   );
 }
 

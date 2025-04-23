@@ -1,4 +1,3 @@
-import { ColorMode } from "@/lib/helpers";
 import {
   Button,
   Dialog,
@@ -43,7 +42,6 @@ function InProgressModal() {
                   <Button variant="outline">Cancel</Button>
                 </Dialog.ActionTrigger>
               </Dialog.Footer>
-              <ColorMode.ThemeButton />
               <Dialog.CloseTrigger asChild>
                 <CloseButton size="sm" />
               </Dialog.CloseTrigger>

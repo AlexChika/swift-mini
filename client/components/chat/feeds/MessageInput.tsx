@@ -90,13 +90,11 @@ function MessageInput(props: Props) {
 
   return (
     <Box
-      borderTop="2px"
-      borderColor="whiteAlpha.50"
-      bg="blackAlpha.300"
+      // bg="#333443"
       px={{ base: 3, xmd: 12 }}
       py={4}
       w="100%"
-      // border="2px solid red"
+      borderBottomRadius="inherit"
     >
       <Flex
         justifyContent="space-between"
@@ -113,7 +111,8 @@ function MessageInput(props: Props) {
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word",
           }}
-          bg="whiteAlpha.100"
+          bg="{colors.primaryBg}"
+          color="{colors.primaryText}"
           maxH="200px"
           minH="40px"
           overflowY="auto"
@@ -128,11 +127,11 @@ function MessageInput(props: Props) {
           onClick={handleOnSubmit}
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
-          color="blackAlpha.50"
+          bg="{colors.primaryBg}"
           borderRadius={10}
           aria-label="Send Message Icon"
         >
-          <SendIcon color="whiteAlpha.700" />
+          <SendIcon color="{colors.primaryText}" />
         </IconButton>
       </Flex>
     </Box>

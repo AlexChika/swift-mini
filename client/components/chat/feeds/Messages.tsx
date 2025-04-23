@@ -72,6 +72,7 @@ function Messages({ session, id }: Props) {
       justifyContent="space-between"
       h="calc(100% - 60px)"
       overflowY="auto"
+      borderBottomRadius="inherit"
     >
       <Stack
         gap="3px"
