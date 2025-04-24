@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
 import Provider from "@/components/Providers/Provider";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+// import { authOptions } from "./api/auth/[...nextauth]/route";
 import { getServerTheme } from "@/components/Providers/getServerTheme";
+import { getAuthOptions } from "@/lib/api/nextAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ type Props = {
 };
 
 export default async function RootLayout({ children }: Props) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(getAuthOptions());
   const theme = await getServerTheme("light");
 
   return (
