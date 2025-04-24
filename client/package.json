@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "chakra": "npx @chakra-ui/cli typegen ./chakra/theme.ts",
+    "chakra": "chakra-ui/cli typegen ./chakra/theme.ts",
     "build": "next build",
     "analyze": "ANALYZE=true npm run build",
     "start": "next start",
