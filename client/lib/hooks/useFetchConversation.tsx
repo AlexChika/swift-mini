@@ -6,7 +6,6 @@ function useFetchConversation() {
     conversationOperations.Queries.conversations
   );
 
-  console.log({ data });
   return { loading, data, error };
 }
 

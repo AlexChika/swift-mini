@@ -23,26 +23,7 @@ export function ThemeProvider({
   const [resolvedTheme, setTheme] = React.useState<Theme>(theme ?? "light");
 
   React.useEffect(() => {
-    const savedTheme = Cookies.get("theme") as Theme;
-    const html = document.documentElement;
-    if (!savedTheme) {
-      Cookies.set({
-        name: "theme",
-        value: resolvedTheme,
-        expDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-      });
-    }
-
-    if (resolvedTheme === "dark") {
-      html.style.colorScheme = "dark";
-      html.setAttribute("data-theme", "dark");
-    } else {
-      html.style.colorScheme = "light";
-      html.setAttribute("data-theme", "light");
-    }
-  }, []);
-
-  React.useEffect(() => {
+    console.log("run on start");
     Cookies.set({
       name: "theme",
       value: resolvedTheme,
