@@ -90,17 +90,17 @@ function MessageInput(props: Props) {
 
   return (
     <Box
-      // bg="#333443"
+      bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 12 }}
-      py={4}
+      py={3}
       w="100%"
+      borderTop="2px solid {colors.appBorderDivider}"
       borderBottomRadius="inherit"
     >
       <Flex
         justifyContent="space-between"
         maxW="100%"
         w="100%"
-        mb={2}
         gap={{ base: 2, xmd: 3 }}
       >
         <Box
@@ -116,12 +116,13 @@ function MessageInput(props: Props) {
           maxH="200px"
           minH="40px"
           overflowY="auto"
-          p={2}
+          py={2}
+          px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
           fontSize={16}
           contentEditable="plaintext-only"
-          borderRadius={10}
+          borderRadius={14}
         />
 
         <IconButton
@@ -129,7 +130,8 @@ function MessageInput(props: Props) {
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
           bg="{colors.secondaryBg2}"
-          borderRadius={10}
+          borderRadius={14}
+          transition="none"
           variant={"plain"}
           aria-label="Send Message Icon"
         >

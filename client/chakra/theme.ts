@@ -89,15 +89,22 @@ const config = defineConfig({
 
       sizes: { ...space },
     },
-
+    //#dbdbdb
     semanticTokens: {
       colors: {
         appBorder: {
           value: {
-            base: "white",
-            _dark: "#909090",
+            base: "#dbdbdb",
+            _dark: "#60606047",
           },
         }, // borders
+
+        appBorderDivider: {
+          value: {
+            base: "#dbdbdb83",
+            _dark: "#60606047",
+          },
+        }, // border dividing conversations and chat feeds
 
         bg: {
           value: {

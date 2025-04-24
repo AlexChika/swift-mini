@@ -15,6 +15,7 @@ import { useQuery } from "@apollo/client";
 import messageOperations from "@/graphql/operations/messages";
 import React, { useEffect, useRef } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
+import { ColorMode } from "@/lib/helpers";
 
 type Props = {
   session: Session;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 function Messages({ session, id }: Props) {
+  const { theme } = ColorMode.useTheme();
   const { data, error, loading, subscribeToMore } = useQuery<
     MessagesData,
     { conversationId: string }
@@ -73,6 +75,11 @@ function Messages({ session, id }: Props) {
       h="calc(100% - 60px)"
       overflowY="auto"
       position="relative"
+      bgImage={
+        theme === "light"
+          ? "url(https://www.toptal.com/designers/subtlepatterns/uploads/so-white.png)"
+          : ""
+      }
       css={{
         "& *": {
           zIndex: 2,

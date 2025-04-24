@@ -15,7 +15,7 @@ function Feeds({ session, id }: Props) {
     return (
       <Center
         bg="{colors.secondaryBg}"
-        border="2px solid {colors.appBorder}"
+        border="4px solid {colors.appBorder}"
         borderLeft={{ xmd: "none" }}
         display={{ base: "none", xmd: "flex" }}
         css={{
@@ -34,7 +34,7 @@ function Feeds({ session, id }: Props) {
     <Flex
       justifyContent="space-between"
       bg="{colors.secondaryBg}"
-      border="2px solid {colors.appBorder}"
+      border="4px solid {colors.appBorder}"
       borderLeft={{ xmd: "none" }}
       direction="column"
       w="100%"

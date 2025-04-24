@@ -32,9 +32,9 @@ function ConversationItem(props: Props) {
       onClick={() => conversationOnClick(id)}
       px={2}
       py={2}
-      borderBottom="2px"
       borderBottomColor="blackAlpha.300"
-      bg="{primaryBg2}"
+      bg="{colors.userTextBg}"
+      // bg="{colors.primaryBg}"
       // bg={isSelected ? "#02041b4d" : "secondaryBg"}
       _hover={{ bg: "whiteAlpha.50" }}
       color="primaryText"
