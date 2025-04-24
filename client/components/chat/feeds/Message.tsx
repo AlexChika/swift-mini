@@ -1,10 +1,10 @@
 import { Avatar, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { dateFormatter } from "@/lib";
-import system from "@/chakra/theme";
 
 type Props = {
   message: Message;
   sentByMe: boolean;
+
   usersFirstMessageAfterOthers: boolean; // a bolean indicating if a message is the first message a user sends immediately after another user
 };
 
@@ -36,7 +36,8 @@ function Message(props: Props) {
       <VStack
         ml={!usersFirstMessageAfterOthers && !sentByMe ? 8 : ""}
         mr={!usersFirstMessageAfterOthers && sentByMe ? 8 : ""}
-        color={sentByMe ? "{colors.userText}" : "{colors.otherUserText}"}
+        border="1px solid {colors.appBorderDivider}"
+        color="{colors.primaryText}"
         bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
         gap={0}
         borderRadius={"10px"}
@@ -48,9 +49,7 @@ function Message(props: Props) {
               padding="13px 10px 0px 10px"
               marginBottom="7px"
               w="100%"
-              color={
-                sentByMe ? "{colors.userText2}" : "{colors.otherUserText2}"
-              }
+              color="{colors.usernameColor}"
             >
               {/* user name */}
               <Text
@@ -109,9 +108,7 @@ function Message(props: Props) {
               textAlign={"right"}
               lineHeight={0}
               fontSize="10px"
-              color={
-                sentByMe ? "{colors.userText2}" : "{colors.otherUserText2}"
-              }
+              color="{colors.usernameColor}"
             >
               {dateFormatter(createdAt).time}
             </Text>
@@ -136,5 +133,3 @@ function Message(props: Props) {
 }
 
 export default Message;
-
-console.log({ val: system.breakpoints.up("lg") });

@@ -15,7 +15,8 @@ function StartConversationBtn({ session }: Props) {
       py={2}
       mb={4}
       // bg="{colors.primaryText}"
-      bg="{colors.primaryBg2}"
+      bg="{colors.primaryBg}"
+      // bg="{colors.secondaryBg2}"
       borderRadius={4}
       cursor="pointer"
       onClick={() => setIsOpen(true)}

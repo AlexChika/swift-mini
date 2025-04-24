@@ -111,7 +111,8 @@ function MessageInput(props: Props) {
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word",
           }}
-          bg="{colors.secondaryBg2}"
+          // bg="{colors.secondaryBg2}"
+          bg="{colors.primaryBg}"
           color="{colors.primaryText}"
           maxH="200px"
           minH="40px"
@@ -129,7 +130,8 @@ function MessageInput(props: Props) {
           onClick={handleOnSubmit}
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
-          bg="{colors.secondaryBg2}"
+          // bg="{colors.secondaryBg2}"
+          bg="{colors.primaryBg}"
           borderRadius={14}
           transition="none"
           variant={"plain"}

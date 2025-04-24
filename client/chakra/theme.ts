@@ -118,29 +118,15 @@ const config = defineConfig({
             base: "#e5e5e5",
             _dark: "#4f4f5e",
           },
-        }, // bg for conversations panel
-
-        primaryBg2: {
-          value: {
-            base: "#ffffff",
-            _dark: "#3f3f4b",
-          },
-        }, // bg for createconversatio btn in conversation panel
+        }, // lighter version of secondaryBg for message input, create conversation btn
 
         secondaryBg: {
           value: {
             base: "#ffffff",
-            _dark: "#33333d",
+            _dark: "#35353d",
+            // _dark: "#33333d",
           },
-        }, // bg for feeds panel
-
-        secondaryBg2: {
-          // lighter version of secondaryBg for messageHeader
-          value: {
-            base: "#efefef",
-            _dark: "#3c3c47",
-          },
-        },
+        }, // bg for feeds & conversation panel
 
         primaryText: {
           value: {
@@ -149,54 +135,21 @@ const config = defineConfig({
           },
         }, // default text color
 
-        userText: {
-          value: {
-            base: "#000000",
-            _dark: "#ffffff",
-          },
-        }, // colors for user message body
-
-        userText2: {
-          value: {
-            base: "#5949b9",
-            _dark: "#9e9e9e",
-          },
-        }, // colors for usermessage usernames and time
+        usernameColor: { value: "#9e9e9e" }, // colors for usermessage usernames and time
 
         userTextBg: {
           value: {
-            base: "#00076516",
-            _dark: "#40404f",
+            base: "#ffffff",
+            _dark: "#43434e8e",
           },
         }, // colors for usermessage background
 
-        otherUserText: {
-          value: {
-            base: "#000000",
-            _dark: "#ffffff",
-          },
-        }, // colors for other user message body
-
-        otherUserText2: {
-          value: {
-            base: "teal",
-            _dark: "#9e9e9e",
-          },
-        }, // colors for other usermessage usernames and time
-
         otherUserTextBg: {
           value: {
-            base: "#00000013",
-            _dark: "#212128",
+            base: "#ededed",
+            _dark: "#4e4e6459",
           },
         }, // colors for other usermessage background
-
-        conversationTextHover: {
-          value: {
-            base: "{colors.blue.400}",
-            _dark: "{colors.blue.900}",
-          },
-        },
       },
     },
 

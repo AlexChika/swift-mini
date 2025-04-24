@@ -22,6 +22,7 @@ type Props = {
   id: string; //conversationID
 };
 
+//  Modularize Projects later
 function Messages({ session, id }: Props) {
   const { theme } = ColorMode.useTheme();
   const { data, error, loading, subscribeToMore } = useQuery<

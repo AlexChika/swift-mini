@@ -32,11 +32,10 @@ function ConversationItem(props: Props) {
       onClick={() => conversationOnClick(id)}
       px={2}
       py={2}
-      borderBottomColor="blackAlpha.300"
-      bg="{colors.userTextBg}"
-      // bg="{colors.primaryBg}"
-      // bg={isSelected ? "#02041b4d" : "secondaryBg"}
-      _hover={{ bg: "whiteAlpha.50" }}
+      bg={isSelected ? "{colors.otherUserTextBg}" : "transparent"}
+      _hover={{ opacity: 0.7 }}
+      border={isSelected ? "1px solid {colors.appBorderDivider}" : undefined}
+      borderBottom="1px solid {colors.appBorderDivider}"
       color="primaryText"
     >
       <Flex align="center" gap={2} justify="space-between">
