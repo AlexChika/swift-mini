@@ -15,9 +15,9 @@ function Message(props: Props) {
   return (
     <Flex
       mt={usersFirstMessageAfterOthers ? "5px" : ""}
-      mx={{ base: 3, xmd: 12 }}
+      mx={{ base: 3, xmd: 5 }}
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
-      maxWidth={{ base: "70%", xmd: "65%", xl: "55%" }}
+      maxWidth={{ base: "90%", xmd: "75%" }}
     >
       {/* other users image */}
       {usersFirstMessageAfterOthers && !sentByMe && (

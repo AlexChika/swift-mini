@@ -72,10 +72,13 @@ function Messages({ session, id }: Props) {
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
-      justifyContent="space-between"
+      justifyContent="flex-end"
       h="calc(100% - 60px)"
       overflowY="auto"
       position="relative"
+      zIndex={6}
+      bgPos="center"
+      bgSize="cover"
       bgImage={theme === "light" ? "url('/chatsbg.png')" : ""}
       css={{
         "& *": {
