@@ -90,49 +90,55 @@ function MessageInput(props: Props) {
 
   return (
     <Box
-      borderTop="2px"
-      borderColor="whiteAlpha.50"
-      bg="blackAlpha.300"
+      bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 12 }}
-      py={4}
+      py={3}
       w="100%"
-      // border="2px solid red"
+      borderTop="2px solid {colors.appBorderDivider}"
+      borderBottomRadius="inherit"
     >
       <Flex
         justifyContent="space-between"
         maxW="100%"
         w="100%"
-        mb={2}
         gap={{ base: 2, xmd: 3 }}
       >
         <Box
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
-          sx={{
+          css={{
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word",
           }}
-          bg="whiteAlpha.100"
+          // bg="{colors.secondaryBg2}"
+          bg="{colors.primaryBg}"
+          color="{colors.primaryText}"
           maxH="200px"
           minH="40px"
           overflowY="auto"
-          p={2}
+          py={2}
+          px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
+          fontSize={16}
           contentEditable="plaintext-only"
-          borderRadius={10}
+          borderRadius={14}
         />
 
         <IconButton
           onClick={handleOnSubmit}
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
-          color="blackAlpha.50"
-          borderRadius={10}
+          // bg="{colors.secondaryBg2}"
+          bg="{colors.primaryBg}"
+          borderRadius={14}
+          transition="none"
+          variant={"plain"}
           aria-label="Send Message Icon"
-          icon={<SendIcon color="whiteAlpha.700" />}
-        />
+        >
+          <SendIcon color="{colors.primaryText}" />
+        </IconButton>
       </Flex>
     </Box>
   );

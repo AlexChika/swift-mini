@@ -1,17 +1,10 @@
 import useFetchConversation from "@/lib/hooks/useFetchConversation";
 import { Image } from "@chakra-ui/react";
-import {
-  Center,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Text,
-} from "@chakra-ui/react";
+import { Center, Alert, Text } from "@chakra-ui/react";
 import Spinner from "../general/Spinner";
 
 type Props = {
-  Child: JSX.Element;
+  Child: React.ReactNode;
 };
 
 function StartScreen({ Child }: Props) {
@@ -23,21 +16,23 @@ function StartScreen({ Child }: Props) {
   if (error)
     return (
       <Center h="100vh">
-        <Alert
+        <Alert.Root
           bg="transparent"
           color="whiteAlpha.500"
           status="error"
           flexDirection="column"
           textAlign="center"
         >
-          <AlertIcon color="whiteAlpha.500" boxSize="40px" mr={0} />
-          <AlertTitle mt={4} fontSize="sm">
-            Something Went Wrong!
-          </AlertTitle>
-          <AlertDescription fontSize="small" maxWidth="sm">
-            Please Refresh The browser
-          </AlertDescription>
-        </Alert>
+          <Alert.Indicator color="whiteAlpha.500" boxSize="40px" mr={0} />
+          <Alert.Content>
+            <Alert.Title mt={4} fontSize="sm">
+              Something Went Wrong!
+            </Alert.Title>
+            <Alert.Description fontSize="small" maxWidth="sm">
+              Please Refresh The browser
+            </Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
       </Center>
     );
 
@@ -57,7 +52,7 @@ function StartScreen({ Child }: Props) {
         textAlign="center"
         fontStyle="italic"
         fontSize="13px"
-        textColor="gray"
+        color="gray"
       >
         Loading Please Wait...
       </Text>

@@ -13,7 +13,17 @@ type Props = {
 function Feeds({ session, id }: Props) {
   if (!id)
     return (
-      <Center display={{ base: "none", xmd: "flex" }} w="100%">
+      <Center
+        bg="{colors.secondaryBg}"
+        border="4px solid {colors.appBorder}"
+        borderLeft={{ xmd: "none" }}
+        display={{ base: "none", xmd: "flex" }}
+        css={{
+          margin: { base: "0px", xmd: "5px 5px 5px 0px" },
+          borderRadius: { base: "10px", xmd: "0px 10px 10px 0px" },
+        }}
+        w="100%"
+      >
         <Text userSelect="none" color="whiteAlpha.500">
           No conversation selected
         </Text>
@@ -22,12 +32,16 @@ function Feeds({ session, id }: Props) {
 
   return (
     <Flex
-      borderRight="2px"
-      borderColor="whiteAlpha.50"
       justifyContent="space-between"
-      bg="blackAlpha.100"
+      bg="{colors.secondaryBg}"
+      border="4px solid {colors.appBorder}"
+      borderLeft={{ xmd: "none" }}
       direction="column"
       w="100%"
+      css={{
+        margin: { base: "0px", xmd: "5px 5px 5px 0px" },
+        borderRadius: { base: "10px", xmd: "0px 10px 10px 0px" },
+      }}
     >
       <MessagesHeader {...{ id, userId: session.user.id }} />
       <Messages {...{ session, id }} />

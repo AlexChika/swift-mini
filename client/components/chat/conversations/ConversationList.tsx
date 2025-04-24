@@ -1,14 +1,5 @@
 import { hideScrollbar } from "@/chakra/theme";
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  Center,
-  Spinner,
-  Stack,
-} from "@chakra-ui/react";
+import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
@@ -64,12 +55,12 @@ function ConversationList({ session }: Props) {
   }, []);
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
-  useDynamicHeight(BoxRef, 70);
+  useDynamicHeight(BoxRef, 80);
 
   return (
     <Box
       ref={BoxRef}
-      sx={{ ...hideScrollbar, overflowY: "auto" }}
+      css={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
       pb="10px"
     >
@@ -88,21 +79,24 @@ function ConversationList({ session }: Props) {
       {/* error */}
       {convError && (
         <Center h="100%">
-          <Alert
+          <Alert.Root
             bg="transparent"
             color="whiteAlpha.500"
             status="error"
             flexDirection="column"
             textAlign="center"
           >
-            <AlertIcon color="whiteAlpha.500" boxSize="40px" mr={0} />
-            <AlertTitle mt={4} fontSize="sm">
-              Something Went Wrong!
-            </AlertTitle>
-            <AlertDescription fontSize="small" maxWidth="sm">
-              Please Refresh The browser
-            </AlertDescription>
-          </Alert>
+            <Alert.Indicator color="whiteAlpha.500" boxSize="40px" mr={0} />
+            <Alert.Content>
+              <Alert.Title mt={4} fontSize="sm">
+                Something Went Wrong!
+              </Alert.Title>
+
+              <Alert.Description fontSize="small" maxWidth="sm">
+                Please Refresh The browser
+              </Alert.Description>
+            </Alert.Content>
+          </Alert.Root>
         </Center>
       )}
 

@@ -1,23 +1,11 @@
-import { Box, ResponsiveValue } from "@chakra-ui/react";
+import { Box, ConditionalValue } from "@chakra-ui/react";
 import { Property } from "csstype";
 
-type Position =
-  | ResponsiveValue<
-      | number
-      | (string & {})
-      | "-moz-initial"
-      | "inherit"
-      | "initial"
-      | "revert"
-      | "revert-layer"
-      | "unset"
-      | "auto"
-    >
-  | undefined;
+type Position = ConditionalValue<Property.Top<string | number>>;
 
 type Props = {
-  primaryColor?: ResponsiveValue<Property.BorderLeftColor>;
-  secondaryColor?: ResponsiveValue<Property.BorderBottomColor>;
+  primaryColor?: ConditionalValue<Property.BorderLeftColor>;
+  secondaryColor?: ConditionalValue<Property.BorderBottomColor>;
 } & {
   absolute: boolean;
   top?: Position;
@@ -38,8 +26,7 @@ function Spinner({
       pos={absolute ? "absolute" : undefined}
       className="animate-spin"
       boxSize="32px"
-      borderX="4px"
-      borderY="4px"
+      borderWidth="4px"
       borderLeftColor={primaryColor}
       borderRightColor={primaryColor}
       borderTopColor={secondaryColor}

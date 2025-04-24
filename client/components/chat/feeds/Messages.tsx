@@ -1,8 +1,5 @@
 import {
   Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Center,
   Flex,
@@ -16,15 +13,18 @@ import { hideScrollbar } from "@/chakra/theme";
 import Message from "./Message";
 import { useQuery } from "@apollo/client";
 import messageOperations from "@/graphql/operations/messages";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
+import { ColorMode } from "@/lib/helpers";
 
 type Props = {
   session: Session;
   id: string; //conversationID
 };
 
+//  Modularize Projects later
 function Messages({ session, id }: Props) {
+  const { theme } = ColorMode.useTheme();
   const { data, error, loading, subscribeToMore } = useQuery<
     MessagesData,
     { conversationId: string }
@@ -75,12 +75,24 @@ function Messages({ session, id }: Props) {
       justifyContent="space-between"
       h="calc(100% - 60px)"
       overflowY="auto"
+      position="relative"
+      bgImage={
+        theme === "light"
+          ? "url(https://www.toptal.com/designers/subtlepatterns/uploads/so-white.png)"
+          : ""
+      }
+      css={{
+        "& *": {
+          zIndex: 2,
+        },
+      }}
+      borderBottomRadius="inherit"
     >
       <Stack
         gap="3px"
         ref={BoxRef}
         py="10px"
-        sx={{ ...hideScrollbar }}
+        css={{ ...hideScrollbar }}
         overflowY="auto"
       >
         {/* loading */}
@@ -95,21 +107,24 @@ function Messages({ session, id }: Props) {
         {/* error */}
         {error && (
           <Center h="100%">
-            <Alert
+            <Alert.Root
               bg="transparent"
               color="whiteAlpha.500"
               status="error"
               flexDirection="column"
               textAlign="center"
             >
-              <AlertIcon color="whiteAlpha.500" boxSize="40px" mr={0} />
-              <AlertTitle mt={4} fontSize="sm">
-                Something Went Wrong!
-              </AlertTitle>
-              <AlertDescription fontSize="small" maxWidth="sm">
-                Please Refresh The browser
-              </AlertDescription>
-            </Alert>
+              <Alert.Indicator color="whiteAlpha.500" boxSize="40px" mr={0} />
+
+              <Alert.Content>
+                <Alert.Title mt={4} fontSize="sm">
+                  Something Went Wrong!
+                </Alert.Title>
+                <Alert.Description fontSize="small" maxWidth="sm">
+                  Please Refresh The browser
+                </Alert.Description>
+              </Alert.Content>
+            </Alert.Root>
           </Center>
         )}
 
@@ -117,7 +132,7 @@ function Messages({ session, id }: Props) {
         {data &&
           data.messages.map((m, i) => {
             return (
-              <>
+              <React.Fragment key={i}>
                 <DateDemacator key={m.id} demacatorText={renderObj[m.id]} />
                 <Message
                   usersFirstMessageAfterOthers={(() => {
@@ -131,7 +146,7 @@ function Messages({ session, id }: Props) {
                   sentByMe={session.user.id === m.sender.id}
                   key={m.id + i}
                 />
-              </>
+              </React.Fragment>
             );
           })}
       </Stack>

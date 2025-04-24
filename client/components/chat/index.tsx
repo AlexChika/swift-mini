@@ -33,7 +33,7 @@ function Chat({ session }: ChatProps) {
   return (
     <>
       {/* temp addition */}
-      <InProgressModal></InProgressModal>
+      {/* <InProgressModal></InProgressModal> */}
       {/* <Button onClick={call}>CLICK ME</Button> */}
 
       <Flex ref={containerRef} margin={0} gap={0}>

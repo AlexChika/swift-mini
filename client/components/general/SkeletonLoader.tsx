@@ -5,9 +5,10 @@ function SkeletonLoader({ no, height, duration }: Props) {
   return Array.from({ length: no }).map((_, i) => {
     return (
       <Skeleton
-        fadeDuration={duration}
-        startColor="whiteAlpha.50"
-        endColor="whiteAlpha.200"
+        css={{
+          "--start-color": "whiteAlpha.50",
+          "--end-color": "whiteAlpha.200",
+        }}
         height={height}
         width={{ base: "100%" }}
         key={i}

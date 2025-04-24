@@ -1,4 +1,4 @@
-import { Avatar, Flex, StackItem, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { useSearchParams } from "next/navigation";
 import { formatUserNames, dateFormatter } from "@/lib";
@@ -26,35 +26,39 @@ function ConversationItem(props: Props) {
   );
 
   return (
-    <StackItem
+    <Box
       title={usernames}
       cursor="pointer"
       onClick={() => conversationOnClick(id)}
       px={2}
       py={2}
-      borderBottom="2px"
-      borderBottomColor="blackAlpha.300"
-      bg={isSelected ? "whiteAlpha.200" : ""}
-      _hover={{ bg: "whiteAlpha.50" }}
+      bg={isSelected ? "{colors.otherUserTextBg}" : "transparent"}
+      _hover={{ opacity: 0.7 }}
+      border={isSelected ? "1px solid {colors.appBorderDivider}" : undefined}
+      borderBottom="1px solid {colors.appBorderDivider}"
+      color="primaryText"
     >
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
-        <Flex isTruncated align="center" gap={2}>
+        <Flex truncate align="center" gap={2}>
           {/* user profile pic */}
-          <Avatar background="Highlight" src={avatar} name={name} size={"sm"} />
+          <Avatar.Root size="sm">
+            <Avatar.Fallback name={name} />
+            <Avatar.Image background="Highlight" src={avatar} />
+          </Avatar.Root>
 
           {/* user names & latest message */}
           <Flex flexDir="column">
             {/* usernames */}
-            <Text isTruncated fontSize={15}>
+            <Text truncate fontSize={15}>
               {usernames}
             </Text>
 
             {/* latest messages */}
             <Text
-              opacity="70%"
+              // opacity="90%"
               textOverflow="ellipsis"
-              noOfLines={1}
+              lineClamp={1}
               fontSize="11px"
             >
               {latestMessage?.body}
@@ -66,14 +70,14 @@ function ConversationItem(props: Props) {
         <Text
           minW="80px"
           fontSize={11}
-          opacity="50%"
+          opacity="70%"
           alignSelf="flex-end"
           textAlign="right"
         >
           {getTimePassed()}
         </Text>
       </Flex>
-    </StackItem>
+    </Box>
   );
 }
 

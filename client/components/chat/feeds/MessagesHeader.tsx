@@ -1,9 +1,18 @@
 import { formatUserNames } from "@/lib";
-import { Avatar, Box, Button, Center, Flex, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Center,
+  Flex,
+  HStack,
+  Text,
+} from "@chakra-ui/react";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { LeftArrowIcon } from "@/lib/icons";
+import { ColorMode } from "@/lib/helpers";
 
 type Props = {
   id: string; // this is conversationId
@@ -29,38 +38,50 @@ function MessagesHeader({ id, userId }: Props) {
     "long"
   );
 
-  // bg = "whiteAlpha.50";
   return (
-    <Flex
+    <HStack
+      px={3}
+      w="100%"
       h="60px"
-      bg="blackAlpha.300"
-      borderBottom="2px"
-      borderColor="whiteAlpha.50"
+      // bg="{colors.otherUserTextBg}"
+      // bg="{colors.secondaryBg2}"
+      color="{colors.primaryText}"
+      borderBottom="2px solid {colors.appBorderDivider}"
+      borderTopRadius="inherit"
     >
       {/* Back button for small screens  */}
-      <Center display={{ base: "flex", xmd: "none" }} bg="blackAlpha.200">
-        <Button onClick={() => router.replace("/")} minW="unset" bg="none">
-          <LeftArrowIcon color="whiteAlpha.500" />
-        </Button>
-      </Center>
 
       {/* latest message sender username and avatar */}
-      <Flex align="center" mx={{ base: 3, xmd: 4 }} py={4} h="100%" gap={2}>
-        <Avatar src={avatar} size="sm" />
-        <Text>{name}</Text>
-        <Text color="gray.500">{"to:"}</Text>
+      <Flex align="center" py={4} h="100%" gap={2}>
+        <Avatar.Root size="sm">
+          <Avatar.Fallback />
+          <Avatar.Image src={avatar} />
+        </Avatar.Root>
+        <Text fontSize={16}>{name}</Text>
+        <Text fontSize={16}>{"to:"}</Text>
       </Flex>
 
       {/* Rest of participants usernames */}
-      <Flex isTruncated align="center" px={3} py={4}>
-        <Text fontSize={14} color="gray.500" isTruncated>
+      <Center h="100%" truncate py={4}>
+        <Text fontSize={14} truncate>
           {usernames}
         </Text>
-      </Flex>
+      </Center>
 
       {/* action buttons */}
-      <Box></Box>
-    </Flex>
+      <Center gap={2} h="100%" ml="auto">
+        <ColorMode.ThemeButton />
+
+        <IconButton
+          display={{ base: "flex", xmd: "none" }}
+          variant="plain"
+          onClick={() => router.replace("/")}
+          minW="unset"
+        >
+          <LeftArrowIcon color="{colors.primaryText}" />
+        </IconButton>
+      </Center>
+    </HStack>
   );
 }
 
