@@ -1,5 +1,6 @@
 import { Avatar, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { dateFormatter } from "@/lib";
+import system from "@/chakra/theme";
 
 type Props = {
   message: Message;
@@ -13,6 +14,7 @@ function Message(props: Props) {
 
   return (
     <Flex
+      mt={usersFirstMessageAfterOthers ? "5px" : ""}
       mx={{ base: 3, xmd: 12 }}
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
       maxWidth={{ base: "70%", xmd: "65%", xl: "55%" }}
@@ -34,7 +36,7 @@ function Message(props: Props) {
       <VStack
         ml={!usersFirstMessageAfterOthers && !sentByMe ? 8 : ""}
         mr={!usersFirstMessageAfterOthers && sentByMe ? 8 : ""}
-        color="{colors.primaryText}"
+        color={sentByMe ? "{colors.userText}" : "{colors.otherUserText}"}
         bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
         gap={0}
         borderRadius={"10px"}
@@ -46,11 +48,12 @@ function Message(props: Props) {
               padding="13px 10px 0px 10px"
               marginBottom="7px"
               w="100%"
-              color="gray"
+              color={
+                sentByMe ? "{colors.userText2}" : "{colors.otherUserText2}"
+              }
             >
               {/* user name */}
               <Text
-                fontWeight={600}
                 fontSize={{ base: "12px" }}
                 textTransform="capitalize"
                 lineHeight={0}
@@ -59,15 +62,7 @@ function Message(props: Props) {
               </Text>
 
               {/* time */}
-              <Text
-                // pt={0.5}
-                // pl={9}
-                textAlign={"right"}
-                lineHeight={0}
-                fontSize="10px"
-
-                // color={sentByMe ? "gray" : "#595959"}
-              >
+              <Text textAlign={"right"} lineHeight={0} fontSize="10px">
                 {dateFormatter(createdAt).time}
               </Text>
             </HStack>
@@ -114,9 +109,9 @@ function Message(props: Props) {
               textAlign={"right"}
               lineHeight={0}
               fontSize="10px"
-              color="gray"
-
-              // color={sentByMe ? "gray" : "#595959"}
+              color={
+                sentByMe ? "{colors.userText2}" : "{colors.otherUserText2}"
+              }
             >
               {dateFormatter(createdAt).time}
             </Text>
@@ -141,3 +136,5 @@ function Message(props: Props) {
 }
 
 export default Message;
+
+console.log({ val: system.breakpoints.up("lg") });

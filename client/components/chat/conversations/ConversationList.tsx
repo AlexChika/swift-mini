@@ -55,7 +55,7 @@ function ConversationList({ session }: Props) {
   }, []);
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
-  useDynamicHeight(BoxRef, 70);
+  useDynamicHeight(BoxRef, 80);
 
   return (
     <Box
@@ -105,18 +105,24 @@ function ConversationList({ session }: Props) {
         <Stack>
           {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(() => {
             return  */}
-          {[...data.conversations].reverse().map((c) => {
-            return (
-              <ConversationItem
-                key={c.id}
-                {...{
-                  conversationOnClick,
-                  conversation: c,
-                  session,
-                }}
-              />
-            );
-          })}
+
+          {
+            // remove
+            [...data.conversations].reverse().map((c) => {
+              return (
+                <ConversationItem
+                  key={c.id}
+                  {...{
+                    conversationOnClick,
+                    conversation: c,
+                    session,
+                  }}
+                />
+              );
+            })
+
+            // {/*  }) */}
+          }
         </Stack>
       )}
     </Box>

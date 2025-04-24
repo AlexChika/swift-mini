@@ -34,7 +34,8 @@ function ConversationItem(props: Props) {
       py={2}
       borderBottom="2px"
       borderBottomColor="blackAlpha.300"
-      bg={isSelected ? "#02041b4d" : "secondaryBg"}
+      bg="{primaryBg2}"
+      // bg={isSelected ? "#02041b4d" : "secondaryBg"}
       _hover={{ bg: "whiteAlpha.50" }}
       color="primaryText"
     >
@@ -56,7 +57,7 @@ function ConversationItem(props: Props) {
 
             {/* latest messages */}
             <Text
-              opacity="70%"
+              // opacity="90%"
               textOverflow="ellipsis"
               lineClamp={1}
               fontSize="11px"
@@ -70,7 +71,7 @@ function ConversationItem(props: Props) {
         <Text
           minW="80px"
           fontSize={11}
-          opacity="50%"
+          opacity="70%"
           alignSelf="flex-end"
           textAlign="right"
         >

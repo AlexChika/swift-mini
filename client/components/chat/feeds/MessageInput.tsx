@@ -111,7 +111,7 @@ function MessageInput(props: Props) {
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word",
           }}
-          bg="{colors.primaryBg}"
+          bg="{colors.secondaryBg2}"
           color="{colors.primaryText}"
           maxH="200px"
           minH="40px"
@@ -119,6 +119,7 @@ function MessageInput(props: Props) {
           p={2}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
+          fontSize={16}
           contentEditable="plaintext-only"
           borderRadius={10}
         />
@@ -127,8 +128,9 @@ function MessageInput(props: Props) {
           onClick={handleOnSubmit}
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
-          bg="{colors.primaryBg}"
+          bg="{colors.secondaryBg2}"
           borderRadius={10}
+          variant={"plain"}
           aria-label="Send Message Icon"
         >
           <SendIcon color="{colors.primaryText}" />

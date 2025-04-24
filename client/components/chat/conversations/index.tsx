@@ -13,17 +13,15 @@ function Conversations({ session, id }: Props) {
   return (
     <Box
       bg="{colors.primaryBg}"
-      // border="2px solid {colors.secondaryBg}"
-      // border="2px solid {colors.htmlBg}"
+      border="2px solid {colors.appBorder}"
+      borderRight="1px solid {colors.appBorder}"
       css={{
-        filter:
-          "drop-shadow(1px 1px 2px {colors.secondaryBg}) drop-shadow(-1px -1px 2px {colors.secondaryBg})drop-shadow(1px -1px 2px {colors.secondaryBg})drop-shadow(-1px 1px 2px {colors.secondaryBg})",
-        margin: "10px",
-        borderRadius: "10px",
+        margin: { base: "0px", xmd: "5px 0px 5px 5px" },
+        borderRadius: { base: "10px", xmd: "10px 0px 0px 10px" },
       }}
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"
-      maxW={{ xmd: "260px", lg: "350px", xl: "450px" }}
+      maxW={{ xmd: "300px", lg: "350px", xl: "450px" }}
       py={3}
       px={3}
     >

@@ -43,7 +43,9 @@ function MessagesHeader({ id, userId }: Props) {
       px={3}
       w="100%"
       h="60px"
-      bg="{colors.primaryBg}"
+      // bg="{colors.otherUserTextBg}"
+      bg="{colors.secondaryBg2}"
+      color="{colors.primaryText}"
       borderTopRadius="inherit"
     >
       {/* Back button for small screens  */}
@@ -54,13 +56,13 @@ function MessagesHeader({ id, userId }: Props) {
           <Avatar.Fallback />
           <Avatar.Image src={avatar} />
         </Avatar.Root>
-        <Text>{name}</Text>
-        <Text color="gray.500">{"to:"}</Text>
+        <Text fontSize={16}>{name}</Text>
+        <Text fontSize={16}>{"to:"}</Text>
       </Flex>
 
       {/* Rest of participants usernames */}
       <Center h="100%" truncate py={4}>
-        <Text fontSize={14} color="gray.500" truncate>
+        <Text fontSize={14} truncate>
           {usernames}
         </Text>
       </Center>

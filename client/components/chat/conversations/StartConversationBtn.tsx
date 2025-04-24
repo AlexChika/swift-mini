@@ -14,14 +14,15 @@ function StartConversationBtn({ session }: Props) {
     <Box
       py={2}
       mb={4}
-      bg="whiteAlpha.100"
+      // bg="{colors.primaryText}"
+      bg="{colors.primaryBg2}"
       borderRadius={4}
       cursor="pointer"
       onClick={() => setIsOpen(true)}
     >
       <Text
         textAlign="center"
-        color="whiteAlpha.700"
+        color="{colors.primaryText}"
         fontSize={{ base: "14px", md: "15px" }}
         fontWeight={500}
       >

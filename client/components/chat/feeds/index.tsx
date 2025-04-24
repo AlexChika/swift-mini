@@ -15,11 +15,12 @@ function Feeds({ session, id }: Props) {
     return (
       <Center
         bg="{colors.secondaryBg}"
-        border="2px solid {colors.secondaryBg}"
+        border="2px solid {colors.appBorder}"
+        borderLeft={{ xmd: "none" }}
         display={{ base: "none", xmd: "flex" }}
         css={{
-          margin: "10px 10px 10px 0px",
-          borderRadius: "10px",
+          margin: { base: "0px", xmd: "5px 5px 5px 0px" },
+          borderRadius: { base: "10px", xmd: "0px 10px 10px 0px" },
         }}
         w="100%"
       >
@@ -33,12 +34,13 @@ function Feeds({ session, id }: Props) {
     <Flex
       justifyContent="space-between"
       bg="{colors.secondaryBg}"
-      border="2px solid {colors.secondaryBg}"
+      border="2px solid {colors.appBorder}"
+      borderLeft={{ xmd: "none" }}
       direction="column"
       w="100%"
       css={{
-        margin: { base: "10px", xmd: "10px 10px 10px 0px" },
-        borderRadius: "10px",
+        margin: { base: "0px", xmd: "5px 5px 5px 0px" },
+        borderRadius: { base: "10px", xmd: "0px 10px 10px 0px" },
       }}
     >
       <MessagesHeader {...{ id, userId: session.user.id }} />
