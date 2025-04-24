@@ -135,7 +135,12 @@ const config = defineConfig({
           },
         }, // default text color
 
-        usernameColor: { value: "#9e9e9e" }, // colors for usermessage usernames and time
+        usernameColor: {
+          value: {
+            base: "#507c7c",
+            _dark: "#9e9e9e",
+          },
+        }, // colors for usermessage usernames and time
 
         userTextBg: {
           value: {

@@ -76,11 +76,7 @@ function Messages({ session, id }: Props) {
       h="calc(100% - 60px)"
       overflowY="auto"
       position="relative"
-      bgImage={
-        theme === "light"
-          ? "url(https://www.toptal.com/designers/subtlepatterns/uploads/so-white.png)"
-          : ""
-      }
+      bgImage={theme === "light" ? "url('/chatsbg.png')" : ""}
       css={{
         "& *": {
           zIndex: 2,
