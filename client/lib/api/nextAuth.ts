@@ -1,7 +1,12 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+
+// add the below to generator fun in prisma schema
+//   output = "app/generated/prisma/client";
+// import { PrismaClient } from "@/prisma/app/generated/prisma/client"; for v7 (not supported by nextAuth yet)
+
 import GoogleProvider from "next-auth/providers/google";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

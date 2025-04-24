@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "chakra": "chakra-ui/cli typegen ./chakra/theme.ts",
-    "build": "next build",
     "analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "npm run chakra && prisma generate && next build"
+    "build": "next build",
+    "prisma": "prisma generate",
+    "typegen": "chakra typegen ./chakra/theme.ts",
+    "deploy": "npm run typegen && npm run prisma && next build"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
