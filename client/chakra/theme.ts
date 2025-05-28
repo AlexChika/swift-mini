@@ -89,7 +89,6 @@ const config = defineConfig({
 
       sizes: { ...space },
     },
-    //#dbdbdb
     semanticTokens: {
       colors: {
         appBorder: {
@@ -120,11 +119,15 @@ const config = defineConfig({
           },
         }, // lighter version of secondaryBg for message input, create conversation btn
 
+        // add skeleton mode
+        // use transparent bgs
+
         secondaryBg: {
           value: {
             base: "#ffffff",
-            _dark: "#35353d",
-            // _dark: "#33333d",
+            _dark: "#0d0d0d",
+            // _dark: "#252525",
+            // _dark: "#2f2f3a", // default
           },
         }, // bg for feeds & conversation panel
 

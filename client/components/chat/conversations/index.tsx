@@ -17,7 +17,7 @@ function Conversations({ session, id }: Props) {
       borderRight="2px solid {colors.appBorderDivider}"
       css={{
         margin: { base: "0px", xmd: "5px 0px 5px 5px" },
-        borderRadius: { base: "10px", xmd: "10px 0px 0px 10px" },
+        borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" },
       }}
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"

@@ -1,19 +1,11 @@
-import {
-  Alert,
-  Box,
-  Center,
-  Flex,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 import MessageInput from "./MessageInput";
 import { Session } from "next-auth";
 import { hideScrollbar } from "@/chakra/theme";
 import Message from "./Message";
 import { useQuery } from "@apollo/client";
 import messageOperations from "@/graphql/operations/messages";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
 import { ColorMode } from "@/lib/helpers";
 
@@ -22,8 +14,38 @@ type Props = {
   id: string; //conversationID
 };
 
+const bgStrs = [
+  {
+    name: "one",
+    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.622) 0%,rgba(0, 0, 0, 0.783) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/tactile_noise.png')",
+  },
+  {
+    name: "two",
+    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.682) 0%,rgba(0, 0, 0, 0.683) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/carbon_fibre.png')",
+  },
+
+  {
+    name: "three",
+    url: "linear-gradient(180deg,rgba(6, 6, 6, 0.892) 0%,rgba(0, 0, 0, 0.87) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/carbon_fibre.png')",
+  },
+  {
+    name: "four",
+    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.72) 0%,rgba(0, 0, 0, 0.67) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/dark-grey-terrazzo.png')",
+  },
+  {
+    name: "five",
+    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.52) 0%,rgba(0, 0, 0, 0.47) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/beanstalk-dark.png')",
+  },
+  {
+    name: "six",
+    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.62) 0%,rgba(0, 0, 0, 0.67) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/beanstalk-dark.png')",
+  },
+];
+
 //  Modularize Projects later
 function Messages({ session, id }: Props) {
+  const [bg, setBg] = useState(0);
+
   const { theme } = ColorMode.useTheme();
   const { data, error, loading, subscribeToMore } = useQuery<
     MessagesData,
@@ -78,8 +100,13 @@ function Messages({ session, id }: Props) {
       position="relative"
       zIndex={6}
       bgPos="center"
-      bgSize="cover"
-      bgImage={theme === "light" ? "url('/chatsbg.png')" : ""}
+      // bg="#1e1e1e"
+
+      bgImage={
+        theme === "light"
+          ? "linear-gradient(#ffffff5e, #ffffff72), url('https://www.toptal.com/designers/subtlepatterns/uploads/concrete_seamless.png')"
+          : bgStrs[bg].url
+      }
       css={{
         "& *": {
           zIndex: 2,
@@ -148,6 +175,12 @@ function Messages({ session, id }: Props) {
               </React.Fragment>
             );
           })}
+        <button
+          onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
+          style={{ color: "white" }}
+        >
+          {bgStrs[bg].name}
+        </button>
       </Stack>
 
       <MessageInput {...{ session, id }} />

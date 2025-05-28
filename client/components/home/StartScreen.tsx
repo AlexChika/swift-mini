@@ -7,6 +7,21 @@ type Props = {
   Child: React.ReactNode;
 };
 
+// start screen features to be added
+// 1. implment storing chats in cache.... use indexedDB... then revalidate when connected.
+
+// 2. get all conversations from DB and reconcile with chats in cache. meaning: delete chats belonging to deleted conversations
+
+// 3. implement batch fetching of chats. when the user scrolls up, then fetch more chats.
+
+//  HOW TO IMPLEMENT No 3 and sync with cache (IndexedDB)
+// 1. when no chats in cache... db fetches 500 chats.
+// 2. when cache, show chats from catch then revalidate from db. cache stores only 500 chats too
+// 3. when user scrolls up, then fetch more chats from db.
+// 4.more chats from db should be stored temporarily in cache
+// 5. delete more chats in cache after 24 hours.
+// 6
+
 function StartScreen({ Child }: Props) {
   // initialize / fetch all queries for caching
   const { data, error } = useFetchConversation();

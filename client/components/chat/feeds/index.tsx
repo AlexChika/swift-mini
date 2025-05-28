@@ -20,11 +20,11 @@ function Feeds({ session, id }: Props) {
         display={{ base: "none", xmd: "flex" }}
         css={{
           margin: { base: "0px", xmd: "5px 5px 5px 0px" },
-          borderRadius: { base: "10px", xmd: "0px 10px 10px 0px" },
+          borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" },
         }}
         w="100%"
       >
-        <Text userSelect="none" color="whiteAlpha.500">
+        <Text userSelect="none" opacity={0.3} color="{colors.primaryText}">
           No conversation selected
         </Text>
       </Center>
@@ -40,7 +40,7 @@ function Feeds({ session, id }: Props) {
       w="100%"
       css={{
         margin: { base: "0px", xmd: "5px 5px 5px 0px" },
-        borderRadius: { base: "10px", xmd: "0px 10px 10px 0px" },
+        borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" },
       }}
     >
       <MessagesHeader {...{ id, userId: session.user.id }} />

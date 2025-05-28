@@ -40,7 +40,7 @@ function Message(props: Props) {
         color="{colors.primaryText}"
         bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
         gap={0}
-        borderRadius={"10px"}
+        borderRadius={"12px"}
       >
         {usersFirstMessageAfterOthers && (
           <>

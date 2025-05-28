@@ -23,7 +23,6 @@ export function ThemeProvider({
   const [resolvedTheme, setTheme] = React.useState<Theme>(theme ?? "light");
 
   React.useEffect(() => {
-    console.log("run on start");
     Cookies.set({
       name: "theme",
       value: resolvedTheme,
