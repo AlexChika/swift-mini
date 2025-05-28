@@ -24,14 +24,14 @@ function InProgressModal() {
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
-            <Dialog.Content>
+            <Dialog.Content color="{colors.primaryText}" bg="{colors.white}">
               <Dialog.Header>
                 <Dialog.Title></Dialog.Title>
               </Dialog.Header>
 
               <Dialog.Body textAlign="center">
                 <Text> Swift mini App is in progress</Text>
-                <Progress.Root size="md">
+                <Progress.Root size="md" mt={2}>
                   <Progress.Track>
                     <Progress.Range />
                   </Progress.Track>

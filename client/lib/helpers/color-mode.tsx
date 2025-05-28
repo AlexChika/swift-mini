@@ -3,9 +3,8 @@
 import type { IconButtonProps, SpanProps } from "@chakra-ui/react";
 import { ClientOnly, IconButton, Skeleton, Span } from "@chakra-ui/react";
 import { useTheme as useThemes } from "@/components/Providers/ThemeProvider";
-import * as React from "react";
-import { LuMoon, LuSun } from "react-icons/lu";
-import system from "@/chakra/theme";
+import React from "react";
+import { MoonIcon, SunIcon } from "../icons";
 
 export type Theme = "light" | "dark";
 
@@ -35,9 +34,9 @@ export function useThemeValue<T>(light: T, dark: T) {
 export function ThemeIcon() {
   const { theme } = useTheme();
   return theme === "dark" ? (
-    <LuMoon color={system.token("colors.primaryText")} />
+    <MoonIcon color="{colors.primaryText}" />
   ) : (
-    <LuSun color={system.token("colors.primaryText")} />
+    <SunIcon color="{colors.primaryText}" />
   );
 }
 

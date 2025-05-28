@@ -91,7 +91,7 @@ function MessageInput(props: Props) {
   return (
     <Box
       bg="{colors.secondaryBg}"
-      px={{ base: 3, xmd: 12 }}
+      px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
       borderTop="2px solid {colors.appBorderDivider}"
@@ -130,7 +130,6 @@ function MessageInput(props: Props) {
           onClick={handleOnSubmit}
           minW={{ base: "50px", xmd: "100px" }}
           alignSelf="flex-end"
-          // bg="{colors.secondaryBg2}"
           bg="{colors.primaryBg}"
           borderRadius={14}
           transition="none"

@@ -33,10 +33,15 @@ function ConversationItem(props: Props) {
       px={2}
       py={2}
       bg={isSelected ? "{colors.otherUserTextBg}" : "transparent"}
-      _hover={{ opacity: 0.7 }}
-      border={isSelected ? "1px solid {colors.appBorderDivider}" : undefined}
+      _hover={{
+        opacity: 0.7,
+        border: "1px solid {colors.appBorderDivider}",
+        borderRadius: "8px",
+      }}
+      borderRadius={isSelected ? "8px" : undefined}
       borderBottom="1px solid {colors.appBorderDivider}"
       color="primaryText"
+      // borderRadius="16px"
     >
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
