@@ -1,4 +1,6 @@
 /*  debuggers */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 .red {
   border: 2px solid red;
 }
@@ -11,6 +13,15 @@
 
 .color {
   color: #69245183;
+}
+
+*,
+*::before,
+*::after {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 html::-webkit-scrollbar,
@@ -30,17 +41,7 @@ html.light::before {
   height: 100%;
 }
 
-/* Original */
-
-/* html.dark {
-  background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/binding_dark.png");
-}
-
-html.light {
-  background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/squairy_light.png");
-}
-
-html.dark::before {
+html::before {
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.224) 0%,
@@ -48,20 +49,6 @@ html.dark::before {
   );
 }
 
-html.light::before {
-  background: linear-gradient(180deg, rgb(144, 144, 144));
-  background: linear-gradient(180deg, rgb(55, 55, 55));
-} */
-
-/* Test */
-
-html.dark::before {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.224) 0%,
-    rgba(0, 0, 0, 0.285) 100%
-  );
-}
 html {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/binding_dark.png");
 }

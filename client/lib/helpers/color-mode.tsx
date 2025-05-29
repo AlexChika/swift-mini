@@ -10,7 +10,7 @@ export type Theme = "light" | "dark";
 
 export interface UseThemeReturn {
   theme: Theme;
-  setTheme: React.Dispatch<React.SetStateAction<Theme>>;
+  setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 }
 

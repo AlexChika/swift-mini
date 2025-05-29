@@ -1,49 +1,72 @@
+import { InfoCircleIcon } from "@/lib/icons";
 import {
-  Button,
   Dialog,
   Progress,
   Text,
   Portal,
   CloseButton,
+  HStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import ToolTip from "./ToolTip";
 
 function InProgressModal() {
   const [open, setOpen] = useState(true);
 
   return (
     <>
-      {/* <Button onClick={onOpen}>Trigger modal</Button> */}
-
       <Dialog.Root
-        placement="center"
+        size="sm"
+        placement="top"
         lazyMount
         open={open}
         onOpenChange={(e) => setOpen(e.open)}
       >
         <Portal>
           <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content color="{colors.primaryText}" bg="{colors.white}">
+          <Dialog.Positioner padding={1}>
+            <Dialog.Content
+              border={"1px solid {colors.secondaryBg}"}
+              color="{colors.primaryText}"
+              bg="{colors.primaryBg}"
+            >
               <Dialog.Header>
-                <Dialog.Title></Dialog.Title>
+                <Dialog.Title>App is in progress</Dialog.Title>
               </Dialog.Header>
 
               <Dialog.Body textAlign="center">
-                <Text> Swift mini App is in progress</Text>
-                <Progress.Root size="md" mt={2}>
-                  <Progress.Track>
-                    <Progress.Range />
-                  </Progress.Track>
+                <Text>
+                  The development of the swiftmini app is still in progress.
+                  This is mainly a prototype. The backend code is currently
+                  being written.
+                </Text>
+
+                <Progress.Root
+                  py={5}
+                  colorPalette="{colors.primaryText}"
+                  variant="subtle"
+                  defaultValue={25}
+                  maxW="sm"
+                  size="sm"
+                >
+                  <HStack gap="5">
+                    <ToolTip content="The SwiftMini app is 25% complete">
+                      <Progress.Label cursor="pointer">
+                        <InfoCircleIcon />
+                      </Progress.Label>
+                    </ToolTip>
+
+                    <Progress.Track flex="1">
+                      <Progress.Range />
+                    </Progress.Track>
+
+                    <Progress.ValueText>25%</Progress.ValueText>
+                  </HStack>
                 </Progress.Root>
               </Dialog.Body>
-              <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button variant="outline">Cancel</Button>
-                </Dialog.ActionTrigger>
-              </Dialog.Footer>
+
               <Dialog.CloseTrigger asChild>
-                <CloseButton size="sm" />
+                <CloseButton color="{colors.primaryText}" size="sm" />
               </Dialog.CloseTrigger>
             </Dialog.Content>
           </Dialog.Positioner>

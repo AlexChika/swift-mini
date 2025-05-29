@@ -84,11 +84,21 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
   }
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
+    <Dialog.Root
+      role="alertdialog"
+      open={isOpen}
+      onOpenChange={(e) => setIsOpen(e.open)}
+    >
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
-          <Dialog.Content mx={2} bg="#2d2d2d" pb={4}>
+          <Dialog.Content
+            mx={2}
+            border={"1px solid {colors.secondaryBg}"}
+            color="{colors.primaryText}"
+            bg="{colors.primaryBg}"
+            pb={4}
+          >
             <Dialog.Header>
               <Dialog.Title>Create a conversation</Dialog.Title>
             </Dialog.Header>
@@ -107,7 +117,13 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Enter a username"
                   />
-                  <Button loading={loading} disabled={!username} type="submit">
+                  <Button
+                    color="{colors.primaryText}"
+                    bg="{colors.secondaryBg}"
+                    loading={loading}
+                    disabled={!username}
+                    type="submit"
+                  >
                     Search
                   </Button>
                 </Stack>

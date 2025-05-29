@@ -5,23 +5,24 @@ import { Session } from "next-auth";
 import client from "@/graphql/apollo";
 import { ApolloProvider } from "@apollo/client";
 import { SessionProvider } from "next-auth/react";
-import { ChakraProvider, Toast } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import { ThemeProvider } from "./ThemeProvider";
-import ClientShell from "./CliemtShell";
+import ClientShell from "./ClientShell";
 import { Toaster } from "react-hot-toast";
 
 type Props = {
   children: React.ReactNode;
   session: Session | null;
-  theme: "light" | "dark";
+  defaultTheme: "light" | "dark" | "system";
+  serverTheme: "light" | "dark" | undefined;
 };
 
-function Provider({ children, session, theme }: Props) {
+function Provider({ children, session, defaultTheme, serverTheme }: Props) {
   return (
     <ApolloProvider client={client}>
       <SessionProvider session={session}>
         <ChakraProvider value={system}>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider defaultTheme={defaultTheme} serverTheme={serverTheme}>
             <ClientShell>
               {children}
               <Toaster />

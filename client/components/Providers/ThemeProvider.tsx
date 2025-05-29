@@ -4,9 +4,12 @@ import { Cookies } from "@/lib/helpers";
 import React from "react";
 
 type Theme = "light" | "dark";
+type DefaultTheme = "light" | "dark" | "system";
+type ServerTheme = "light" | "dark" | undefined;
+
 type ThemeContextType = {
   theme: Theme;
-  setTheme: React.Dispatch<React.SetStateAction<Theme>>;
+  setTheme: (theme: Theme) => void;
 };
 
 const ThemeContext = React.createContext<ThemeContextType | undefined>(
@@ -15,22 +18,47 @@ const ThemeContext = React.createContext<ThemeContextType | undefined>(
 
 export function ThemeProvider({
   children,
-  theme,
+  defaultTheme,
+  serverTheme,
 }: {
   children: React.ReactNode;
-  theme: Theme;
+  serverTheme: ServerTheme;
+  defaultTheme: DefaultTheme;
 }) {
-  const [resolvedTheme, setTheme] = React.useState<Theme>(theme ?? "light");
+  const isValidTheme = defaultTheme === "dark" || defaultTheme === "light";
+  const tempTheme = serverTheme || (isValidTheme ? defaultTheme : "light");
+
+  const [theme, setTheme] = React.useState<Theme>(tempTheme);
+  const [__theme, __setTheme] = React.useState<ServerTheme>(serverTheme);
 
   React.useEffect(() => {
+    if (defaultTheme === "system" && !serverTheme) {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+      setTheme(systemTheme);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    // do not set cookie when
+    // servertheme is undefined
+    // user has not changed the theme
+    // and default theme is system
+    if (!serverTheme && !__theme && defaultTheme === "system") return;
     Cookies.set({
-      name: "theme",
-      value: resolvedTheme,
+      name: "swft-theme",
+      value: theme,
       expDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
     });
-    const html = document.documentElement;
+  }, [__theme]);
 
-    if (resolvedTheme === "dark") {
+  React.useEffect(() => {
+    console.log("initial render");
+
+    const html = document.documentElement;
+    if (theme === "dark") {
       html.classList.add("dark");
       html.classList.remove("light");
       html.style.colorScheme = "dark";
@@ -41,10 +69,15 @@ export function ThemeProvider({
       html.style.colorScheme = "light";
       html.setAttribute("data-theme", "light");
     }
-  }, [resolvedTheme]);
+  }, [theme]);
+
+  function setThemes(theme: Theme) {
+    setTheme(theme);
+    __setTheme(theme);
+  }
 
   return (
-    <ThemeContext.Provider value={{ theme: resolvedTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme: theme, setTheme: setThemes }}>
       {children}
     </ThemeContext.Provider>
   );
