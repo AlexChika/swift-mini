@@ -1,5 +1,5 @@
 import useFetchConversation from "@/lib/hooks/useFetchConversation";
-import { Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { Center, Alert, Text } from "@chakra-ui/react";
 import Spinner from "../general/Spinner";
 
@@ -32,19 +32,35 @@ function StartScreen({ Child }: Props) {
     return (
       <Center h="100vh">
         <Alert.Root
-          bg="transparent"
-          color="whiteAlpha.500"
+          bg="white"
+          color="black"
           status="error"
-          flexDirection="column"
           textAlign="center"
+          borderRadius="lg"
+          border="1px solid"
+          borderColor="#ff4343"
+          p={8}
+          maxW="md"
+          boxShadow="xl"
         >
-          <Alert.Indicator color="whiteAlpha.500" boxSize="40px" mr={0} />
+          <Box
+            pos="absolute"
+            top="0"
+            left="0"
+            w="100%"
+            h="100%"
+            bg="#ff4343"
+            opacity="0.02"
+            borderRadius="lg"
+          />
+          <Alert.Indicator color="red.500" boxSize="3rem" mr={0} mb={4} />
+
           <Alert.Content>
-            <Alert.Title mt={4} fontSize="sm">
+            <Alert.Title fontSize="lg" fontWeight="semibold">
               Something Went Wrong!
             </Alert.Title>
-            <Alert.Description fontSize="small" maxWidth="sm">
-              Please Refresh The browser
+            <Alert.Description opacity={0.8} fontSize="md" maxWidth="sm" mt={3}>
+              Please refresh the browser and try again
             </Alert.Description>
           </Alert.Content>
         </Alert.Root>
@@ -53,7 +69,7 @@ function StartScreen({ Child }: Props) {
 
   // loading....
   return (
-    <Center opacity="0.9" flexDirection="column" h="100vh">
+    <Center flexDirection="column" h="100vh">
       {/* swift logo */}
       <Image maxW="200px" alt="Logo Image" src="/icon.png" />
 
@@ -67,7 +83,8 @@ function StartScreen({ Child }: Props) {
         textAlign="center"
         fontStyle="italic"
         fontSize="13px"
-        color="gray"
+        color="white"
+        className="animate-pulse"
       >
         Loading Please Wait...
       </Text>

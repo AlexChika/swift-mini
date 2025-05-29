@@ -100,11 +100,9 @@ function Messages({ session, id }: Props) {
       position="relative"
       zIndex={6}
       bgPos="center"
-      // bg="#1e1e1e"
-
       bgImage={
         theme === "light"
-          ? "linear-gradient(#ffffff5e, #ffffff72), url('https://www.toptal.com/designers/subtlepatterns/uploads/concrete_seamless.png')"
+          ? "linear-gradient(rgba(255, 255, 255, 0.274), rgba(255, 255, 255, 0.33)), url('https://www.toptal.com/designers/subtlepatterns/uploads/email-pattern.png')"
           : bgStrs[bg].url
       }
       css={{

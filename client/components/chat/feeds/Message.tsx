@@ -36,7 +36,7 @@ function Message(props: Props) {
       <VStack
         ml={!usersFirstMessageAfterOthers && !sentByMe ? 8 : ""}
         mr={!usersFirstMessageAfterOthers && sentByMe ? 8 : ""}
-        border="1px solid {colors.appBorderDivider}"
+        border="1px solid {colors.messageBorder}"
         color="{colors.primaryText}"
         bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
         gap={0}

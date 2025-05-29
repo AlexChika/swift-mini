@@ -6,39 +6,39 @@ import {
 } from "@chakra-ui/react";
 
 const space = {
-  px: { value: "1px" },
-  0.5: { value: "2px" },
-  1: { value: "4px" },
-  1.5: { value: "6px" },
-  2: { value: "8px" },
-  2.5: { value: "10px" },
-  3: { value: "12px" },
-  3.5: { value: "14px" },
-  4: { value: "16px" },
-  5: { value: "20px" },
-  6: { value: "24px" },
-  7: { value: "28px" },
-  8: { value: "32px" },
-  9: { value: "36px" },
-  10: { value: "40px" },
-  12: { value: "48px" },
-  14: { value: "56px" },
-  16: { value: "64px" },
-  20: { value: "80px" },
-  24: { value: "96px" },
-  28: { value: "112px" },
-  32: { value: "128px" },
-  36: { value: "144px" },
-  40: { value: "160px" },
-  44: { value: "176px" },
-  48: { value: "192px" },
-  52: { value: "208px" },
-  56: { value: "224px" },
-  60: { value: "240px" },
-  64: { value: "256px" },
-  72: { value: "288px" },
-  80: { value: "320px" },
-  96: { value: "384px" },
+  px: { value: "0.0625rem" },
+  0.5: { value: "0.125rem" },
+  1: { value: "0.25rem" },
+  1.5: { value: "0.375rem" },
+  2: { value: "0.5rem" },
+  2.5: { value: "0.625rem" },
+  3: { value: "0.75rem" },
+  3.5: { value: "0.875rem" },
+  4: { value: "1rem" },
+  5: { value: "1.25rem" },
+  6: { value: "1.5rem" },
+  7: { value: "1.75rem" },
+  8: { value: "2rem" },
+  9: { value: "2.25rem" },
+  10: { value: "2.5rem" },
+  12: { value: "3rem" },
+  14: { value: "3.5rem" },
+  16: { value: "4rem" },
+  20: { value: "5rem" },
+  24: { value: "6rem" },
+  28: { value: "7rem" },
+  32: { value: "8rem" },
+  36: { value: "9rem" },
+  40: { value: "10rem" },
+  44: { value: "11rem" },
+  48: { value: "12rem" },
+  52: { value: "13rem" },
+  56: { value: "14rem" },
+  60: { value: "15rem" },
+  64: { value: "16rem" },
+  72: { value: "18rem" },
+  80: { value: "20rem" },
+  96: { value: "24rem" },
 };
 
 const config = defineConfig({
@@ -50,8 +50,8 @@ const config = defineConfig({
       boxSizing: "border-box",
     },
     body: {
-      maxWidth: "1250px",
-      margin: "0 auto",
+      maxWidth: "93.75rem",
+      margin: "0 auto !important",
     },
     "[contenteditable]": {
       outline: "0px solid transparent",
@@ -62,20 +62,22 @@ const config = defineConfig({
     ".animate-spin": {
       animation: "spin 0.6s linear infinite",
     },
+    ".animate-pulse": {
+      animation: "pulse 2s ease-in-out infinite",
+    },
   },
 
   theme: {
     breakpoints: {
-      base: "0px",
-      xs: "320px",
-      sm: "400px",
-      md: "560",
-      xmd: "768px",
-      lg: "960px",
-      xl: "1200px",
-      "2xl": "1536px",
+      base: "0rem",
+      xs: "20rem",
+      sm: "25rem",
+      md: "35rem",
+      xmd: "48rem",
+      lg: "60rem",
+      xl: "75rem",
+      "2xl": "96rem",
     },
-
     tokens: {
       colors: {
         red: {
@@ -89,21 +91,29 @@ const config = defineConfig({
 
       sizes: { ...space },
     },
+
     semanticTokens: {
       colors: {
         appBorder: {
           value: {
             base: "#dbdbdb",
-            _dark: "#60606047",
+            _dark: "black",
           },
         }, // borders
 
         appBorderDivider: {
           value: {
-            base: "#dbdbdb83",
-            _dark: "#60606047",
+            base: "#dbdbdb",
+            _dark: "black",
           },
         }, // border dividing conversations and chat feeds
+
+        messageBorder: {
+          value: {
+            base: "#dbdbdb",
+            _dark: "#3a3a3a",
+          },
+        }, // message border
 
         bg: {
           value: {
@@ -114,8 +124,8 @@ const config = defineConfig({
 
         primaryBg: {
           value: {
-            base: "#e5e5e5",
-            _dark: "#4f4f5e",
+            base: "#dddddd",
+            _dark: "#1b1b1f",
           },
         }, // lighter version of secondaryBg for message input, create conversation btn
 
@@ -126,8 +136,6 @@ const config = defineConfig({
           value: {
             base: "#ffffff",
             _dark: "#0d0d0d",
-            // _dark: "#252525",
-            // _dark: "#2f2f3a", // default
           },
         }, // bg for feeds & conversation panel
 
@@ -148,14 +156,14 @@ const config = defineConfig({
         userTextBg: {
           value: {
             base: "#ffffff",
-            _dark: "#43434e8e",
+            _dark: "#23232df2",
           },
         }, // colors for usermessage background
 
         otherUserTextBg: {
           value: {
             base: "#ededed",
-            _dark: "#4e4e6459",
+            _dark: "#35353ed0",
           },
         }, // colors for other usermessage background
       },
@@ -165,6 +173,21 @@ const config = defineConfig({
       spin: {
         from: { transform: "rotate(0deg)" },
         to: { transform: "rotate(360deg)" },
+      },
+
+      pulse: {
+        "0%": {
+          opacity: 0.4,
+          transform: "scale(1)",
+        },
+        "50%": {
+          opacity: 1,
+          transform: "scale(1.05)",
+        },
+        "100%": {
+          opacity: 0.4,
+          transform: "scale(1)",
+        },
       },
     },
   },

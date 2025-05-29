@@ -94,7 +94,7 @@ function MessageInput(props: Props) {
       px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
-      borderTop="2px solid {colors.appBorderDivider}"
+      borderTop="1px solid {colors.appBorderDivider}"
       borderBottomRadius="inherit"
     >
       <Flex

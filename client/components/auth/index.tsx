@@ -63,15 +63,24 @@ function Auth({ session, reloadSession }: AuthProps) {
     }
   }
 
-  const imageUrl = session
-    ? session?.user?.image
-      ? session.user.image
-      : "/icon.png"
-    : "/icon.png";
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const regex = /[^A-Za-z0-9]/;
+    e.target.value.match(regex) ? setErr(true) : setErr(false);
+    setUsername(e.target.value);
+  }
+
+  const imageUrl = session?.user?.image ? session.user.image : "/icon.png";
 
   return (
-    <Center position="relative" height="100vh">
-      <Stack bg="whiteAlpha.100" p={30} gap={5} align="center">
+    <Center color="{colors.primaryText}" position="relative" height="100vh">
+      <Stack
+        width="95%"
+        maxWidth="19.2rem"
+        bg="{colors.secondaryBg}"
+        p={30}
+        gap={5}
+        align="center"
+      >
         <Image
           src={imageUrl}
           width="70px"
@@ -81,39 +90,48 @@ function Auth({ session, reloadSession }: AuthProps) {
 
         {session ? (
           <>
-            <Text fontSize="14px" lineClamp={1} textAlign="center" mb={-5}>
-              Hi {session?.user.name}
+            <Text
+              fontWeight={900}
+              fontSize="1.125rem"
+              lineClamp={1}
+              textAlign="center"
+              mb={-5}
+            >
+              Hi, 👋 {session?.user.name}
             </Text>
-            <Text>Create a username</Text>
+
+            <Text opacity={0.8}>Create a username</Text>
 
             <Field.Root invalid={err}>
-              <Input placeholder="Enter a username" />
-              <Field.ErrorText>This field is required</Field.ErrorText>
+              <Input
+                bg="{colors.primaryBg}/50"
+                borderColor={err ? "red" : "{colors.primaryBg}"}
+                padding={2}
+                onChange={(e) => onChange(e)}
+                value={Username}
+                placeholder="Enter a username"
+              />
+
+              <Field.ErrorText textAlign="justify">
+                Invalid username, use only letters and numbers
+              </Field.ErrorText>
             </Field.Root>
-            <Input
-              css={{ "--error-color": "red.600" }}
-              onChange={(e) => {
-                const regex = /[^A-Za-z0-9]/;
-                e.target.value.match(regex) ? setErr(true) : setErr(false);
-                setUsername(e.target.value);
-              }}
-              value={Username}
-              placeholder="Enter a username"
-            />
+
             <Button
+              color="{colors.primaryText}"
+              bg="{colors.primaryBg}"
               loading={loading}
               disabled={err}
-              fontSize={14}
               w="full"
-              onClick={onSubmit}
+              onClick={() => onSubmit()}
             >
               All Good
             </Button>
           </>
         ) : (
           <>
-            <Text>You are not signed in</Text>
-            <Button fontSize={14} onClick={() => signIn("google")}>
+            <Text opacity={0.8}>You are not signed in</Text>
+            <Button padding={2} fontSize={14} onClick={() => signIn("google")}>
               <Image
                 src="/google.png"
                 alt="Google Logo"

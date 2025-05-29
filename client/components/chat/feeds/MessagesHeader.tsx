@@ -43,10 +43,8 @@ function MessagesHeader({ id, userId }: Props) {
       px={3}
       w="100%"
       h="60px"
-      // bg="{colors.otherUserTextBg}"
-      // bg="{colors.secondaryBg2}"
       color="{colors.primaryText}"
-      borderBottom="2px solid {colors.appBorderDivider}"
+      borderBottom="1px solid {colors.appBorderDivider}"
       borderTopRadius="inherit"
     >
       {/* Back button for small screens  */}
