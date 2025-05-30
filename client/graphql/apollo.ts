@@ -16,6 +16,9 @@ const wsUrl =
 
 const httpLink = new HttpLink({
   uri,
+  headers: {
+    "X-SESSION-URL": process.env.NEXT_PUBLIC_SESSION_URL!,
+  },
   credentials: "include",
 });
 

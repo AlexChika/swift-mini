@@ -55,8 +55,21 @@ export function ThemeProvider({
   }, [__theme]);
 
   React.useEffect(() => {
-    console.log("initial render");
+    if (!(!serverTheme && !__theme && defaultTheme === "system")) return;
 
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const listener = (e: MediaQueryListEvent) => {
+      if (!serverTheme && !__theme && defaultTheme === "system") {
+        setTheme(e.matches ? "dark" : "light");
+      }
+    };
+
+    media.addEventListener("change", listener);
+
+    return () => media.removeEventListener("change", listener);
+  }, [__theme]);
+
+  React.useEffect(() => {
     const html = document.documentElement;
     if (theme === "dark") {
       html.classList.add("dark");
