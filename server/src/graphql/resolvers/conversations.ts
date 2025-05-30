@@ -10,8 +10,6 @@ const conversationResolver = {
     conversations: async (_: any, __: any, ctx: GraphqlContext) => {
       const { session, prisma } = ctx;
 
-      console.log({ session }, "conversations");
-
       if (!session?.user.username) {
         throw new GraphQLError("User is not authenticated");
       }

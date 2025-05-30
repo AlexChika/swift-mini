@@ -84,10 +84,7 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const sessionUrl = req.headers["x-session-url"] as string;
-      console.log({ sessionUrl }, "session url");
       const session = await getSession(req, sessionUrl);
-
-      console.log({ session }, "express middleware");
       return { session, prisma, pubsub };
     },
   })
