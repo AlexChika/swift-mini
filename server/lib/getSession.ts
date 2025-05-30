@@ -20,6 +20,7 @@ async function getSession(req: Request, url: string): Promise<Session | null> {
 
     return session;
   } catch (e) {
+    console.log({ e }, "getSession error");
     return null;
   }
 }
