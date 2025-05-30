@@ -29,7 +29,11 @@ const corsOpts: cors.CorsOptions = {
   origin:
     process.env.NODE_ENV === "development"
       ? ["http://localhost:3000", "https://studio.apollographql.com"]
-      : ["https://swiftmini.globalstack.dev", "https://swift-mini.vercel.app"],
+      : [
+          "https://swiftmini.globalstack.dev",
+          "https://swift-mini.vercel.app",
+          "https://swiftmini-staging.vercel.app",
+        ],
   credentials: true,
 };
 
@@ -79,45 +83,12 @@ app.use(
   express.json(),
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
-      const session = await getSession(req, process.env.SESSION_URL!);
+      const sessionUrl = req.headers["x-session-url"] as string;
+      const session = await getSession(req, sessionUrl);
       return { session, prisma, pubsub };
     },
   })
 );
-app.use("/iframetest", cors());
-app.get("/iframetest", function (req, res) {
-  //Call using /iframetest?url=url - needs to be stripped of http:// or https://
-  var url = req.query.url || "";
-  // const url = "www.google.com";
-  console.log("hit here", url);
-  const options = {
-    hostname: url as string,
-    port: 80,
-    path: "/",
-    method: "GET",
-  };
-
-  var reqs = request(
-    { host: url as string },
-    function (response: { headers: any }) {
-      console.log("executed");
-      //This does an https request - require('http') if you want to do a http request
-      var headers = response.headers;
-      console.log({ headers }, "what");
-
-      if (typeof headers["x-frame-options"] === "undefined") {
-        res.send(false); //Headers don't allow iframe
-      } else {
-        res.send(true); //Headers don't disallow iframe
-      }
-    }
-  );
-  reqs.on("error", function (e: any) {
-    console.log("failed");
-    res.send(true); //website unavailable
-  });
-  reqs.end();
-});
 
 app.get("/cron", (_, res) => {
   res.end("SERVER RUNING");

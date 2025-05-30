@@ -1,12 +1,9 @@
 import { Session } from "next-auth";
 
 import axios from "axios";
-import express from "express";
+import { Request } from "express";
 
-async function getSession(
-  req: express.Request,
-  url: string
-): Promise<Session | null> {
+async function getSession(req: Request, url: string): Promise<Session | null> {
   try {
     const fetchOptions = req ? { headers: { cookie: req.headers.cookie } } : {};
 
