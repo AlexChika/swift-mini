@@ -32,7 +32,7 @@ const corsOpts: cors.CorsOptions = {
       : [
           "https://swiftmini.globalstack.dev",
           "https://swift-mini.vercel.app",
-          "https://swiftmini-staging.vercel.app",
+          "https://swiftmini-staging.globalstack.dev",
         ],
   credentials: true,
 };
