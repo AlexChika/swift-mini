@@ -1,7 +1,8 @@
-import { Center, Flex, Text } from "@chakra-ui/react";
+import { Center, Flex, HStack, Image, Text, VStack } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import MessagesHeader from "./MessagesHeader";
 import Messages from "./Messages";
+import Spinner from "@/components/general/Spinner";
 
 type Props = {
   session: Session;
@@ -14,7 +15,8 @@ function Feeds({ session, id }: Props) {
   if (!id)
     return (
       <Center
-        bg="{colors.secondaryBg}"
+        dir="column"
+        bg="{colors.emptyChatScreen}"
         border="4px solid {colors.appBorder}"
         borderLeft={{ xmd: "none" }}
         display={{ base: "none", xmd: "flex" }}
@@ -24,9 +26,13 @@ function Feeds({ session, id }: Props) {
         }}
         w="100%"
       >
-        <Text userSelect="none" opacity={0.3} color="{colors.primaryText}">
-          No conversation selected
-        </Text>
+        <VStack>
+          <Image opacity={0.5} maxW="150px" alt="Logo Image" src="/icon.png" />
+
+          <Text userSelect="none" opacity={0.3} color="{colors.primaryText}">
+            No conversation selected
+          </Text>
+        </VStack>
       </Center>
     );
 

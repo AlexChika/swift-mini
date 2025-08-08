@@ -17,7 +17,7 @@ function InProgressModal() {
     <>
       <Dialog.Root
         size="sm"
-        placement="top"
+        placement="center"
         lazyMount
         open={open}
         onOpenChange={(e) => setOpen(e.open)}
@@ -28,7 +28,7 @@ function InProgressModal() {
             <Dialog.Content
               border={"1px solid {colors.secondaryBg}"}
               color="{colors.primaryText}"
-              bg="{colors.primaryBg}"
+              bg="{colors.secondaryBg}"
             >
               <Dialog.Header>
                 <Dialog.Title>App is in progress</Dialog.Title>

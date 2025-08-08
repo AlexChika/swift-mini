@@ -15,6 +15,20 @@ declare module "next-auth" {
   }
 }
 
+// remove next-auth
+//  interface Session {
+//    user: {
+//      id: string;
+//      username: string;
+//      emailVerified: boolean;
+//      name?: string | null;
+//      email?: string | null;
+//      image?: string | null;
+//    };
+
+//    expires: ISODateString;
+//  }
+
 // Server Context Configuration
 type GraphqlContext = {
   session: Session | null;

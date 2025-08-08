@@ -41,14 +41,36 @@ html.light::before {
   height: 100%;
 }
 
-html::before {
+html.light::before {
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.224) 0%,
+    rgba(0, 0, 0, 0.255) 100%
+  );
+}
+html.dark::before {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.264) 0%,
     rgba(0, 0, 0, 0.285) 100%
   );
 }
 
-html {
+html.dark {
+  background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/geometry2.png");
+}
+
+html.light {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/binding_dark.png");
+}
+
+/* html.dark {
+  background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/gravel.png");
+} */
+
+html.light,
+html.dark {
+  /* background-size: contain; */
+  /* background-attachment: fixed; */
+  /* background-repeat: no-repeat; */
 }

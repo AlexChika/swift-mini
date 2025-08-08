@@ -50,7 +50,7 @@ const config = defineConfig({
       boxSizing: "border-box",
     },
     body: {
-      maxWidth: "93.75rem",
+      maxWidth: "83.75rem",
       margin: "0 auto !important",
     },
     "[contenteditable]": {
@@ -85,9 +85,7 @@ const config = defineConfig({
         },
       },
 
-      spacing: {
-        ...space,
-      },
+      spacing: { ...space },
 
       sizes: { ...space },
     },
@@ -101,13 +99,6 @@ const config = defineConfig({
           },
         }, // borders
 
-        appBorderDivider: {
-          value: {
-            base: "#dbdbdb",
-            _dark: "black",
-          },
-        }, // border dividing conversations and chat feeds
-
         messageBorder: {
           value: {
             base: "#dbdbdb",
@@ -115,17 +106,18 @@ const config = defineConfig({
           },
         }, // message border
 
-        bg: {
+        emptyChatScreen: {
           value: {
-            base: "rgb(117, 117, 117)",
-            _dark: "rgb(0, 0, 0)",
+            base: "#f0f0f0",
+            _dark: "#151515",
           },
-        }, // not used
+        },
 
         primaryBg: {
           value: {
-            base: "#dddddd",
-            _dark: "#1b1b1f",
+            base: "#bcbcbc",
+            _dark: "#474747",
+            // _dark: "#0d0d0d",
           },
         }, // lighter version of secondaryBg for message input, create conversation btn
 
@@ -135,7 +127,7 @@ const config = defineConfig({
         secondaryBg: {
           value: {
             base: "#ffffff",
-            _dark: "#0d0d0d",
+            _dark: "#191919",
           },
         }, // bg for feeds & conversation panel
 
@@ -155,15 +147,15 @@ const config = defineConfig({
 
         userTextBg: {
           value: {
-            base: "#ffffff",
-            _dark: "#23232df2",
+            base: "#f1f1f1",
+            _dark: "#21212b",
           },
         }, // colors for usermessage background
 
         otherUserTextBg: {
           value: {
-            base: "#ededed",
-            _dark: "#35353ed0",
+            base: "#ffffff",
+            _dark: "#2a2a31",
           },
         }, // colors for other usermessage background
       },

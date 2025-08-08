@@ -14,7 +14,7 @@ function Conversations({ session, id }: Props) {
     <Box
       bg="{colors.secondaryBg}"
       border="4px solid {colors.appBorder}"
-      borderRight="1px solid {colors.appBorderDivider}"
+      borderRight="1px solid {colors.appBorder}"
       css={{
         margin: { base: "0px", xmd: "5px 0px 5px 5px" },
         borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" },

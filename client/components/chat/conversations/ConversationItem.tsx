@@ -34,13 +34,11 @@ function ConversationItem(props: Props) {
       py={2}
       bg={isSelected ? "{colors.primaryBg}/40" : "transparent"}
       _hover={{
-        opacity: 0.65,
-        border: "2px solid {colors.appBorderDivider}",
-        borderRadius: "8px",
+        opacity: 0.6,
       }}
       borderRadius={isSelected ? "4px" : undefined}
-      border={isSelected ? "1px solid {colors.appBorderDivider}" : undefined}
-      borderBottom="1px solid {colors.appBorderDivider}"
+      border={`1px solid ${isSelected ? "{colors.appBorder}" : "transparent"}`}
+      borderBottom="1px solid {colors.appBorder}"
       color="primaryText"
     >
       <Flex align="center" gap={2} justify="space-between">
