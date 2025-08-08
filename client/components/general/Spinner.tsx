@@ -26,7 +26,7 @@ function Spinner({
       pos={absolute ? "absolute" : undefined}
       className="animate-spin"
       boxSize="32px"
-      borderWidth="4px"
+      borderWidth="5px"
       borderLeftColor={primaryColor}
       borderRightColor={primaryColor}
       borderTopColor={secondaryColor}

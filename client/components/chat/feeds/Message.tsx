@@ -14,13 +14,14 @@ function Message(props: Props) {
 
   return (
     <Flex
-      mt={usersFirstMessageAfterOthers ? "5px" : ""}
+      mt={usersFirstMessageAfterOthers ? "10px" : ""}
       mx={{ base: 3, xmd: 5 }}
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
-      maxWidth={{ base: "90%", xmd: "75%" }}
+      maxWidth={{ base: "80%", xmd: "75%" }}
     >
+      {/* useful code below */}
       {/* other users image */}
-      {usersFirstMessageAfterOthers && !sentByMe && (
+      {/* {usersFirstMessageAfterOthers && !sentByMe && (
         <Avatar.Root
           mr={2}
           size="2xs"
@@ -30,12 +31,12 @@ function Message(props: Props) {
           <Avatar.Fallback name={sender.username} />
           <Avatar.Image src={sender.image} />
         </Avatar.Root>
-      )}
+      )} */}
 
       {/* use this as group message ui later */}
       <VStack
-        ml={!usersFirstMessageAfterOthers && !sentByMe ? 8 : ""}
-        mr={!usersFirstMessageAfterOthers && sentByMe ? 8 : ""}
+        // ml={!usersFirstMessageAfterOthers && !sentByMe ? 8 : ""}
+        // mr={!usersFirstMessageAfterOthers && sentByMe ? 8 : ""}
         border="1px solid {colors.messageBorder}"
         color="{colors.primaryText}"
         bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
@@ -116,8 +117,9 @@ function Message(props: Props) {
         )}
       </VStack>
 
+      {/* useful code below */}
       {/* current usere image */}
-      {usersFirstMessageAfterOthers && sentByMe && (
+      {/* {usersFirstMessageAfterOthers && sentByMe && (
         <Avatar.Root
           ml={2}
           size="2xs"
@@ -127,7 +129,7 @@ function Message(props: Props) {
           <Avatar.Fallback name={sender.username} />
           <Avatar.Image src={sender.image} />
         </Avatar.Root>
-      )}
+      )} */}
     </Flex>
   );
 }

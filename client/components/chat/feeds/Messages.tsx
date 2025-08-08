@@ -16,29 +16,64 @@ type Props = {
 
 const bgStrs = [
   {
-    name: "one",
-    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.622) 0%,rgba(0, 0, 0, 0.783) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/tactile_noise.png')",
-  },
-  {
-    name: "two",
-    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.682) 0%,rgba(0, 0, 0, 0.683) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/carbon_fibre.png')",
+    name: "One",
+    url: "linear-gradient(#151515, #151515)",
   },
 
   {
-    name: "three",
-    url: "linear-gradient(180deg,rgba(6, 6, 6, 0.892) 0%,rgba(0, 0, 0, 0.87) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/carbon_fibre.png')",
+    name: "Two",
+    url: "linear-gradient(180deg,rgba(21, 21, 21, 0.45) 0%,rgba(21, 21, 21, 0.451) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/diagmonds.png')",
+  },
+
+  {
+    name: "Three",
+    url: "linear-gradient(180deg,rgba(21, 21, 21, 0.69) 0%,rgba(21, 21, 21, 0.67) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/carbon_fibre.png')",
+  },
+
+  {
+    name: "Four",
+    url: "linear-gradient(180deg,rgba(21, 21, 21, 0.20) 0%,rgba(21, 21, 21, 0.25) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/triangles.png')",
+  },
+
+  {
+    name: "Five",
+    url: "linear-gradient(180deg,rgba(21, 21, 21, 0.55) 0%,rgba(21, 21, 21, 0.54) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/robots.png')",
+  },
+
+  {
+    name: "Six",
+    url: "linear-gradient(180deg,rgba(21, 21, 21, 0.65) 0%,rgba(21, 21, 21, 0.77) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/fancy-cushion.png')",
+  },
+];
+
+const whiteBgStrs = [
+  {
+    name: "One",
+    url: "linear-gradient(#f5f5f5, #f5f5f5)",
   },
   {
-    name: "four",
-    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.72) 0%,rgba(0, 0, 0, 0.67) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/dark-grey-terrazzo.png')",
+    name: "Two",
+    url: "linear-gradient(rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.27)), url('https://www.toptal.com/designers/subtlepatterns/uploads/confectionary.png')",
   },
+
   {
-    name: "five",
-    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.52) 0%,rgba(0, 0, 0, 0.47) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/beanstalk-dark.png')",
+    name: "Three",
+    url: "linear-gradient(rgba(245, 245, 245, 0.47), rgba(245, 245, 245, 0.55)), url('https://www.toptal.com/designers/subtlepatterns/uploads/circles-and-roundabouts.png')",
   },
+
   {
-    name: "six",
-    url: "linear-gradient(180deg,rgba(0, 0, 0, 0.62) 0%,rgba(0, 0, 0, 0.67) 100%),url('https://www.toptal.com/designers/subtlepatterns/uploads/beanstalk-dark.png')",
+    name: "Four",
+    url: "linear-gradient(rgba(242, 242, 242, 0.74), rgba(243, 243, 243, 0.77)), url('https://www.toptal.com/designers/subtlepatterns/uploads/doodles.png')",
+  },
+
+  {
+    name: "Five",
+    url: "linear-gradient(rgba(245, 245, 245, 0.27), rgba(245, 245, 245, 0.25)), url('https://www.toptal.com/designers/subtlepatterns/uploads/sun-pattern.png')",
+  },
+
+  {
+    name: "Six",
+    url: "linear-gradient(rgba(245, 245, 245, 0.44), rgba(245, 245, 245, 0.47)), url('https://www.toptal.com/designers/subtlepatterns/uploads/light-grey-terrazzo.png')",
   },
 ];
 
@@ -100,11 +135,7 @@ function Messages({ session, id }: Props) {
       position="relative"
       zIndex={6}
       bgPos="center"
-      bgImage={
-        theme === "light"
-          ? "linear-gradient(rgba(255, 255, 255, 0.274), rgba(255, 255, 255, 0.33)), url('https://www.toptal.com/designers/subtlepatterns/uploads/email-pattern.png')"
-          : bgStrs[bg].url
-      }
+      bgImage={theme === "light" ? whiteBgStrs[bg].url : bgStrs[bg].url}
       css={{
         "& *": {
           zIndex: 2,
@@ -132,13 +163,14 @@ function Messages({ session, id }: Props) {
         {error && (
           <Center h="100%">
             <Alert.Root
-              bg="transparent"
-              color="whiteAlpha.500"
+              bg="{colors.secondaryBg}"
+              color="{colors.primaryText}"
               status="error"
-              flexDirection="column"
+              maxW="280px"
               textAlign="center"
+              alignItems={"center"}
             >
-              <Alert.Indicator color="whiteAlpha.500" boxSize="40px" mr={0} />
+              <Alert.Indicator color="{colors.primaryText}" boxSize="40px" />
 
               <Alert.Content>
                 <Alert.Title mt={4} fontSize="sm">
@@ -175,7 +207,7 @@ function Messages({ session, id }: Props) {
           })}
         <button
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
-          style={{ color: "white" }}
+          style={{ color: "red" }}
         >
           {bgStrs[bg].name}
         </button>
