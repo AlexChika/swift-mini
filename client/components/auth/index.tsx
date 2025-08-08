@@ -84,7 +84,7 @@ function Auth({ session, reloadSession }: AuthProps) {
         <Image
           src={imageUrl}
           width="70px"
-          alt="swift logo"
+          alt="user image"
           rounded={session?.user?.image ? "100%" : ""}
         />
 
@@ -104,7 +104,8 @@ function Auth({ session, reloadSession }: AuthProps) {
 
             <Field.Root invalid={err}>
               <Input
-                bg="{colors.primaryBg}/50"
+                bg="{colors.primaryBg}/20"
+                color="{colors.primaryText}"
                 borderColor={err ? "red" : "{colors.primaryBg}"}
                 padding={2}
                 onChange={(e) => onChange(e)}

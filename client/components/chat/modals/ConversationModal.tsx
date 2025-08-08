@@ -8,6 +8,7 @@ import {
   IconButton,
   Dialog,
   Portal,
+  CloseButton,
 } from "@chakra-ui/react";
 import React from "react";
 import userOperations from "@/graphql/operations/users";
@@ -94,16 +95,18 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
         <Dialog.Positioner>
           <Dialog.Content
             mx={2}
-            border={"1px solid {colors.secondaryBg}"}
+            border={"1px solid {colors.primaryBg}"}
             color="{colors.primaryText}"
-            bg="{colors.primaryBg}"
+            bg="{colors.secondaryBg}"
             pb={4}
           >
             <Dialog.Header>
               <Dialog.Title>Create a conversation</Dialog.Title>
             </Dialog.Header>
 
-            {/* <ModalCloseButton /> */}
+            <Dialog.CloseTrigger asChild>
+              <CloseButton color="{colors.primaryText}" size="sm" />
+            </Dialog.CloseTrigger>
 
             <Dialog.Body>
               {/*

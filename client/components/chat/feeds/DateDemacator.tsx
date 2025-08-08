@@ -28,12 +28,14 @@ function DateDemacator({ demacatorText }: Props) {
     <Text
       w="max-content"
       mx="auto"
-      opacity="0.4"
+      border="1px solid {colors.messageBorder}"
+      opacity="0.65"
       borderRadius={7}
       px={5}
+      py={2}
       bg="otherUserTextBg"
       color="primaryText"
-      my={5}
+      my={7}
       textTransform="capitalize"
       fontSize={13}
     >

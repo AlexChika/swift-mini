@@ -32,8 +32,8 @@ function StartScreen({ Child }: Props) {
     return (
       <Center h="100vh">
         <Alert.Root
-          bg="white"
-          color="black"
+          bg="{colors.secondaryBg}"
+          color="{colors.primaryText}"
           status="error"
           textAlign="center"
           borderRadius="lg"
@@ -43,18 +43,7 @@ function StartScreen({ Child }: Props) {
           maxW="md"
           boxShadow="xl"
         >
-          <Box
-            pos="absolute"
-            top="0"
-            left="0"
-            w="100%"
-            h="100%"
-            bg="#ff4343"
-            opacity="0.02"
-            borderRadius="lg"
-          />
-          <Alert.Indicator color="red.500" boxSize="3rem" mr={0} mb={4} />
-
+          <Alert.Indicator color="red.600" boxSize="3rem" mr={0} mb={4} />
           <Alert.Content>
             <Alert.Title fontSize="lg" fontWeight="semibold">
               Something Went Wrong!

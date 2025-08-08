@@ -94,7 +94,7 @@ function MessageInput(props: Props) {
       px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
-      borderTop="1px solid {colors.appBorderDivider}"
+      borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit"
     >
       <Flex
@@ -111,7 +111,6 @@ function MessageInput(props: Props) {
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word",
           }}
-          // bg="{colors.secondaryBg2}"
           bg="{colors.primaryBg}"
           color="{colors.primaryText}"
           maxH="200px"
