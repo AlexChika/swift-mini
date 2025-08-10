@@ -22,7 +22,7 @@ const dateScalar = new GraphQLScalarType({
     }
     // Invalid hard-coded value (not an integer)
     return null;
-  },
+  }
 });
 
 export { dateScalar };

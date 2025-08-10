@@ -17,14 +17,13 @@ function Conversations({ session, id }: Props) {
       borderRight="1px solid {colors.appBorder}"
       css={{
         margin: { base: "0px", xmd: "5px 0px 5px 5px" },
-        borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" },
+        borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" }
       }}
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"
       maxW={{ xmd: "300px", lg: "380px", xl: "420px" }}
       py={3}
-      px={3}
-    >
+      px={3}>
       <StartConversationBtn session={session} />
       <ConversationList session={session} />
     </Box>

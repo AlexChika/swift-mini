@@ -20,8 +20,8 @@ export const getAuthOptions = (): NextAuthOptions => {
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      }),
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+      })
     ],
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
@@ -30,10 +30,10 @@ export const getAuthOptions = (): NextAuthOptions => {
           ...session,
           user: {
             ...session.user,
-            ...user,
-          },
+            ...user
+          }
         };
-      },
+      }
     },
     cookies: dev
       ? {}
@@ -45,8 +45,8 @@ export const getAuthOptions = (): NextAuthOptions => {
               sameSite: "lax",
               path: "/",
               secure: true,
-              domain,
-            },
+              domain
+            }
           },
           callbackUrl: {
             name: `${cookiePrefix}next-auth.callback-url`,
@@ -54,8 +54,8 @@ export const getAuthOptions = (): NextAuthOptions => {
               sameSite: "lax",
               path: "/",
               secure: true,
-              domain,
-            },
+              domain
+            }
           },
           csrfToken: {
             name: `${cookiePrefix}next-auth.csrf-token`,
@@ -64,9 +64,9 @@ export const getAuthOptions = (): NextAuthOptions => {
               sameSite: "lax",
               path: "/",
               secure: true,
-              domain,
-            },
-          },
-        },
+              domain
+            }
+          }
+        }
   };
 };

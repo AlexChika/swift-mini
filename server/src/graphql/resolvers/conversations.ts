@@ -7,7 +7,7 @@ import { withFilter } from "graphql-subscriptions";
 const conversationResolver = {
   Date: dateScalar,
   Query: {
-    conversations: async (_: any, __: any, ctx: GraphqlContext) => {
+    conversations: async (_: unknown, __: unknown, ctx: GraphqlContext) => {
       const { session, prisma } = ctx;
 
       if (!session?.user.username) {
@@ -22,13 +22,13 @@ const conversationResolver = {
             participants: {
               some: {
                 userId: {
-                  equals: id,
-                },
-              },
-            },
+                  equals: id
+                }
+              }
+            }
           },
 
-          include: conversationsInclude,
+          include: conversationsInclude
         });
         return convos;
       } catch (error) {
@@ -36,11 +36,11 @@ const conversationResolver = {
         console.log("Conversation error", error);
         throw new GraphQLError(err.message);
       }
-    },
+    }
   },
   Mutation: {
     createConversation: async (
-      _: any,
+      _: unknown,
       args: { participantIds: string[] },
       ctx: GraphqlContext
     ): Promise<{ conversationId: string }> => {
@@ -59,19 +59,19 @@ const conversationResolver = {
                 data: participantIds.map((id) => {
                   return {
                     userId: id,
-                    hasSeenLatestMessage: id === userId,
+                    hasSeenLatestMessage: id === userId
                   };
-                }),
-              },
-            },
+                })
+              }
+            }
           },
 
-          include: conversationsInclude,
+          include: conversationsInclude
         });
 
         // emit create subscription event
         pubsub.publish("CONVERSATION_CREATED", {
-          conversationCreated: conversation,
+          conversationCreated: conversation
         });
 
         return { conversationId: conversation.id };
@@ -80,18 +80,18 @@ const conversationResolver = {
         console.log("createConversation error", error);
         throw new GraphQLError(err.message);
       }
-    },
+    }
   },
   Subscription: {
     conversationCreated: {
       subscribe: withFilter(
-        (_: any, __: any, ctx: GraphqlContext) => {
+        (_: unknown, __: unknown, ctx: GraphqlContext) => {
           const { pubsub } = ctx;
           return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
         },
         (
           payload: { conversationCreated: Conversation },
-          _: any,
+          _: unknown,
           ctx: GraphqlContext
         ) => {
           const { session } = ctx;
@@ -101,14 +101,14 @@ const conversationResolver = {
           );
           return userIsParticipant;
         }
-      ),
+      )
 
       // subscribe: (_: any, __: any, ctx: GraphqlContext) => {
       //   const { pubsub } = ctx;
       //   return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
       // },
-    },
-  },
+    }
+  }
 };
 
 export const participantsInclude =
@@ -116,9 +116,9 @@ export const participantsInclude =
     user: {
       select: {
         id: true,
-        username: true,
-      },
-    },
+        username: true
+      }
+    }
   });
 
 export const conversationsInclude =
@@ -132,10 +132,10 @@ export const conversationsInclude =
           select: {
             id: true,
             image: true,
-            username: true,
-          },
-        },
-      },
+            username: true
+          }
+        }
+      }
       // include: participantsPopulated,
     },
     latestMessage: {
@@ -143,10 +143,10 @@ export const conversationsInclude =
         sender: {
           select: {
             id: true,
-            username: true,
-          },
-        },
-      },
-    },
+            username: true
+          }
+        }
+      }
+    }
   });
 export default conversationResolver;

@@ -22,11 +22,11 @@ const createUsername = gql`
 `;
 
 const Queries = {
-  searchUsers,
+  searchUsers
 };
 
 const Mutations = {
-  createUsername,
+  createUsername
 };
 
 const Subscriptions = {};

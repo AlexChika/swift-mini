@@ -1,6 +1,10 @@
 import { Conversation } from "swift-mini";
+// type Obj = Record<string, unknown>;
 
-function merge(base: Record<string, any>, ...items: Record<string, any>[]) {
+function merge(
+  base: Record<string, object>,
+  ...items: Record<string, object>[]
+) {
   for (let i = 0; i < items.length; i++) {
     const item = items[i]; //item is an object;
     const inValidInput =

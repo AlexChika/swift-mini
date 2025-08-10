@@ -15,7 +15,7 @@ type SendMessageArgs = {
 const messageResolver = {
   Query: {
     messages: async (
-      _: any,
+      _: unknown,
       args: { conversationId: string },
       ctx: GraphqlContext
     ): Promise<Message[]> => {
@@ -28,9 +28,9 @@ const messageResolver = {
         // does conversation exist?
         const conversation = await prisma.conversation.findUnique({
           where: {
-            id: args.conversationId,
+            id: args.conversationId
           },
-          include: conversationsInclude,
+          include: conversationsInclude
         });
 
         if (!conversation) throw new GraphQLError("Conversation is not found");
@@ -41,12 +41,12 @@ const messageResolver = {
 
         const messages = prisma.message.findMany({
           where: {
-            conversationId: args.conversationId,
+            conversationId: args.conversationId
           },
           include: MessageInclude,
           orderBy: {
-            createdAt: "asc",
-          },
+            createdAt: "asc"
+          }
         });
 
         return messages;
@@ -55,12 +55,12 @@ const messageResolver = {
         console.log("Messages error", error);
         throw new GraphQLError(err.message);
       }
-    },
+    }
   },
 
   Mutation: {
     sendMessage: async (
-      _: any,
+      _: unknown,
       args: SendMessageArgs,
       ctx: GraphqlContext
     ): Promise<boolean> => {
@@ -77,13 +77,13 @@ const messageResolver = {
       try {
         const newMessage = await prisma.message.create({
           data: { body, conversationId, senderId },
-          include: MessageInclude,
+          include: MessageInclude
         });
         console.timeEnd("create mesage");
 
         // publish events to users
         pubsub.publish("MESSAGE_SENT", {
-          messageSent: newMessage,
+          messageSent: newMessage
         });
         console.log(new Date().getSeconds(), "published 1");
 
@@ -91,40 +91,40 @@ const messageResolver = {
         const participant = await prisma.conversationParticipants.findFirst({
           where: {
             conversationId,
-            userId,
-          },
+            userId
+          }
         });
 
         const conversation = await prisma.conversation.update({
           where: {
-            id: conversationId,
+            id: conversationId
           },
           data: {
             latestMessageId: newMessage.id,
             participants: {
               update: {
                 where: {
-                  id: participant?.id || "",
+                  id: participant?.id || ""
                 },
                 data: {
-                  hasSeenLatestMessage: true,
-                },
+                  hasSeenLatestMessage: true
+                }
               },
 
               updateMany: {
                 where: {
                   NOT: {
-                    userId,
-                  },
+                    userId
+                  }
                 },
                 data: {
-                  hasSeenLatestMessage: false,
-                },
-              },
-            },
+                  hasSeenLatestMessage: false
+                }
+              }
+            }
           },
 
-          include: conversationsInclude,
+          include: conversationsInclude
         });
 
         // pubsub.publish("CONVERSATION_UPDATED", {
@@ -137,27 +137,27 @@ const messageResolver = {
       }
 
       return true;
-    },
+    }
   },
 
   Subscription: {
     messageSent: {
       subscribe: withFilter(
-        (_: any, __: any, ctx: GraphqlContext) => {
+        (_: unknown, __: unknown, ctx: GraphqlContext) => {
           const { pubsub } = ctx;
           return pubsub.asyncIterator(["MESSAGE_SENT"]);
         },
         (
           payload: { messageSent: Message },
           args: { conversationId: string },
-          ___: any
+          ___: unknown
         ) => {
           console.log(new Date().getSeconds(), "subscription 2 ");
           return payload.messageSent.conversationId === args.conversationId;
         }
-      ),
-    },
-  },
+      )
+    }
+  }
 };
 
 export default messageResolver;
@@ -167,7 +167,7 @@ export const MessageInclude = Prisma.validator<Prisma.MessageInclude>()({
     select: {
       id: true,
       username: true,
-      image: true,
-    },
-  },
+      image: true
+    }
+  }
 });

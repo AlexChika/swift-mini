@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
   Image,
-  Field,
+  Field
 } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 
@@ -36,7 +36,7 @@ function Auth({ session, reloadSession }: AuthProps) {
     if (err || !username) return;
 
     toast.loading("loading", {
-      id: "createusername",
+      id: "createusername"
     });
 
     try {
@@ -52,13 +52,13 @@ function Auth({ session, reloadSession }: AuthProps) {
       }
 
       toast.success("Username created successfully", {
-        id: "createusername",
+        id: "createusername"
       });
       reloadSession();
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message || "Unknown error occured", {
-        id: "createusername",
+        id: "createusername"
       });
     }
   }
@@ -79,8 +79,7 @@ function Auth({ session, reloadSession }: AuthProps) {
         bg="{colors.secondaryBg}"
         p={30}
         gap={5}
-        align="center"
-      >
+        align="center">
         <Image
           src={imageUrl}
           width="70px"
@@ -95,8 +94,7 @@ function Auth({ session, reloadSession }: AuthProps) {
               fontSize="1.125rem"
               lineClamp={1}
               textAlign="center"
-              mb={-5}
-            >
+              mb={-5}>
               Hi, 👋 {session?.user.name}
             </Text>
 
@@ -124,8 +122,7 @@ function Auth({ session, reloadSession }: AuthProps) {
               loading={loading}
               disabled={err}
               w="full"
-              onClick={() => onSubmit()}
-            >
+              onClick={() => onSubmit()}>
               All Good
             </Button>
           </>
