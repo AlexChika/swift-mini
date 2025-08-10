@@ -31,6 +31,7 @@ export function ThemeProvider({
   const [theme, setTheme] = React.useState<Theme>(tempTheme);
   const [__theme, __setTheme] = React.useState<ServerTheme>(serverTheme);
 
+  // sets system theme
   React.useEffect(() => {
     if (defaultTheme === "system" && !serverTheme) {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
@@ -39,8 +40,10 @@ export function ThemeProvider({
         : "light";
       setTheme(systemTheme);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // sets cookie
   React.useEffect(() => {
     // do not set cookie when
     // servertheme is undefined
@@ -52,8 +55,9 @@ export function ThemeProvider({
       value: theme,
       expDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
     });
-  }, [__theme]);
+  }, [__theme, serverTheme, defaultTheme, theme]);
 
+  // listens to system theme changes
   React.useEffect(() => {
     if (!(!serverTheme && !__theme && defaultTheme === "system")) return;
 
@@ -67,10 +71,13 @@ export function ThemeProvider({
     media.addEventListener("change", listener);
 
     return () => media.removeEventListener("change", listener);
-  }, [__theme]);
+  }, [__theme, serverTheme, defaultTheme]);
 
+  // sets html theme
   React.useEffect(() => {
     const html = document.documentElement;
+    ThemeColorSetter(theme);
+
     if (theme === "dark") {
       html.classList.add("dark");
       html.classList.remove("light");
@@ -102,4 +109,17 @@ export function useTheme() {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
+}
+
+function ThemeColorSetter(theme: Theme) {
+  let meta = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"]'
+  );
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.name = "theme-color";
+    document.head.appendChild(meta);
+  }
+
+  meta.content = theme === "dark" ? "#191919" : "#ffffff";
 }
