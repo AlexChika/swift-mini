@@ -38,7 +38,8 @@ function ConversationList({ session }: Props) {
   }
 
   async function conversationOnClick(conversationId: string) {
-    router.replace(`/?conversationId=${conversationId}`);
+    // router.replace(`/?conversationId=${conversationId}`);
+    router.push(conversationId);
     // mark Convo as read
   }
 

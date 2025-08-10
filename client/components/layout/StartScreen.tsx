@@ -1,5 +1,5 @@
 import useFetchConversation from "@/lib/hooks/useFetchConversation";
-import { Box, Image } from "@chakra-ui/react";
+import { Image } from "@chakra-ui/react";
 import { Center, Alert, Text } from "@chakra-ui/react";
 import Spinner from "../general/Spinner";
 

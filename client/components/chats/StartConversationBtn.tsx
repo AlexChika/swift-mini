@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import ConversationModal from "../modals/ConversationModal";
+import ConversationModal from "@/components/chats/ConversationModal";
 
 type Props = {
   session: Session;
