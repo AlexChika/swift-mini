@@ -17,8 +17,7 @@ function Message(props: Props) {
       mt={usersFirstMessageAfterOthers ? "10px" : ""}
       mx={{ base: 3, xmd: 5 }}
       alignSelf={sentByMe ? "flex-end" : "flex-start"}
-      maxWidth={{ base: "80%", xmd: "75%" }}
-    >
+      maxWidth={{ base: "80%", xmd: "75%" }}>
       {/* useful code below */}
       {/* other users image */}
       {/* {usersFirstMessageAfterOthers && !sentByMe && (
@@ -41,8 +40,7 @@ function Message(props: Props) {
         color="{colors.primaryText}"
         bg={sentByMe ? "{colors.userTextBg}" : "{colors.otherUserTextBg}"}
         gap={0}
-        borderRadius={"12px"}
-      >
+        borderRadius={"12px"}>
         {usersFirstMessageAfterOthers && (
           <>
             <HStack
@@ -50,14 +48,12 @@ function Message(props: Props) {
               padding="13px 10px 0px 10px"
               marginBottom="7px"
               w="100%"
-              color="{colors.usernameColor}"
-            >
+              color="{colors.usernameColor}">
               {/* user name */}
               <Text
                 fontSize={{ base: "12px" }}
                 textTransform="capitalize"
-                lineHeight={0}
-              >
+                lineHeight={0}>
                 {sender.username}
               </Text>
 
@@ -74,13 +70,12 @@ function Message(props: Props) {
               css={{
                 wordWrap: "break-word",
                 whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
+                wordBreak: "break-word"
               }}
               alignSelf="flex-start"
               padding={
                 usersFirstMessageAfterOthers ? "0px 10px 5px 10px" : "5px 10px"
-              }
-            >
+              }>
               {body}
             </Text>
           </>
@@ -96,10 +91,9 @@ function Message(props: Props) {
               css={{
                 wordWrap: "break-word",
                 whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
+                wordBreak: "break-word"
               }}
-              alignSelf="flex-start"
-            >
+              alignSelf="flex-start">
               {body}
             </Text>
             {"  "}
@@ -109,8 +103,7 @@ function Message(props: Props) {
               textAlign={"right"}
               lineHeight={0}
               fontSize="10px"
-              color="{colors.usernameColor}"
-            >
+              color="{colors.usernameColor}">
               {dateFormatter(createdAt).time}
             </Text>
           </Box>

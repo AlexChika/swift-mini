@@ -45,14 +45,14 @@ function MessageInput(props: Props) {
     const newMessage = {
       body: str,
       conversationId: id,
-      senderId: session.user.id,
+      senderId: session.user.id
     };
 
     try {
       await send({
         variables: {
-          ...newMessage,
-        },
+          ...newMessage
+        }
         // optimisticResponse: true,
         // update:(cache)=>{
         //   const existing = cache.readQuery<MessagesData>({
@@ -95,21 +95,19 @@ function MessageInput(props: Props) {
       py={3}
       w="100%"
       borderTop="1px solid {colors.appBorder}"
-      borderBottomRadius="inherit"
-    >
+      borderBottomRadius="inherit">
       <Flex
         justifyContent="space-between"
         maxW="100%"
         w="100%"
-        gap={{ base: 2, xmd: 3 }}
-      >
+        gap={{ base: 2, xmd: 3 }}>
         <Box
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
-            overflowWrap: "break-word",
+            overflowWrap: "break-word"
           }}
           bg="{colors.primaryBg}"
           color="{colors.primaryText}"
@@ -133,8 +131,7 @@ function MessageInput(props: Props) {
           borderRadius={14}
           transition="none"
           variant={"plain"}
-          aria-label="Send Message Icon"
-        >
+          aria-label="Send Message Icon">
           <SendIcon color="{colors.primaryText}" />
         </IconButton>
       </Flex>

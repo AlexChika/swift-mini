@@ -17,9 +17,9 @@ const wsUrl =
 const httpLink = new HttpLink({
   uri,
   headers: {
-    "X-SESSION-URL": process.env.NEXT_PUBLIC_SESSION_URL!,
+    "X-SESSION-URL": process.env.NEXT_PUBLIC_SESSION_URL!
   },
-  credentials: "include",
+  credentials: "include"
 });
 
 const wsLink = () => {
@@ -28,7 +28,7 @@ const wsLink = () => {
       url: wsUrl,
       connectionParams: async () => {
         return { session: await getSession() };
-      },
+      }
     })
   );
 };
@@ -50,7 +50,7 @@ const link = () => {
 
 const client = new ApolloClient({
   link: typeof window !== "undefined" ? link() : httpLink,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache()
 });
 
 export default client;

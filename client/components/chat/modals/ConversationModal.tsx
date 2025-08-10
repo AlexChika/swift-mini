@@ -8,7 +8,7 @@ import {
   IconButton,
   Dialog,
   Portal,
-  CloseButton,
+  CloseButton
 } from "@chakra-ui/react";
 import React from "react";
 import userOperations from "@/graphql/operations/users";
@@ -65,7 +65,7 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
     const participantIds = [...participants.map((p) => p.id), session.user.id];
     try {
       const { data } = await createConversation({
-        variables: { participantIds },
+        variables: { participantIds }
       });
 
       const { conversationId } = data?.createConversation || {};
@@ -79,7 +79,7 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
-        id: "create conversation",
+        id: "create conversation"
       });
     }
   }
@@ -88,8 +88,7 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
     <Dialog.Root
       role="alertdialog"
       open={isOpen}
-      onOpenChange={(e) => setIsOpen(e.open)}
-    >
+      onOpenChange={(e) => setIsOpen(e.open)}>
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
@@ -98,8 +97,7 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
             border={"1px solid {colors.primaryBg}"}
             color="{colors.primaryText}"
             bg="{colors.secondaryBg}"
-            pb={4}
-          >
+            pb={4}>
             <Dialog.Header>
               <Dialog.Title>Create a conversation</Dialog.Title>
             </Dialog.Header>
@@ -125,8 +123,7 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
                     bg="{colors.secondaryBg}"
                     loading={loading}
                     disabled={!username}
-                    type="submit"
-                  >
+                    type="submit">
                     Search
                   </Button>
                 </Stack>
@@ -158,8 +155,7 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
                     onClick={() => onCreateConversation()}
                     w="100%"
                     mt={6}
-                    colorScheme="blue"
-                  >
+                    colorScheme="blue">
                     Create Conversation
                   </Button>
                 </>
@@ -198,8 +194,7 @@ function UserSearchList({ users, addParticipant }: ListProp) {
             py={2}
             px={2}
             borderRadius={4}
-            _hover={{ bg: "whiteAlpha.200" }}
-          >
+            _hover={{ bg: "whiteAlpha.200" }}>
             <Avatar.Root size={"sm"} variant="solid">
               <Avatar.Fallback name={user.username} />
             </Avatar.Root>
@@ -209,8 +204,7 @@ function UserSearchList({ users, addParticipant }: ListProp) {
                 size="sm"
                 onClick={() => addParticipant(user)}
                 colorScheme="blue"
-                variant="outline"
-              >
+                variant="outline">
                 Select
               </Button>
             </Flex>
@@ -230,7 +224,7 @@ type ParticipantsProps = {
 };
 function SelectedParticipants({
   participants,
-  removeParticipant,
+  removeParticipant
 }: ParticipantsProps) {
   return (
     <Flex mt={8} gap="10px" flexWrap="wrap">
@@ -242,14 +236,12 @@ function SelectedParticipants({
             p={2}
             align="center"
             key={p.id}
-            direction="row"
-          >
+            direction="row">
             <Text>{p.username}</Text>
             <IconButton
               onClick={() => removeParticipant(p.id)}
               variant="plain"
-              aria-label="delete selected user button"
-            >
+              aria-label="delete selected user button">
               <CloseIcon color="white" />
             </IconButton>
           </Stack>

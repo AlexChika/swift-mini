@@ -17,7 +17,7 @@ function Spinner({
   secondaryColor = "#404040",
   top = "calc(50% + 18px)",
   right = "calc(50% + 5px)",
-  absolute,
+  absolute
 }: Props) {
   return (
     <Box

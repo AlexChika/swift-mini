@@ -3,8 +3,8 @@
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
   experimental: {
-    optimizePackageImports: ["@chakra-ui/react"],
-  },
+    optimizePackageImports: ["@chakra-ui/react"]
+  }
 });
 
 const nextConfig = withBundleAnalyzer({});

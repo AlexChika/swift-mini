@@ -1,0 +1,28 @@
+{
+  "name": "swift-mini",
+  "version": "1.0.0",
+  "main": "",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm --prefix server run lint:fix && npm --prefix client run lint:fix",
+    "format": "npm --prefix server run format && npm --prefix client run format",
+    "lint:check": "npm --prefix server run lint && npm --prefix client run lint",
+    "format:check": "npm --prefix server run format:check && npm --prefix client run format:check",
+    "types:check": "npm --prefix server run types:check && npm --prefix client run types:check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexChika/swift-mini.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexChika/swift-mini/issues"
+  },
+  "homepage": "https://github.com/AlexChika/swift-mini#readme",
+  "description": "",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

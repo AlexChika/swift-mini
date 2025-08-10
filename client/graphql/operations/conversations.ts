@@ -64,15 +64,15 @@ const conversationCreated = gql`
 `;
 
 const Queries = {
-  conversations,
+  conversations
 };
 
 const Mutations = {
-  createConversation,
+  createConversation
 };
 
 const Subscriptions = {
-  conversationCreated,
+  conversationCreated
 };
 
 const conversationOperations = { Queries, Mutations, Subscriptions };

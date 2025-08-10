@@ -19,7 +19,7 @@ const ThemeContext = React.createContext<ThemeContextType | undefined>(
 export function ThemeProvider({
   children,
   defaultTheme,
-  serverTheme,
+  serverTheme
 }: {
   children: React.ReactNode;
   serverTheme: ServerTheme;
@@ -50,7 +50,7 @@ export function ThemeProvider({
     Cookies.set({
       name: "swft-theme",
       value: theme,
-      expDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      expDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
     });
   }, [__theme]);
 

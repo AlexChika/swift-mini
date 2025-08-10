@@ -22,10 +22,9 @@ function Feeds({ session, id }: Props) {
         display={{ base: "none", xmd: "flex" }}
         css={{
           margin: { base: "0px", xmd: "5px 5px 5px 0px" },
-          borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" },
+          borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" }
         }}
-        w="100%"
-      >
+        w="100%">
         <VStack>
           <Image opacity={0.5} maxW="150px" alt="Logo Image" src="/icon.png" />
 
@@ -46,9 +45,8 @@ function Feeds({ session, id }: Props) {
       w="100%"
       css={{
         margin: { base: "0px", xmd: "5px 5px 5px 0px" },
-        borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" },
-      }}
-    >
+        borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" }
+      }}>
       <MessagesHeader {...{ id, userId: session.user.id }} />
       <Messages {...{ session, id }} />
     </Flex>

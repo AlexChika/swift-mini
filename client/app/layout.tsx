@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Swift Mini",
-  description: "Chat Swiftly with friends and in groups.",
+  description: "Chat Swiftly with friends and in groups."
 };
 
 type Props = {

@@ -5,7 +5,7 @@ import {
   Text,
   Portal,
   CloseButton,
-  HStack,
+  HStack
 } from "@chakra-ui/react";
 import { useState } from "react";
 import ToolTip from "./ToolTip";
@@ -20,16 +20,14 @@ function InProgressModal() {
         placement="center"
         lazyMount
         open={open}
-        onOpenChange={(e) => setOpen(e.open)}
-      >
+        onOpenChange={(e) => setOpen(e.open)}>
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner padding={1}>
             <Dialog.Content
               border={"1px solid {colors.secondaryBg}"}
               color="{colors.primaryText}"
-              bg="{colors.secondaryBg}"
-            >
+              bg="{colors.secondaryBg}">
               <Dialog.Header>
                 <Dialog.Title>App is in progress</Dialog.Title>
               </Dialog.Header>
@@ -47,8 +45,7 @@ function InProgressModal() {
                   variant="subtle"
                   defaultValue={25}
                   maxW="sm"
-                  size="sm"
-                >
+                  size="sm">
                   <HStack gap="5">
                     <ToolTip content="The SwiftMini app is 25% complete">
                       <Progress.Label cursor="pointer">

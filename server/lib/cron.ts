@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import axios, { type AxiosError } from "axios";
 import { CronJob } from "cron";
 
@@ -25,7 +23,7 @@ const restartJob = CronJob.from({
   onTick() {
     tryPing();
   },
-  start: false,
+  start: false
 });
 
 export default restartJob;

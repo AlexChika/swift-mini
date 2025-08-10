@@ -6,7 +6,7 @@ import {
   Center,
   Flex,
   HStack,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import conversationOperations from "@/graphql/operations/conversations";
 import { useQuery } from "@apollo/client";
@@ -45,8 +45,7 @@ function MessagesHeader({ id, userId }: Props) {
       h="60px"
       color="{colors.primaryText}"
       borderBottom="1px solid {colors.appBorder}"
-      borderTopRadius="inherit"
-    >
+      borderTopRadius="inherit">
       {/* Back button for small screens  */}
 
       {/* latest message sender username and avatar */}
@@ -74,8 +73,7 @@ function MessagesHeader({ id, userId }: Props) {
           display={{ base: "flex", xmd: "none" }}
           variant="plain"
           onClick={() => router.replace("/")}
-          minW="unset"
-        >
+          minW="unset">
           <LeftArrowIcon color="{colors.primaryText}" />
         </IconButton>
       </Center>

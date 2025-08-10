@@ -1,14 +1,14 @@
 import dotenv from "dotenv";
-import { createServer, get, request } from "http";
+import { createServer } from "http";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { expressMiddleware } from "@apollo/server/express4";
+import { expressMiddleware } from "@as-integrations/express4";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import cors from "cors";
-import pkg from "body-parser";
+// import pkg from "body-parser";
 
 import resolvers from "#src/graphql/resolvers";
 import typeDefs from "#src/graphql/typeDefs";
@@ -17,7 +17,7 @@ import { GraphqlContext, SubscriptionContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
 import restartJob from "#lib/cron";
 import { PubSub } from "graphql-subscriptions";
-const { json } = pkg;
+// const { json } = pkg;
 
 // configs
 dotenv.config();
@@ -32,9 +32,9 @@ const corsOpts: cors.CorsOptions = {
       : [
           "https://swiftmini.globalstack.dev",
           "https://swift-mini.vercel.app",
-          "https://swiftmini-staging.globalstack.dev",
+          "https://swiftmini-staging.globalstack.dev"
         ],
-  credentials: true,
+  credentials: true
 };
 
 // http server
@@ -44,7 +44,7 @@ const httpServer = createServer(app);
 // websocket server
 const wsServer = new WebSocketServer({
   server: httpServer,
-  path: "/subscriptions",
+  path: "/subscriptions"
 });
 
 const serverCleanup = useServer(
@@ -53,7 +53,7 @@ const serverCleanup = useServer(
     context: async (ctx: SubscriptionContext): Promise<GraphqlContext> => {
       const { session } = ctx?.connectionParams || {};
       return { session, pubsub, prisma };
-    },
+    }
   },
   wsServer
 );
@@ -68,11 +68,11 @@ const server = new ApolloServer<GraphqlContext>({
         return {
           async drainServer() {
             await serverCleanup.dispose();
-          },
+          }
         };
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
 
 await server.start();
@@ -86,7 +86,7 @@ app.use(
       const sessionUrl = req.headers["x-session-url"] as string;
       const session = await getSession(req, sessionUrl);
       return { session, prisma, pubsub };
-    },
+    }
   })
 );
 
@@ -100,4 +100,6 @@ httpServer.listen(PORT, () => {
 });
 
 // Cron Jobs ... used to keep render servers busy
-process.env.NODE_ENV === "production" && restartJob.start();
+if (process.env.NODE_ENV === "production") {
+  restartJob.start();
+}
