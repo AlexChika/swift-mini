@@ -1,15 +1,17 @@
 import { memo } from "react";
-import { Box } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import ConversationList from "./ConversationList";
-import StartConversationBtn from "./StartConversationBtn";
+import { Box } from "@chakra-ui/react";
+import { useParams } from "next/navigation";
+import ConversationList from "@/components/chats/ConversationList";
+import StartConversationBtn from "@/components/chats/StartConversationBtn";
 
 type Props = {
   session: Session;
-  id: string | null; // conversation Id
 };
 
-function Conversations({ session, id }: Props) {
+function Chats({ session }: Props) {
+  const { chatId: id } = useParams<{ chatId: string }>();
+
   return (
     <Box
       bg="{colors.secondaryBg}"
@@ -30,4 +32,4 @@ function Conversations({ session, id }: Props) {
   );
 }
 
-export default memo(Conversations);
+export default memo(Chats);

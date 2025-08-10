@@ -50,7 +50,8 @@ const config = defineConfig({
       boxSizing: "border-box"
     },
     body: {
-      maxWidth: "83.75rem",
+      maxWidth: "75.75rem",
+      // maxWidth: "93.75rem",
       margin: "0 auto !important"
     },
     "[contenteditable]": {
