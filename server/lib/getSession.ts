@@ -1,7 +1,8 @@
-import { Session } from "next-auth";
+// import { Session } from "next-auth";
 
 import axios from "axios";
 import { Request } from "express";
+import { Session } from "swift-mini";
 
 async function getSession(req: Request, url: string): Promise<Session | null> {
   try {
@@ -15,7 +16,7 @@ async function getSession(req: Request, url: string): Promise<Session | null> {
     }
 
     return session;
-  } catch (e) {
+  } catch (_) {
     return null;
   }
 }

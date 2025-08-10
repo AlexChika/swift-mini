@@ -34,13 +34,12 @@ function ConversationItem(props: Props) {
       py={2}
       bg={isSelected ? "{colors.primaryBg}/40" : "transparent"}
       _hover={{
-        opacity: 0.6,
+        opacity: 0.6
       }}
       borderRadius={isSelected ? "4px" : undefined}
       border={`1px solid ${isSelected ? "{colors.appBorder}" : "transparent"}`}
       borderBottom="1px solid {colors.appBorder}"
-      color="primaryText"
-    >
+      color="primaryText">
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
         <Flex truncate align="center" gap={2}>
@@ -62,8 +61,7 @@ function ConversationItem(props: Props) {
               // opacity="90%"
               textOverflow="ellipsis"
               lineClamp={1}
-              fontSize="11px"
-            >
+              fontSize="11px">
               {latestMessage?.body}
             </Text>
           </Flex>
@@ -75,8 +73,7 @@ function ConversationItem(props: Props) {
           fontSize={11}
           opacity="70%"
           alignSelf="flex-end"
-          textAlign="right"
-        >
+          textAlign="right">
           {getTimePassed()}
         </Text>
       </Flex>

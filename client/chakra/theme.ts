@@ -2,7 +2,7 @@ import {
   SystemStyleObject,
   createSystem,
   defaultConfig,
-  defineConfig,
+  defineConfig
 } from "@chakra-ui/react";
 
 const space = {
@@ -38,7 +38,7 @@ const space = {
   64: { value: "16rem" },
   72: { value: "18rem" },
   80: { value: "20rem" },
-  96: { value: "24rem" },
+  96: { value: "24rem" }
 };
 
 const config = defineConfig({
@@ -47,24 +47,25 @@ const config = defineConfig({
     html: {
       margin: 0,
       padding: 0,
-      boxSizing: "border-box",
+      boxSizing: "border-box"
     },
     body: {
-      maxWidth: "83.75rem",
-      margin: "0 auto !important",
+      maxWidth: "75.75rem",
+      // maxWidth: "93.75rem",
+      margin: "0 auto !important"
     },
     "[contenteditable]": {
-      outline: "0px solid transparent",
+      outline: "0px solid transparent"
     },
     "[contenteditable] *": {
-      textWrap: "wrap !important",
+      textWrap: "wrap !important"
     },
     ".animate-spin": {
-      animation: "spin 0.6s linear infinite",
+      animation: "spin 0.6s linear infinite"
     },
     ".animate-pulse": {
-      animation: "pulse 2s ease-in-out infinite",
-    },
+      animation: "pulse 2s ease-in-out infinite"
+    }
   },
 
   theme: {
@@ -76,18 +77,18 @@ const config = defineConfig({
       xmd: "48rem",
       lg: "60rem",
       xl: "75rem",
-      "2xl": "96rem",
+      "2xl": "96rem"
     },
     tokens: {
       colors: {
         red: {
-          DEFAULT: { value: "#EE0F0F" },
-        },
+          DEFAULT: { value: "#EE0F0F" }
+        }
       },
 
       spacing: { ...space },
 
-      sizes: { ...space },
+      sizes: { ...space }
     },
 
     semanticTokens: {
@@ -95,30 +96,30 @@ const config = defineConfig({
         appBorder: {
           value: {
             base: "#dbdbdb",
-            _dark: "black",
-          },
+            _dark: "black"
+          }
         }, // borders
 
         messageBorder: {
           value: {
             base: "#dbdbdb",
-            _dark: "#3a3a3a",
-          },
+            _dark: "#3a3a3a"
+          }
         }, // message border
 
         emptyChatScreen: {
           value: {
             base: "#f0f0f0",
-            _dark: "#151515",
-          },
+            _dark: "#151515"
+          }
         },
 
         primaryBg: {
           value: {
             base: "#bcbcbc",
-            _dark: "#474747",
+            _dark: "#474747"
             // _dark: "#0d0d0d",
-          },
+          }
         }, // lighter version of secondaryBg for message input, create conversation btn
 
         // add skeleton mode
@@ -127,62 +128,62 @@ const config = defineConfig({
         secondaryBg: {
           value: {
             base: "#ffffff",
-            _dark: "#191919",
-          },
+            _dark: "#191919"
+          }
         }, // bg for feeds & conversation panel
 
         primaryText: {
           value: {
             base: "#000000",
-            _dark: "#ffffff",
-          },
+            _dark: "#ffffff"
+          }
         }, // default text color
 
         usernameColor: {
           value: {
             base: "#507c7c",
-            _dark: "#9e9e9e",
-          },
+            _dark: "#9e9e9e"
+          }
         }, // colors for usermessage usernames and time
 
         userTextBg: {
           value: {
             base: "#f1f1f1",
-            _dark: "#21212b",
-          },
+            _dark: "#21212b"
+          }
         }, // colors for usermessage background
 
         otherUserTextBg: {
           value: {
             base: "#ffffff",
-            _dark: "#2a2a31",
-          },
-        }, // colors for other usermessage background
-      },
+            _dark: "#2a2a31"
+          }
+        } // colors for other usermessage background
+      }
     },
 
     keyframes: {
       spin: {
         from: { transform: "rotate(0deg)" },
-        to: { transform: "rotate(360deg)" },
+        to: { transform: "rotate(360deg)" }
       },
 
       pulse: {
         "0%": {
           opacity: 0.4,
-          transform: "scale(1)",
+          transform: "scale(1)"
         },
         "50%": {
           opacity: 1,
-          transform: "scale(1.05)",
+          transform: "scale(1.05)"
         },
         "100%": {
           opacity: 0.4,
-          transform: "scale(1)",
-        },
-      },
-    },
-  },
+          transform: "scale(1)"
+        }
+      }
+    }
+  }
 });
 
 const system = createSystem(defaultConfig, config);
@@ -190,7 +191,7 @@ const system = createSystem(defaultConfig, config);
 export default system;
 
 const hideScrollbar: SystemStyleObject = {
-  scrollbarWidth: "none",
+  scrollbarWidth: "none"
 };
 
 export { hideScrollbar };

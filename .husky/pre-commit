@@ -1,0 +1,40 @@
+echo "👷 Hello GlobalStack Dev, please wait while we check your code before committing..."
+
+echo ""
+echo "🔍 Step 1: Running Type Checks..."
+npm run types:check || {
+    echo ""
+    echo "❌ Type checking failed! Please fix the above errors before committing."
+    exit 1
+}
+
+
+echo ""
+echo "🎨 Step 2: Checking Prettier formatting..."
+npm run format:check || {
+    echo ""
+    echo "👷 Oooops 🤢🤮 - Your formatting needs work."
+    echo "💡 Run: npm run format"
+    echo "📌 Then: git add . && commit again."
+    exit 1
+}
+
+
+
+echo ""
+echo "🧹 Step 3: Running ESLint..."
+npm run lint:check || {
+    echo ""
+    echo "👷 Ah! You failed to follow our linting standards 😤🏀👋"
+    echo "💡 Run: npm run lint"
+    echo "📌 Then: git add . && commit again."
+    exit 1
+}
+
+echo ""
+echo "✅ Hurray! Everything passed — committing now. 🚀"
+
+
+
+# uncomment below line to test hook
+# exit 1

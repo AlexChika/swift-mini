@@ -7,7 +7,7 @@ function SkeletonLoader({ no, height, duration }: Props) {
       <Skeleton
         css={{
           "--start-color": "whiteAlpha.50",
-          "--end-color": "whiteAlpha.200",
+          "--end-color": "whiteAlpha.200"
         }}
         height={height}
         width={{ base: "100%" }}

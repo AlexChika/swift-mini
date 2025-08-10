@@ -9,11 +9,11 @@ function formatUserNames(
     return {
       usernames: "",
       avatar: "",
-      name: "",
+      name: ""
     };
 
   //   sort array to put name of lastmessage sender at the begining
-  let sorted: Conversation["participants"] = [];
+  const sorted: Conversation["participants"] = [];
 
   participants.forEach((p) => {
     p.hasSeenLatestMessage ? sorted.unshift(p) : sorted.push(p);
@@ -47,7 +47,7 @@ function formatUserNames(
   if (type === "long") {
     let name: string;
     let usernames: string;
-    let avatar: string | undefined = sorted[0].user.image || undefined;
+    const avatar: string | undefined = sorted[0].user.image || undefined;
 
     if (thisUser && thisUser.hasSeenLatestMessage) {
       name = "You";
@@ -61,7 +61,7 @@ function formatUserNames(
     return {
       name,
       usernames,
-      avatar,
+      avatar
     };
   }
 
@@ -70,7 +70,7 @@ function formatUserNames(
     const length = sorted.length - 3; // first two names + user's name = 3 names
     const lastUserName = length > 0 ? `and ${length} other(s)` : "";
 
-    let fewNames = joinUserNames(
+    const fewNames = joinUserNames(
       sorted.filter((p) => p.user.id !== id).slice(0, 2) // first two names
     );
 
@@ -79,11 +79,11 @@ function formatUserNames(
     const [first, ...rest] = sorted;
     const length = rest.length - 3; // first two names + user's name = 3 names
 
-    let fewNames = joinUserNames(
+    const fewNames = joinUserNames(
       rest.filter((p) => p.user.id !== id).slice(0, 2) // first two names
     );
 
-    let firstUserName = capitalize(first.user.username || "");
+    const firstUserName = capitalize(first.user.username || "");
     const lastUserName = length > 0 ? `and ${length} others` : "";
 
     usernames = `${firstUserName} to You${comma(
@@ -94,7 +94,7 @@ function formatUserNames(
   return {
     usernames,
     avatar: sorted[0].user.image || undefined,
-    name: usernames.substring(0, 1),
+    name: usernames.substring(0, 1)
   };
 } // bugs in  func
 
@@ -139,7 +139,7 @@ function dateFormatter(rawdate: string | number | Date) {
     weekday: "long",
     month: "short",
     year: "numeric",
-    day: "numeric",
+    day: "numeric"
   }); // full date
 
   /**
@@ -203,7 +203,7 @@ function dateFormatter(rawdate: string | number | Date) {
       "Wednesday",
       "Thursday",
       "Friday",
-      "Saturday",
+      "Saturday"
     ];
 
     if (Math.floor(days) >= 7) return date; // its been a week
@@ -227,7 +227,7 @@ function dateFormatter(rawdate: string | number | Date) {
     date,
     time,
     getTimePassed,
-    getTimeOfWeek,
+    getTimeOfWeek
   };
 }
 

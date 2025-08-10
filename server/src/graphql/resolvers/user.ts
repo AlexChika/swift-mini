@@ -11,7 +11,7 @@ type CreateUsernameResponse = {
 const resolvers = {
   Query: {
     searchUsers: async (
-      _: any,
+      _: unknown,
       args: { username: string },
       ctx: GraphqlContext
     ): Promise<User[]> => {
@@ -28,9 +28,9 @@ const resolvers = {
             username: {
               contains: searchedUsername,
               not: myUsername,
-              mode: "insensitive",
-            },
-          },
+              mode: "insensitive"
+            }
+          }
         });
 
         return users;
@@ -39,12 +39,12 @@ const resolvers = {
         console.log("searchUsers error", error);
         throw new GraphQLError(e?.message);
       }
-    },
+    }
   },
 
   Mutation: {
     createUsername: async (
-      _: any,
+      _: unknown,
       args: { username: string },
       ctx: GraphqlContext
     ): Promise<CreateUsernameResponse> => {
@@ -55,7 +55,7 @@ const resolvers = {
         return {
           username,
           success: false,
-          error: "User unauthenticated",
+          error: "User unauthenticated"
         };
 
       const { id: userId } = session.user;
@@ -64,8 +64,8 @@ const resolvers = {
         // check uniqueness of username
         const existingUser = await prisma.user.findUnique({
           where: {
-            username,
-          },
+            username
+          }
         });
 
         // user exists
@@ -73,25 +73,25 @@ const resolvers = {
           return {
             username,
             success: false,
-            error: "Username is taken",
+            error: "Username is taken"
           };
         }
 
         // update user
         await prisma.user.update({
           where: {
-            id: userId,
+            id: userId
           },
           data: {
-            username,
-          },
+            username
+          }
         });
 
         //
         return {
           username,
           success: true,
-          error: undefined,
+          error: undefined
         };
       } catch (error) {
         console.log("createUsername error", error);
@@ -99,11 +99,11 @@ const resolvers = {
         return {
           username,
           success: false,
-          error: e?.message,
+          error: e?.message
         };
       }
-    },
-  },
+    }
+  }
 
   // Subscription: {},
 };

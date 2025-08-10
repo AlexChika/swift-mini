@@ -37,8 +37,7 @@ function DateDemacator({ demacatorText }: Props) {
       color="primaryText"
       my={7}
       textTransform="capitalize"
-      fontSize={13}
-    >
+      fontSize={13}>
       {demacatorText}
     </Text>
   );

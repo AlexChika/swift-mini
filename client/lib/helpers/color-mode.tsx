@@ -22,7 +22,7 @@ export function useTheme(): UseThemeReturn {
   return {
     theme,
     setTheme,
-    toggleTheme,
+    toggleTheme
   };
 }
 
@@ -40,7 +40,7 @@ export function ThemeIcon() {
   );
 }
 
-interface ThemeButtonProps extends Omit<IconButtonProps, "aria-label"> {}
+type ThemeButtonProps = Omit<IconButtonProps, "aria-label">;
 
 export const ThemeButton = React.forwardRef<
   HTMLButtonElement,
@@ -59,10 +59,9 @@ export const ThemeButton = React.forwardRef<
         css={{
           _icon: {
             width: "5",
-            height: "5",
-          },
-        }}
-      >
+            height: "5"
+          }
+        }}>
         <ThemeIcon />
       </IconButton>
     </ClientOnly>

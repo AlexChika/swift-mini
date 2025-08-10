@@ -18,7 +18,7 @@ function ConversationList({ session }: Props) {
     data,
     error: convError,
     loading: convLoading,
-    subscribeToMore,
+    subscribeToMore
   } = useQuery<conversationsData>(conversationOperations.Queries.conversations);
 
   function subToNewConversation() {
@@ -31,14 +31,15 @@ function ConversationList({ session }: Props) {
           update.subscriptionData.data.conversationCreated;
 
         return Object.assign({}, prev, {
-          conversations: [...prev.conversations, newConversation],
+          conversations: [...prev.conversations, newConversation]
         });
-      },
+      }
     });
   }
 
   async function conversationOnClick(conversationId: string) {
-    router.replace(`/?conversationId=${conversationId}`);
+    // router.replace(`/?conversationId=${conversationId}`);
+    router.push(conversationId);
     // mark Convo as read
   }
 
@@ -62,8 +63,7 @@ function ConversationList({ session }: Props) {
       ref={BoxRef}
       css={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
-      pb="10px"
-    >
+      pb="10px">
       {/* loading */}
       {convLoading && (
         <Stack h="100%" gap={3}>
@@ -84,8 +84,7 @@ function ConversationList({ session }: Props) {
             color="whiteAlpha.500"
             status="error"
             flexDirection="column"
-            textAlign="center"
-          >
+            textAlign="center">
             <Alert.Indicator color="whiteAlpha.500" boxSize="40px" mr={0} />
             <Alert.Content>
               <Alert.Title mt={4} fontSize="sm">
@@ -110,7 +109,7 @@ function ConversationList({ session }: Props) {
                 {...{
                   conversationOnClick,
                   conversation: c,
-                  session,
+                  session
                 }}
               />
             );

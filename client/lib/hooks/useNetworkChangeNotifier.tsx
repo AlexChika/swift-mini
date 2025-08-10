@@ -14,8 +14,8 @@ function useNetworkChangeNotifier() {
 
         iconTheme: {
           secondary: "#ff8080",
-          primary: "red",
-        },
+          primary: "red"
+        }
       });
     };
 
@@ -26,8 +26,8 @@ function useNetworkChangeNotifier() {
         style: { background: "#14213d", color: "#339933" },
         iconTheme: {
           secondary: "#80c080",
-          primary: "green",
-        },
+          primary: "green"
+        }
       });
       reloadSession();
       update();

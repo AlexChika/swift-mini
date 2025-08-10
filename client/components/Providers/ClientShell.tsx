@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function ClientShell({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {

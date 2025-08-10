@@ -1,5 +1,5 @@
 import useFetchConversation from "@/lib/hooks/useFetchConversation";
-import { Box, Image } from "@chakra-ui/react";
+import { Image } from "@chakra-ui/react";
 import { Center, Alert, Text } from "@chakra-ui/react";
 import Spinner from "../general/Spinner";
 
@@ -41,8 +41,7 @@ function StartScreen({ Child }: Props) {
           borderColor="#ff4343"
           p={8}
           maxW="md"
-          boxShadow="xl"
-        >
+          boxShadow="xl">
           <Alert.Indicator color="red.600" boxSize="3rem" mr={0} mb={4} />
           <Alert.Content>
             <Alert.Title fontSize="lg" fontWeight="semibold">
@@ -73,8 +72,7 @@ function StartScreen({ Child }: Props) {
         fontStyle="italic"
         fontSize="13px"
         color="white"
-        className="animate-pulse"
-      >
+        className="animate-pulse">
         Loading Please Wait...
       </Text>
     </Center>
