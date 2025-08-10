@@ -34,7 +34,7 @@ npm run lint:check || {
 echo ""
 echo "✅ Hurray! Everything passed — committing now. 🚀"
 
-exit 1
+
 
 # uncomment below line to test hook
 # exit 1
