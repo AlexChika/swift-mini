@@ -1,6 +1,6 @@
 import { Avatar, Flex, Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { formatUserNames, dateFormatter } from "@/lib";
 
 type Props = {
@@ -14,11 +14,10 @@ function ConversationItem(props: Props) {
   const { id, latestMessage, participants, latestMessageId, updatedAt } =
     conversation;
 
-  const search = useSearchParams();
-  const conversationId = search.get("conversationId");
+  const chatId = useParams().chatId;
 
   // variable depends on stateful values,
-  const isSelected = id === conversationId;
+  const isSelected = id === chatId;
   const { getTimePassed } = dateFormatter(updatedAt);
   const { usernames, avatar, name } = formatUserNames(
     participants,
