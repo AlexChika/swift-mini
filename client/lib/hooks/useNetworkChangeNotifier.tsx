@@ -6,8 +6,6 @@ function useNetworkChangeNotifier() {
   const { update } = useSession();
 
   useEffect(() => {
-    console.log("ran useNetworkChangeNotifier");
-
     const offlineHandler = () => {
       toast.loading("You are offline", {
         id: "onlineoffline",

@@ -90,6 +90,7 @@ type Message = {
 
 type IconProp = {
   className?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style?: any;
   color?: string;
 };
