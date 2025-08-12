@@ -3,7 +3,7 @@
   "display": "Node 22",
   "_version": "22.18.0",
   "exclude": ["node_modules"],
-  "include": ["src", "lib", "swift-mini.d.ts"],
+  "include": ["src", "lib", "swift-mini.d.ts", "src/models"],
 
   "compilerOptions": {
     "lib": ["es2023"],
@@ -13,9 +13,10 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "#lib": ["lib"],
-      "#lib/*": ["lib/*"],
-      "#src/*": ["src/*"]
+      "@/*": ["./"],
+      "@lib/*": ["lib/*"],
+      "@src/*": ["src/*"],
+      "@models/*": ["src/models/*"]
     },
 
     "strict": true,

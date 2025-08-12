@@ -3,7 +3,7 @@ import { GraphQLError } from "graphql";
 import { withFilter } from "graphql-subscriptions";
 import { Conversation, GraphqlContext, Message } from "swift-mini";
 import { conversationsInclude } from "./conversations";
-import { isUserAConversationParticipant } from "#lib";
+import { isUserAConversationParticipant } from "lib";
 
 type SendMessageArgs = {
   senderId: string;

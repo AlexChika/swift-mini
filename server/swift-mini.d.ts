@@ -3,19 +3,18 @@ import { MessageInclude } from "#src/graphql/resolvers/message";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { PubSub } from "graphql-subscriptions";
 import { Context } from "graphql-ws";
-// import nextAuth, { Session, DefaultSession } from "next-auth";
 
-// declare module "next-auth" {
-//   interface Session {
-//     user: {
-//       id: string;
-//       username: string;
-//       emailVerified: boolean;
-//     } & DefaultSession["user"];
-//   }
-// }
+type User = {
+  id: string;
+  username?: string | null;
+  emailVerified?: boolean | null;
+  name?: string | null;
+  email?: string | null; // set by Oauth
+  image?: string | null;
+  userImageUrl?: string | null; // set/upload by User
+  permanentImageUrl?: string | null;
+};
 
-// remove next-auth
 interface Session {
   user: {
     id: string;

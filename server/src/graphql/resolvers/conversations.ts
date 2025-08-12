@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { Conversation, GraphqlContext } from "../../../swift-mini";
+import { Conversation, GraphqlContext } from "swift-mini";
 import { Prisma } from "@prisma/client";
 import { dateScalar } from "./scalers";
 import { withFilter } from "graphql-subscriptions";
@@ -97,7 +97,7 @@ const conversationResolver = {
           const { session } = ctx;
           const { participants } = payload.conversationCreated;
           const userIsParticipant = !!participants.find(
-            (p) => p.userId === session?.user.id
+            (p: { userId: string | undefined }) => p.userId === session?.user.id
           );
           return userIsParticipant;
         }

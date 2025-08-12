@@ -9,6 +9,7 @@ type CreateUsernameData = {
 };
 type CreateUsernameVariable = {
   username: string;
+  userHasImage: boolean;
 };
 
 type SearchedUser = {

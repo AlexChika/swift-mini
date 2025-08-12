@@ -17,7 +17,7 @@ type Query {
 }
 
 type Mutation {
-    createUsername(username:String!):CreateUserResponse
+    createUsername(username:String!, userHasImage:Boolean!):CreateUserResponse
 }
 
 # type Subscription {

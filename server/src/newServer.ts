@@ -10,17 +10,20 @@ import { ApolloServer } from "@apollo/server";
 import cors from "cors";
 // import pkg from "body-parser";
 
-import resolvers from "src/graphql/resolvers";
-import typeDefs from "src/graphql/typeDefs";
-import { getSession } from "lib/getSession";
-import { GraphqlContext, SubscriptionContext } from "swift-mini";
+import resolvers from "@src/graphql/resolvers";
+import typeDefs from "@src/graphql/typeDefs";
+import { getSession } from "@lib/getSession";
+import { GraphqlContext, SubscriptionContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
-import { PubSub } from "graphql-subscriptions";
 import restartJob from "lib/cron";
+import { PubSub } from "graphql-subscriptions";
+import { connectDB } from "lib/db";
+import imagesRouter from "src/routes/images/images.route";
 // const { json } = pkg;
 
 // configs
 dotenv.config();
+await connectDB();
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
 
@@ -89,6 +92,8 @@ app.use(
     }
   })
 );
+
+app.use("/images", imagesRouter);
 
 app.get("/cron", (_, res) => {
   res.end("SERVER RUNING");
