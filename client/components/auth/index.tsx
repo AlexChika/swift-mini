@@ -40,7 +40,9 @@ function Auth({ session, reloadSession }: AuthProps) {
     });
 
     try {
-      const { data } = await createUsername({ variables: { username } });
+      const { data } = await createUsername({
+        variables: { username, userHasImage: !!session?.user?.image }
+      });
 
       if (!data?.createUsername) {
         throw new Error("Operation failed");

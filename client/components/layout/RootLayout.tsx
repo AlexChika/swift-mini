@@ -23,6 +23,8 @@ function RootLayout({ children }: Props) {
     loadErrorMessages();
   }
 
+  // return <Auth session={session} reloadSession={reloadSession} />;
+
   return (
     <Box>
       {/* <ColorMode.ThemeButton /> */} {/* For Debugging */}

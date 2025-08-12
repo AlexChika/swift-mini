@@ -1,5 +1,4 @@
 import { Conversation } from "swift-mini";
-// type Obj = Record<string, unknown>;
 
 function merge(
   base: Record<string, object>,
@@ -23,7 +22,7 @@ function isUserAConversationParticipant(
   participants: Conversation["participants"],
   userId: string
 ) {
-  return !!participants.find((p) => p.userId === userId);
+  return !!participants.find((p: { userId: string }) => p.userId === userId);
 }
 
 export { merge, isUserAConversationParticipant };
