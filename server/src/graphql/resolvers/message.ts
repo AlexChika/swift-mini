@@ -1,9 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { withFilter } from "graphql-subscriptions";
-import { Conversation, GraphqlContext, Message } from "swift-mini";
+import { ApiReturn, Conversation, GraphqlContext, Message } from "swift-mini";
 import { conversationsInclude } from "./conversations";
-import { isUserAConversationParticipant } from "lib";
+import isUserAConversationParticipant from "@lib/utils/isUserAConversationParticipant";
+import mongoose from "mongoose";
 
 type SendMessageArgs = {
   senderId: string;
@@ -12,19 +13,29 @@ type SendMessageArgs = {
   body: string;
 };
 
+type MessageResponse = ApiReturn<Message[], "messages">;
+
 const messageResolver = {
   Query: {
-    messages: async (
+    getMessages: async (
       _: unknown,
       args: { conversationId: string },
       ctx: GraphqlContext
-    ): Promise<Message[]> => {
+    ): Promise<MessageResponse> => {
       const { session, prisma } = ctx;
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
       const { id: userId } = session.user;
 
       try {
+        // validate conversationId is a valid mongo id
+        if (!mongoose.isValidObjectId(args.conversationId)) {
+          return {
+            success: false,
+            msg: "Url may be broken or invalid"
+          };
+        }
+
         // does conversation exist?
         const conversation = await prisma.conversation.findUnique({
           where: {
@@ -33,13 +44,23 @@ const messageResolver = {
           include: conversationsInclude
         });
 
-        if (!conversation) throw new GraphQLError("Conversation is not found");
+        if (!conversation)
+          return {
+            success: false,
+            msg: "We could not find this conversation"
+          };
 
         // does user belong to the conversation?
-        if (!isUserAConversationParticipant(conversation.participants, userId))
-          throw new GraphQLError("You are not authenticated");
+        if (
+          !isUserAConversationParticipant(conversation.participants, userId)
+        ) {
+          return {
+            success: false,
+            msg: "You are not a member of this conversation"
+          };
+        }
 
-        const messages = prisma.message.findMany({
+        const messages = await prisma.message.findMany({
           where: {
             conversationId: args.conversationId
           },
@@ -49,7 +70,11 @@ const messageResolver = {
           }
         });
 
-        return messages;
+        return {
+          success: true,
+          messages,
+          msg: "Success"
+        };
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("Messages error", error);
@@ -127,6 +152,8 @@ const messageResolver = {
           include: conversationsInclude
         });
 
+        return true;
+
         // pubsub.publish("CONVERSATION_UPDATED", {
         //   conversationUpdated: conversation,
         // });
@@ -135,8 +162,6 @@ const messageResolver = {
         console.log("sendMessage error", error);
         throw new GraphQLError(err.message);
       }
-
-      return true;
     }
   },
 

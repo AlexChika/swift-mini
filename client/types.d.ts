@@ -1,3 +1,13 @@
+type ApiReturn<T, Name extends string> =
+  | {
+      success: false;
+      msg: string;
+    }
+  | ({
+      success: true;
+      msg: string;
+    } & { [P in Name]: T });
+
 /* --------------------- users --------------------- */
 
 type CreateUsernameData = {
@@ -63,8 +73,10 @@ type Conversation = {
 };
 
 /* -------------------- Messages ------------------- */
+type MessagesResponse = ApiReturn<Message[], "messages">;
+
 type MessagesData = {
-  messages: Message[];
+  getMessages: MessagesResponse;
 };
 
 type sendMessageData = boolean;

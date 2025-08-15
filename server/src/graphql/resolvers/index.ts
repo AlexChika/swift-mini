@@ -1,10 +1,10 @@
 // import merge from "lodash.merge";
 // import userResolvers from "./user";
 
+import merge from "@lib/utils/merge";
+import messageResolver from "./message";
 import userResolver from "./user.resolver";
 import conversationResolver from "./conversations";
-import messageResolver from "./message";
-import { merge } from "lib";
 
 const resolvers = merge(
   {},

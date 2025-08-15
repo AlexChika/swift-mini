@@ -1,25 +1,21 @@
-import dotenv from "dotenv";
-import { createServer } from "http";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { expressMiddleware } from "@as-integrations/express4";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { WebSocketServer } from "ws";
-import { useServer } from "graphql-ws/lib/use/ws";
-import express from "express";
-import { ApolloServer } from "@apollo/server";
 import cors from "cors";
-// import pkg from "body-parser";
+import dotenv from "dotenv";
+import express from "express";
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
+import { ApolloServer } from "@apollo/server";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { expressMiddleware } from "@as-integrations/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 
-import resolvers from "@src/graphql/resolvers";
 import typeDefs from "@src/graphql/typeDefs";
-import { getSession } from "@lib/getSession";
-import { GraphqlContext, SubscriptionContext } from "../swift-mini";
 import { PrismaClient } from "@prisma/client";
-import restartJob from "lib/cron";
 import { PubSub } from "graphql-subscriptions";
-import { connectDB } from "lib/db";
+import resolvers from "@src/graphql/resolvers";
+import { connectDB, restartJob, getSession } from "lib";
 import imagesRouter from "src/routes/images/images.route";
-// const { json } = pkg;
+import { GraphqlContext, SubscriptionContext } from "swift-mini";
 
 // configs
 dotenv.config();

@@ -4,6 +4,7 @@ import { Box } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import ConversationList from "@/components/chats/ConversationList";
 import StartConversationBtn from "@/components/chats/StartConversationBtn";
+import StartConversationBtn2 from "./StartConversationBtn2";
 
 type Props = {
   session: Session;
@@ -27,6 +28,7 @@ function Chats({ session }: Props) {
       py={3}
       px={3}>
       <StartConversationBtn session={session} />
+      <StartConversationBtn2 session={session} />
       <ConversationList session={session} />
     </Box>
   );

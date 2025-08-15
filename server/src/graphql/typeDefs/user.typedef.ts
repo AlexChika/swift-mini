@@ -2,6 +2,9 @@ const userDefs = `#graphql
 type User {
   id:String!
   name:String!
+  emailVerified:Boolean
+  userImageUrl:String
+  permanentImageUrl:String
   username:String
   email:String
   image:String

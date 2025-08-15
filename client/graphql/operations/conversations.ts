@@ -36,6 +36,14 @@ const createConversation = gql`
   }
 `;
 
+const createDuoChat = gql`
+  mutation CreateDuoChat($otherUserId: String!) {
+    createDuoChat(otherUserId: $otherUserId) {
+      chatId
+    }
+  }
+`;
+
 /* ----------------- subscriptiond ---------------- */
 const conversationCreated = gql`
   subscription ConversationCreated {
@@ -68,7 +76,8 @@ const Queries = {
 };
 
 const Mutations = {
-  createConversation
+  createConversation,
+  createDuoChat
 };
 
 const Subscriptions = {

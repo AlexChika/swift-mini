@@ -8,7 +8,7 @@ function formatUserNames(
   if (participants.length < 1)
     return {
       usernames: "",
-      avatar: "",
+      avatar: undefined,
       name: ""
     };
 
