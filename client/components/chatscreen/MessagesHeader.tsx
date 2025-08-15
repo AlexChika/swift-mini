@@ -22,15 +22,13 @@ type Props = {
 function MessagesHeader({ id, userId }: Props) {
   const router = useRouter();
 
+  // recommended implementation
+  // query for conversation directly not all conversations
   const { data, loading } = useQuery<conversationsData>(
     conversationOperations.Queries.conversations
   );
-
+  //
   const conversation = data?.conversations.find((c) => c.id === id);
-
-  if (data?.conversations && !loading && !conversation) {
-    router.replace("/");
-  }
 
   const { usernames, avatar, name } = formatUserNames(
     conversation?.participants || [],

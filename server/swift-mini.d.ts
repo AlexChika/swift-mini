@@ -1,9 +1,10 @@
-import { conversationsInclude } from "#src/graphql/resolvers/conversations";
-import { MessageInclude } from "#src/graphql/resolvers/message";
+import { conversationsInclude } from "src/graphql/resolvers/conversations";
+import { MessageInclude } from "src/graphql/resolvers/message";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { PubSub } from "graphql-subscriptions";
 import { Context } from "graphql-ws";
 
+/* ------------ model types ----------- */
 type User = {
   id: string;
   username?: string | null;
@@ -13,6 +14,87 @@ type User = {
   image?: string | null;
   userImageUrl?: string | null; // set/upload by User
   permanentImageUrl?: string | null;
+};
+
+type Chat = {
+  id: string;
+  description: string;
+  chatName: string;
+  chatType: "group" | "duo";
+  groupType: "private" | "public";
+  inviteLink: string | null;
+  joinRequests: string[];
+  groupAdmins: string[];
+  superAdmin: string | null;
+  latestMessageId: string | null;
+  createdAt: Date;
+};
+
+type ChatMember<T> = {
+  id: string;
+  chatId: T;
+  memberId: T;
+  lastSeen: Date | null;
+  hideLastSeen: boolean;
+  role: "admin" | "member";
+  lastRead: {
+    time: Date | null;
+    messageId: string | null;
+  };
+  lastDelivered: {
+    time: Date | null;
+  };
+  messageMeta: {
+    [key: string]: {
+      showMessage: boolean;
+      time: Date;
+      messageId: string;
+    };
+  } | null;
+  showChat: boolean;
+};
+
+type Messages = {
+  id: string;
+  chatId: string;
+  senderId: string;
+  body: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deleted: boolean;
+};
+
+/* -------------- Api Types -------------- */
+type ApiReturn<T, Name extends string> =
+  | {
+      success: false;
+      msg: string;
+    }
+  | ({
+      success: true;
+      msg: string;
+    } & { [P in Name]: T });
+
+type ChatMemberPopulated = ChatMember<string> & {
+  member: User;
+};
+
+type MessagePopulated = Messages & {
+  sender: User;
+};
+
+type ChatLean = Chat & {
+  chat_latestMessage?: MessagePopulated;
+  duo_chat_members: ChatMemberPopulated[];
+  self_member: ChatMemberPopulated;
+};
+
+type ChatPopulated = Chat & {
+  chat_superAdmin: User;
+  chat_groupAdmins: User[];
+  chat_joinRequests: User[];
+  chat_latestMessage: MessagePopulated;
+  chat_members: ChatMemberPopulated[];
 };
 
 interface Session {

@@ -12,9 +12,15 @@ type Mutation {
 }
 
 type Query {
-    messages(conversationId:String!):[Message!]
+    getMessages(conversationId:String!): getMessageResponse
 }
 
+
+type getMessageResponse {
+    success:Boolean!
+    msg:String!
+    messages:[Message!]
+}
 
 type Subscription {
     messageSent(conversationId:String):Message

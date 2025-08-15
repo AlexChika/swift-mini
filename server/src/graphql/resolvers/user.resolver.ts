@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import { GraphqlContext, User } from "swift-mini";
 import userModel from "@src/models/user.model";
-import { createPermanentUrl } from "@lib/helpers";
+import createPermanentUrl from "@lib/utils/createPermanentUrl";
 
 type CreateUsernameResponse = {
   success: boolean;

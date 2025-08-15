@@ -2,4 +2,4 @@ function createPermanentUrl(userId: string) {
   return `https://server-swiftmini.globalstack.dev/images/${userId}.png`;
 }
 
-export { createPermanentUrl };
+export default createPermanentUrl;

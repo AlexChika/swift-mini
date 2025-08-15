@@ -13,9 +13,13 @@ const messageFields = `
 
 // Queries
 const messages = gql`
-  query Messages($conversationId: String!) {
-    messages(conversationId: $conversationId) {
+  query GetMessages($conversationId: String!) {
+    getMessages(conversationId: $conversationId) {
+      success
+      msg
+      messages {
        ${messageFields}
+      }
     }
   }
 `;

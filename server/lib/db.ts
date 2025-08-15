@@ -12,6 +12,9 @@ export async function connectDB() {
 
   isConnected = db.connections[0].readyState === 1;
   console.log({ isConnected });
-  console.log("Connected to MongoDB");
+
+  if (!isConnected) console.log("Failed to connect to MongoDB");
+  else console.log("Connected to MongoDB");
+
   return mongoose;
 }
