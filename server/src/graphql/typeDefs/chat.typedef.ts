@@ -75,10 +75,12 @@ enum GroupType {
 
 type ChatMember {
     id: String!
+    role: String!
     chatId: String!
     joinedAt: Date!
     memberId: String!
     showChat: Boolean
+    chatType: ChatType
     lastRead: LastRead
     lastDelivered: LastRead
     messageMeta: [KeyValue!] # replaced Map with list of key-value pairs

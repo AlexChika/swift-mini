@@ -31,121 +31,6 @@ const conversationResolver = {
       }
 
       const { id } = session.user;
-      const userId = new mongoose.Types.ObjectId(id);
-
-      const chats = await chatMemberModel.aggregate([
-        {
-          $match: {
-            memberId: userId
-          }
-        },
-        {
-          $lookup: {
-            from: "Chat",
-            localField: "chatId",
-            foreignField: "_id",
-            as: "Chat"
-          }
-        },
-        {
-          $unwind: "$Chat"
-        },
-        {
-          $lookup: {
-            from: "Message",
-            pipeline: [
-              {
-                $match: {
-                  _id: "$Chat.latestMessageId"
-                }
-              },
-              {
-                $lookup: {
-                  from: "User",
-                  localField: "senderId",
-                  foreignField: "_id",
-                  as: "sender"
-                }
-              },
-              {
-                $unwind: {
-                  path: "$sender",
-                  preserveNullAndEmptyArrays: true
-                }
-              }
-            ],
-            as: "Chat.chat_latestMessage"
-          }
-        },
-        {
-          $unwind: {
-            path: "$Chat.chat_latestMessage",
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        {
-          $lookup: {
-            from: "ChatMember",
-            let: { chatIdVar: "$Chat._id", chatTypeVar: "$Chat.chatType" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$chatId", "$$chatIdVar"] },
-                      { $eq: ["$$chatTypeVar", "duo"] } // only include members for duo
-                    ]
-                  }
-                }
-              },
-              {
-                $lookup: {
-                  from: "User",
-                  localField: "memberId",
-                  foreignField: "_id",
-                  as: "user"
-                }
-              },
-              {
-                $unwind: {
-                  path: "$user",
-                  preserveNullAndEmptyArrays: true
-                }
-              }
-            ],
-            as: "Chat.duo_chat_members"
-          }
-        },
-        {
-          $addFields: {
-            self_member: {
-              _id: "$_id",
-              memberId: "$memberId",
-              chatId: "$chatId",
-              lastDelivered: "$lastDelivered",
-              lastRead: "$lastRead",
-              showChat: "$showChat",
-              messageMeta: "$messageMeta",
-              role: "$role",
-              lastSeen: "$lastSeen",
-              hideLastSeen: "$hideLastSeen"
-            }
-          }
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: ["$Chat", { self_member: "$self_member" }]
-            }
-          }
-        },
-        {
-          $sort: { updatedAt: -1 }
-        }
-      ]);
-
-      console.log({ chats });
-      console.log(JSON.stringify(chats, null, 2));
 
       try {
         const convos = await prisma.conversation.findMany({
@@ -177,34 +62,64 @@ const conversationResolver = {
 
       const { id } = session.user;
       const userId = new mongoose.Types.ObjectId(id);
+      const uid = new mongoose.Types.ObjectId(userId); // ensure type matches your schema
 
       try {
-        const chats = await chatMemberModel.aggregate([
-          {
-            $match: {
-              memberId: userId
-            }
-          },
-          {
-            $lookup: {
-              from: "Chat",
-              localField: "chatId",
-              foreignField: "_id",
-              as: "Chat"
-            }
-          },
-          {
-            $unwind: "$Chat"
-          },
+        const chats = await chatModel.aggregate([
+          // 1) Sort early on Chat.updatedAt (add index { updatedAt: -1 } on Chat)
+          { $sort: { updatedAt: -1 } },
+
+          // 2) Keep only chats where this user is a member (cheap, via one lookup)
           {
             $lookup: {
-              from: "Message",
+              from: "ChatMember",
+              let: { cid: "$_id" },
               pipeline: [
                 {
                   $match: {
-                    _id: "$Chat.latestMessageId"
+                    $expr: {
+                      $and: [
+                        { $eq: ["$chatId", "$$cid"] },
+                        { $eq: ["$memberId", uid] } // <-- your user
+                      ]
+                    }
                   }
                 },
+                { $limit: 1 },
+                {
+                  $lookup: {
+                    from: "User",
+                    localField: "memberId",
+                    foreignField: "_id",
+                    as: "member"
+                  }
+                },
+                {
+                  $unwind: {
+                    path: "$member",
+                    preserveNullAndEmptyArrays: true
+                  }
+                },
+                {
+                  $addFields: {
+                    // id: { $toString: "$_id" },
+                    "member.id": { $toString: "$member._id" }
+                  }
+                }
+              ],
+              as: "self_member"
+            }
+          },
+          { $match: { self_member: { $ne: [] } } },
+          { $unwind: "$self_member" },
+
+          // 3) Latest message (needs pipeline + let to reference parent)
+          {
+            $lookup: {
+              from: "Message",
+              let: { mid: "$latestMessageId" },
+              pipeline: [
+                { $match: { $expr: { $eq: ["$_id", "$$mid"] } } },
                 {
                   $lookup: {
                     from: "User",
@@ -214,32 +129,37 @@ const conversationResolver = {
                   }
                 },
                 {
-                  $unwind: {
-                    path: "$sender",
-                    preserveNullAndEmptyArrays: true
+                  $unwind: { path: "$sender", preserveNullAndEmptyArrays: true }
+                },
+                {
+                  $addFields: {
+                    id: { $toString: "$_id" },
+                    "sender.id": { $toString: "$sender._id" }
                   }
                 }
               ],
-              as: "Chat.chat_latestMessage"
+              as: "chat_latestMessage"
             }
           },
           {
             $unwind: {
-              path: "$Chat.chat_latestMessage",
+              path: "$chat_latestMessage",
               preserveNullAndEmptyArrays: true
             }
           },
+
+          // 4) Duo members only (skip for groups)
           {
             $lookup: {
               from: "ChatMember",
-              let: { chatIdVar: "$Chat._id", chatTypeVar: "$Chat.chatType" },
+              let: { cid: "$_id", ctype: "$chatType" },
               pipeline: [
                 {
                   $match: {
                     $expr: {
                       $and: [
-                        { $eq: ["$chatId", "$$chatIdVar"] },
-                        { $eq: ["$$chatTypeVar", "duo"] } // only include members for duo
+                        { $eq: ["$chatId", "$$cid"] },
+                        { $eq: ["$$ctype", "duo"] }
                       ]
                     }
                   }
@@ -249,46 +169,73 @@ const conversationResolver = {
                     from: "User",
                     localField: "memberId",
                     foreignField: "_id",
-                    as: "user"
+                    as: "member"
                   }
                 },
                 {
-                  $unwind: {
-                    path: "$user",
-                    preserveNullAndEmptyArrays: true
+                  $unwind: { path: "$member", preserveNullAndEmptyArrays: true }
+                },
+                {
+                  $addFields: {
+                    id: { $toString: "$_id" },
+                    "member.id": { $toString: "$member._id" }
                   }
                 }
               ],
-              as: "Chat.duo_chat_members"
+              as: "duo_chat_members"
             }
           },
+
+          // 6) Add nice string ids + lift self_member to top-level
           {
             $addFields: {
-              self_member: {
-                _id: "$_id",
-                memberId: "$memberId",
-                chatId: "$chatId",
-                lastDelivered: "$lastDelivered",
-                lastRead: "$lastRead",
-                showChat: "$showChat",
-                messageMeta: "$messageMeta",
-                role: "$role",
-                lastSeen: "$lastSeen",
-                hideLastSeen: "$hideLastSeen"
-              }
+              id: { $toString: "$_id" },
+              "self_member.id": { $toString: "$self_member._id" }
             }
           },
+
+          // 7) Project only what your GraphQL ChatLean needs (keeps payload small)
+
+          // when the client is fully built, we will trim this down to only the fields we need
+
+          // Also, we would trim graphql typeDefs to only the fields we need
+
+          // but for now, we will keep it all to make sure everything works
+
           {
-            $replaceRoot: {
-              newRoot: {
-                $mergeObjects: ["$Chat", { self_member: "$self_member" }]
-              }
+            $project: {
+              _id: 0,
+              id: 1,
+              description: 1,
+              // superAdmin: 1,
+              // groupAdmins: 1,
+              chatName: 1,
+              chatType: 1,
+              // groupType: 1,
+              // inviteLink: 1,
+              // createdAt: 1,
+              updatedAt: 1,
+              // joinRequests: 1,
+              // latestMessageId: 1,
+              chat_latestMessage: 1,
+              duo_chat_members: 1,
+              self_member: 1
+              // "chat_latestMessage.id": 1,
+              // "chat_latestMessage.content": 1,
+              // "chat_latestMessage.sender.id": 1,
+              // "chat_latestMessage.sender.username": 1,
+              // "duo_chat_members.id": 1,
+              // "duo_chat_members.member.id": 1,
+              // "duo_chat_members.member.username": 1,
+              // "self_member.id": 1,
+              // "self_member.role": 1,
+              // "self_member.lastRead": 1
             }
-          },
-          {
-            $sort: { updatedAt: -1 }
           }
         ]);
+
+        console.log(JSON.stringify(chats, null, 2));
+        console.log(chats);
 
         return chats;
       } catch (error) {
@@ -297,129 +244,235 @@ const conversationResolver = {
         throw new GraphQLError(err.message);
       }
     },
-    getChat: async (_: unknown, __: unknown, ctx: GraphqlContext) => {
+    getChat: async (
+      _: unknown,
+      args: { chatId: string },
+      ctx: GraphqlContext
+    ) => {
       const { session } = ctx;
 
       if (!session?.user.username) {
         throw new GraphQLError("User is not authenticated");
       }
 
+      // check if chatId is valid
+      if (!args.chatId || !mongoose.isValidObjectId(args.chatId)) {
+        throw new GraphQLError(`The provided chatId ${args.chatId} is invalid`);
+      }
+
       const { id } = session.user;
-      const userId = new mongoose.Types.ObjectId(id);
+      const chatId = new mongoose.Types.ObjectId(args.chatId);
+
+      // chat_superAdmin: User; ✅
+      // chat_groupAdmins: [User!]; ✅
+      // chat_latestMessage: Message; ✅
+      // chat_members: [ChatMember!]; ✅
+      // chat_joinRequests: [ChatJoinRequest!];
 
       try {
-        const chats = await chatMemberModel.aggregate([
+        const [chat] = await chatModel.aggregate([
+          /* ------------- // 1) Match the chatId ------------ */
           {
             $match: {
-              memberId: userId
+              _id: chatId
             }
           },
+
+          /* ----- // 2) Lookup superAdmin User document ----- */
           {
             $lookup: {
-              from: "Chat",
-              localField: "chatId",
+              from: "User",
+              localField: "superAdmin",
               foreignField: "_id",
-              as: "Chat"
-            }
-          },
-          {
-            $unwind: "$Chat"
-          },
-          {
-            $lookup: {
-              from: "Message",
+              as: "chat_superAdmin",
               pipeline: [
-                {
-                  $match: {
-                    _id: "$Chat.latestMessageId"
-                  }
-                },
-                {
-                  $lookup: {
-                    from: "User",
-                    localField: "senderId",
-                    foreignField: "_id",
-                    as: "sender"
-                  }
-                },
-                {
-                  $unwind: {
-                    path: "$sender",
-                    preserveNullAndEmptyArrays: true
-                  }
-                }
-              ],
-              as: "Chat.chat_latestMessage"
+                { $limit: 1 },
+                { $addFields: { id: { $toString: "$_id" } } }
+              ]
             }
           },
           {
             $unwind: {
-              path: "$Chat.chat_latestMessage",
+              path: "$chat_superAdmin",
               preserveNullAndEmptyArrays: true
             }
           },
+
+          /* ---- // 3 ) Lookup groupAdmins User documents --- */
+          {
+            $lookup: {
+              from: "User",
+              localField: "groupAdmins",
+              foreignField: "_id",
+              as: "chat_groupAdmins",
+
+              pipeline: [
+                // can replace this with $project, limit fields and add id like below instead of with $addFields
+
+                // {
+                //   $project: {
+                //     _id: 0,
+                //     id: { $toString: "$_id" },
+                //     username: 1,
+                //     image: 1
+                //   }
+                // },
+
+                {
+                  $addFields: {
+                    id: { $toString: "$_id" }
+                  }
+                }
+              ]
+            }
+          },
+
+          /* ---- // 4) Lookup latestMessage documents --- */
+          {
+            $lookup: {
+              from: "Message",
+              localField: "latestMessageId",
+              foreignField: "_id",
+              as: "chat_latestMessage",
+              pipeline: [
+                { $limit: 1 },
+                { $addFields: { id: { $toString: "$_id" } } }
+              ]
+            }
+          },
+          {
+            $unwind: {
+              path: "$chat_latestMessage",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+
+          /* ------ // 5) Lookup chat_members documents ------ */
           {
             $lookup: {
               from: "ChatMember",
-              let: { chatIdVar: "$Chat._id", chatTypeVar: "$Chat.chatType" },
+              localField: "_id",
+              foreignField: "chatId",
+              as: "chat_members",
               pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$chatId", "$$chatIdVar"] },
-                        { $eq: ["$$chatTypeVar", "duo"] } // only include members for duo
-                      ]
-                    }
-                  }
-                },
                 {
                   $lookup: {
                     from: "User",
                     localField: "memberId",
                     foreignField: "_id",
-                    as: "user"
+                    as: "member",
+                    pipeline: [{ $limit: 1 }]
                   }
                 },
                 {
                   $unwind: {
-                    path: "$user",
+                    path: "$member",
                     preserveNullAndEmptyArrays: true
                   }
+                },
+                {
+                  $addFields: {
+                    id: { $toString: "$_id" },
+                    "member.id": { $toString: "$member._id" }
+                  }
+                }
+              ]
+            }
+          },
+
+          /* ------ // 6) Lookup joinRequests documents ------ */
+          {
+            $lookup: {
+              from: "User",
+              localField: "_id",
+              foreignField: "joinRequests.userId",
+              pipeline: [
+                {
+                  $addFields: { id: { $toString: "$_id" } }
                 }
               ],
-              as: "Chat.duo_chat_members"
+              as: "populatedJoinRequests"
             }
           },
+
+          // 7) Project the final shape of the Chat object
           {
-            $addFields: {
-              self_member: {
-                _id: "$_id",
-                memberId: "$memberId",
-                chatId: "$chatId",
-                lastDelivered: "$lastDelivered",
-                lastRead: "$lastRead",
-                showChat: "$showChat",
-                messageMeta: "$messageMeta",
-                role: "$role",
-                lastSeen: "$lastSeen",
-                hideLastSeen: "$hideLastSeen"
-              }
+            $project: {
+              _id: 0,
+              id: { $toString: "$_id" },
+              description: 1,
+              superAdmin: 1,
+              groupAdmins: 1,
+              chatName: 1,
+              chatType: 1,
+              groupType: 1,
+              inviteLink: 1,
+              joinRequests: 1,
+              latestMessageId: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              chat_superAdmin: 1,
+              chat_groupAdmins: 1,
+              chat_latestMessage: 1,
+              chat_members: 1,
+              populatedJoinRequests: 1 // TODO: fix this
             }
-          },
-          {
-            $replaceRoot: {
-              newRoot: {
-                $mergeObjects: ["$Chat", { self_member: "$self_member" }]
-              }
-            }
-          },
-          {
-            $sort: { updatedAt: -1 }
           }
+          //   $lookup: {
+          //     from: "ChatMember",
+          //     // let: { chatIdVar: "$Chat._id" },
+          //     pipeline: [
+          //       {
+          //         $match: {
+          //           chatId: "$Chat._id"
+          //         }
+          //       },
+          //       {
+          //         $lookup: {
+          //           from: "User",
+          //           localField: "memberId",
+          //           foreignField: "_id",
+          //           as: "user"
+          //         }
+          //       },
+          //       {
+          //         $unwind: {
+          //           path: "$user",
+          //           preserveNullAndEmptyArrays: true
+          //         }
+          //       }
+          //     ],
+          //     as: "Chat.chat_members"
+          //   }
+          // },
         ]);
 
-        return chats;
+        if (!chat) {
+          throw new GraphQLError(`Chat with id ${args.chatId} not found`);
+        }
+
+        if (chat.populatedJoinRequests) {
+          const userMap = new Map(
+            chat.populatedJoinRequests.map((user: any) => [
+              String(user._id),
+              user
+            ])
+          );
+
+          const chat_joinRequests = chat.joinRequests.map((req: any) => ({
+            createdAt: req.createdAt,
+            userId: req.userId,
+            user: userMap.get(String(req.userId)) || null
+          }));
+
+          chat.chat_joinRequests = chat_joinRequests;
+          delete chat.populatedJoinRequests; // Clean up the temporary field
+        }
+
+        console.log(JSON.stringify(chat, null, 2));
+        console.log(chat);
+
+        return chat;
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("Query.getChats error", error);
