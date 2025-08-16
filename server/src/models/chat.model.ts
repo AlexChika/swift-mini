@@ -12,7 +12,7 @@ const joinRequest = new mongoose.Schema(
       default: Date.now
     },
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: [true, "MongoDB error: User ID is required for join requests"]
     }
   },
@@ -104,6 +104,7 @@ const chatSchema = new mongoose.Schema<Chat<Types.ObjectId>>(
 chatSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
+chatSchema.index({ updatedAt: -1 });
 
 type ChatModel = Model<TChatDocument>;
 

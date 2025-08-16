@@ -27,6 +27,190 @@ const conversations = gql`
   }
 `;
 
+const getChat = gql`
+  query GetChat($chatId: String!) {
+    getChat(chatId: $chatId) {
+      id
+      description
+      superAdmin # not used in client
+      groupAdmins # not used in client
+      chatName
+      chatType
+      groupType # not used in client
+      inviteLink # not used in client
+      # {}
+
+      joinRequests {
+        # not used in client
+        createdAt
+        userId
+      }
+
+      latestMessageId # not used in client
+      createdAt # not used in client
+      updatedAt
+
+      # not used in client
+      chat_superAdmin {
+        id
+        username
+        image
+      }
+
+      chat_groupAdmins {
+        id
+        username
+        image
+      }
+
+      chat_joinRequests {
+        user {
+          id
+          username
+          image
+        }
+        createdAt
+        userId
+      }
+
+      chat_latestMessage {
+        body
+        createdAt
+        # id
+        # sender {
+        #   id
+        #   username
+        # }
+      }
+
+      chat_members {
+        id
+        chatId
+        chatType
+        memberId
+        role
+        showChat
+        joinedAt
+
+        member {
+          id
+          username
+          image
+        }
+
+        lastRead {
+          time
+          messageId
+          id
+        }
+        lastDelivered {
+          time
+          id
+        }
+        messageMeta {
+          key
+          value {
+            messageId
+            showMessage
+            time
+          }
+        }
+      }
+    }
+  }
+`;
+
+const getChats = gql`
+  query GetChats {
+    getChats {
+      id
+      description
+      # superAdmin
+      # groupAdmins
+      chatName
+      chatType
+      # groupType
+      # inviteLink
+      # joinRequests {
+      #   createdAt
+      #   userId
+      # }
+      # latestMessageId
+      # createdAt
+      updatedAt
+      chat_latestMessage {
+        body
+        createdAt
+        id
+        sender {
+          id
+          username
+        }
+      }
+      duo_chat_members {
+        id
+        chatId
+        chatType
+        memberId
+        role
+        lastRead {
+          time
+          messageId
+          id
+        }
+        lastDelivered {
+          time
+          id
+        }
+        messageMeta {
+          key
+          value {
+            messageId
+            showMessage
+            time
+          }
+        }
+        member {
+          id
+          username
+          image
+        }
+      }
+      self_member {
+        id
+        chatId
+        chatType
+        memberId
+        role
+        showChat
+        joinedAt
+        member {
+          id
+          username
+          image
+        }
+        lastRead {
+          time
+          messageId
+          id
+        }
+        lastDelivered {
+          time
+          id
+        }
+        messageMeta {
+          key
+          value {
+            messageId
+            showMessage
+            time
+          }
+        }
+      }
+    }
+  }
+`;
+
 /* ----------------- mutations ---------------- */
 const createConversation = gql`
   mutation CreateConversation($participantIds: [String!]!) {
@@ -90,7 +274,9 @@ const conversationCreated = gql`
 `;
 
 const Queries = {
-  conversations
+  conversations,
+  getChat,
+  getChats
 };
 
 const Mutations = {

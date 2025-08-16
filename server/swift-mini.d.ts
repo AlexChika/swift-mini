@@ -25,7 +25,7 @@ type Chat<T> = {
   chatType: "group" | "duo";
   groupType: "private" | "public";
   inviteLink: string | null;
-  joinRequests: { createdAt: Date; userId: string }[];
+  joinRequests: { createdAt: Date; userId: T }[];
   groupAdmins: T[];
   superAdmin: T | null;
   latestMessageId: string | null;
