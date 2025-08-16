@@ -9,10 +9,12 @@ const messageSchema = new mongoose.Schema<Messages>(
   {
     chatId: {
       type: String,
+      ref: "Chat",
       required: [true, "MongoDB error: ConversationId is required"]
     },
     senderId: {
       type: String,
+      ref: "User",
       required: [true, "MongoDB error: SenderId is required"]
     },
     body: {

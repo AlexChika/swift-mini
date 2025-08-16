@@ -8,6 +8,8 @@ type User {
   username:String
   email:String
   image:String
+  hideLastSeen: Boolean
+  lastSeen: Date
 }
 
   type SearchedUser {

@@ -5,7 +5,7 @@ scalar Date
 
 type Mutation {
     createDuoChat(otherUserId: String!): createChatResponse
-    createGroupChat(memberIds: [String!]!): createChatResponse
+    createGroupChat(memberIds: [String!]!, chatName: String!, description: String!, groupType: GroupType!): createChatResponse
 }
 
 type createChatResponse {
@@ -29,19 +29,17 @@ type ChatPopulated {
     chatType: ChatType
     groupType: GroupType
     inviteLink: String
-    joinRequests: [String!]
+    joinRequests: [JoinRequest!]
     latestMessageId: String
-    hideLastSeen: Boolean!
-    lastSeen: Date
     createdAt: Date!
     updatedAt: Date!
 
     # below fields are not part of chat model, they are reference fields returned from db lookup queries
     chat_superAdmin: User
     chat_groupAdmins: [User!]
-    chat_joinRequests: [User!]
+    chat_joinRequests: [ChatJoinRequest!]
     chat_latestMessage: Message
-    chat_members: [Member!]
+    chat_members: [ChatMember!]
 }
 
 # returns a lean chat object
@@ -54,17 +52,15 @@ type ChatLean {
     chatType: ChatType
     groupType: GroupType
     inviteLink: String
-    joinRequests: [String!]
+    joinRequests: [JoinRequest!]
     latestMessageId: String
-    hideLastSeen: Boolean!
-    lastSeen: Date
     createdAt: Date!
     updatedAt: Date!
 
     # below fields are not part of chat model, they are reference fields returned from db lookup queries
     chat_latestMessage: Message
-    duo_chat_members: [Member!]
-    self_member: Member!
+    duo_chat_members: [ChatMember!]
+    self_member: ChatMember!
 }
 
 enum ChatType {
@@ -77,9 +73,10 @@ enum GroupType {
   private
 }
 
-type Member {
+type ChatMember {
     id: String!
     chatId: String!
+    joinedAt: Date!
     memberId: String!
     showChat: Boolean
     lastRead: LastRead
@@ -105,6 +102,19 @@ type LastRead {
     id: String!
     messageId: String!
     time: Date!
+}
+
+type JoinRequest {
+    createdAt: Date!
+    userId: String!
+}
+
+type ChatJoinRequest {
+    createdAt: Date!
+    userId: String!
+
+    # below fields are not part of joinRequest sub-model, they are reference fields returned from db lookup queries
+    user: User!
 }
 `;
 

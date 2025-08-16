@@ -44,6 +44,24 @@ const createDuoChat = gql`
   }
 `;
 
+const createGroupChat = gql`
+  mutation CreateGroupChat(
+    $memberIds: [String!]!
+    $chatName: String!
+    $description: String!
+    $groupType: GroupType!
+  ) {
+    createGroupChat(
+      memberIds: $memberIds
+      chatName: $chatName
+      description: $description
+      groupType: $groupType
+    ) {
+      chatId
+    }
+  }
+`;
+
 /* ----------------- subscriptiond ---------------- */
 const conversationCreated = gql`
   subscription ConversationCreated {
@@ -77,7 +95,8 @@ const Queries = {
 
 const Mutations = {
   createConversation,
-  createDuoChat
+  createDuoChat,
+  createGroupChat
 };
 
 const Subscriptions = {

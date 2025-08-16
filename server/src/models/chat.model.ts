@@ -1,18 +1,33 @@
 import { connectDB } from "lib/db";
 const mongoose = await connectDB();
-import { type Document, Model } from "mongoose";
+import { type Document, Model, Types } from "mongoose";
 import { Chat } from "swift-mini";
 
-type TChatDocument = Document & Chat;
+type TChatDocument = Document & Chat<Types.ObjectId>;
 
-const chatSchema = new mongoose.Schema<Chat>(
+const joinRequest = new mongoose.Schema(
+  {
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    userId: {
+      type: String,
+      required: [true, "MongoDB error: User ID is required for join requests"]
+    }
+  },
+  { _id: false }
+);
+
+const chatSchema = new mongoose.Schema<Chat<Types.ObjectId>>(
   {
     description: {
       type: String,
       default: ""
     },
     superAdmin: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       default: null,
       validate: {
         validator: function (value: string) {
@@ -22,7 +37,7 @@ const chatSchema = new mongoose.Schema<Chat>(
       }
     },
     groupAdmins: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
       validate: {
         validator: function (value) {
@@ -76,7 +91,7 @@ const chatSchema = new mongoose.Schema<Chat>(
         message: "MongoDB error: Invite link is required for group chats"
       }
     },
-    joinRequests: { type: [String], default: [] },
+    joinRequests: { type: [joinRequest], default: [] },
     latestMessageId: { type: String, default: null }
   },
   {
