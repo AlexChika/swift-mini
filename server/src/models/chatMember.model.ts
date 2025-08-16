@@ -26,17 +26,16 @@ const chatMemberSchema = new mongoose.Schema<ChatMember<Types.ObjectId>>(
       ref: "Chat",
       required: [true, "MongoDB error: ChatId is required"]
     },
+    chatType: {
+      type: String,
+      enum: ["duo", "group"],
+      default: "duo",
+      required: [true, "MongoDB error: ChatType is required"]
+    },
     memberId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: [true, "MongoDB error: UserId is required"]
-    },
-    lastSeen: {
-      type: Date,
-      default: null
-    },
-    hideLastSeen: {
-      type: Boolean,
-      default: false
     },
     role: {
       type: String,
@@ -65,7 +64,11 @@ const chatMemberSchema = new mongoose.Schema<ChatMember<Types.ObjectId>>(
     },
     showChat: {
       type: Boolean,
-      default: false,
+      required: true
+    },
+    joinedAt: {
+      type: Date,
+      default: Date.now,
       required: true
     }
   },

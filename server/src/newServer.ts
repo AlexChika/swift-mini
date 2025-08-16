@@ -60,6 +60,7 @@ const serverCleanup = useServer(
 const server = new ApolloServer<GraphqlContext>({
   schema,
   csrfPrevention: true,
+  introspection: process.env.NODE_ENV !== "production",
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
     {

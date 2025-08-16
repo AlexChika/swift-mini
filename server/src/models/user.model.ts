@@ -13,7 +13,15 @@ const userSchema = new mongoose.Schema<User>(
     username: String,
     emailVerified: Boolean,
     userImageUrl: String,
-    permanentImageUrl: String
+    permanentImageUrl: String,
+    lastSeen: {
+      type: Date,
+      default: null
+    },
+    hideLastSeen: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     toJSON: { virtuals: true },

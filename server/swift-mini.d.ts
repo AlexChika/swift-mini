@@ -12,20 +12,22 @@ type User = {
   name?: string | null;
   email?: string | null; // set by Oauth
   image?: string | null;
+  lastSeen?: Date | null;
+  hideLastSeen?: boolean;
   userImageUrl?: string | null; // set/upload by User
   permanentImageUrl?: string | null;
 };
 
-type Chat = {
+type Chat<T> = {
   id: string;
   description: string;
   chatName: string;
   chatType: "group" | "duo";
   groupType: "private" | "public";
   inviteLink: string | null;
-  joinRequests: string[];
-  groupAdmins: string[];
-  superAdmin: string | null;
+  joinRequests: { createdAt: Date; userId: string }[];
+  groupAdmins: T[];
+  superAdmin: T | null;
   latestMessageId: string | null;
   createdAt: Date;
 };
@@ -33,9 +35,8 @@ type Chat = {
 type ChatMember<T> = {
   id: string;
   chatId: T;
+  chatType: "duo" | "group";
   memberId: T;
-  lastSeen: Date | null;
-  hideLastSeen: boolean;
   role: "admin" | "member";
   lastRead: {
     time: Date | null;
@@ -52,6 +53,7 @@ type ChatMember<T> = {
     };
   } | null;
   showChat: boolean;
+  joinedAt: Date;
 };
 
 type Messages = {
@@ -83,13 +85,13 @@ type MessagePopulated = Messages & {
   sender: User;
 };
 
-type ChatLean = Chat & {
+type ChatLean = Chat<string> & {
   chat_latestMessage?: MessagePopulated;
   duo_chat_members: ChatMemberPopulated[];
   self_member: ChatMemberPopulated;
 };
 
-type ChatPopulated = Chat & {
+type ChatPopulated = Chat<string> & {
   chat_superAdmin: User;
   chat_groupAdmins: User[];
   chat_joinRequests: User[];

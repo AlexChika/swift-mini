@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import ConversationList from "@/components/chats/ConversationList";
 import StartConversationBtn from "@/components/chats/StartConversationBtn";
 import StartConversationBtn2 from "./StartConversationBtn2";
+import StartConversationBtn3 from "./StartConversationBtn3";
 
 type Props = {
   session: Session;
@@ -29,6 +30,7 @@ function Chats({ session }: Props) {
       px={3}>
       <StartConversationBtn session={session} />
       <StartConversationBtn2 session={session} />
+      <StartConversationBtn3 session={session} />
       <ConversationList session={session} />
     </Box>
   );
