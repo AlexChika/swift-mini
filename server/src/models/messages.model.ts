@@ -1,19 +1,19 @@
 import { connectDB } from "lib/db";
 const mongoose = await connectDB();
-import { type Document, Model } from "mongoose";
+import { type Document, Model, Types } from "mongoose";
 import { Messages } from "swift-mini";
 
-type TMessage = Document & Messages;
+type TMessage = Document & Messages<Types.ObjectId>;
 
-const messageSchema = new mongoose.Schema<Messages>(
+const messageSchema = new mongoose.Schema<Messages<Types.ObjectId>>(
   {
     chatId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Chat",
       required: [true, "MongoDB error: ConversationId is required"]
     },
     senderId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "MongoDB error: SenderId is required"]
     },
@@ -32,6 +32,8 @@ const messageSchema = new mongoose.Schema<Messages>(
     toObject: { virtuals: true }
   }
 );
+
+messageSchema.index({ chatId: 1, createdAt: -1 });
 
 messageSchema.virtual("id").get(function () {
   return this._id.toHexString();

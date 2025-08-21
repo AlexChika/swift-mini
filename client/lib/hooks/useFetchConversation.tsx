@@ -11,6 +11,7 @@ function useFetchConversation() {
 }
 
 function useFetchChats() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { loading, data, error } = useQuery<any>(
     conversationOperations.Queries.getChats
   );
@@ -31,6 +32,7 @@ function useFetchChats() {
 }
 
 function useFetchChat() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { loading, data, error } = useQuery<any>(
     conversationOperations.Queries.getChat,
     {
@@ -46,7 +48,7 @@ function useFetchChat() {
     }
 
     if (error) {
-      console.error("Error fetching chats:", error);
+      console.warn("Error fetching chats:", error);
       // Handle the error, e.g., show a notification
     }
   }, [data, error]);

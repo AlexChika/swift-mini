@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 import { GraphQLError } from "graphql";
 import { dateScalar } from "./scalers";
 import { Prisma } from "@prisma/client";
+import { inviteLinkEncoder } from "@lib/utils";
 import chatModel from "@src/models/chat.model";
 import userModel from "@src/models/user.model";
 import { withFilter } from "graphql-subscriptions";
 import chatMemberModel from "@src/models/chatMember.model";
-import { Conversation, GraphqlContext } from "swift-mini";
-import { inviteLinkEncoder } from "@lib/utils";
+import { ChatPopulated, Conversation, GraphqlContext, User } from "swift-mini";
 
 type createGroupChatArgs = {
   description: string;
@@ -19,6 +19,8 @@ type createGroupChatArgs = {
 type createDuoChatArgs = {
   otherUserId: string;
 };
+
+// TODO: refactor for conssistent returns and user error messages. also provides system only errors for server/client debugging
 
 const conversationResolver = {
   Date: dateScalar,
@@ -234,8 +236,8 @@ const conversationResolver = {
           }
         ]);
 
-        console.log(JSON.stringify(chats, null, 2));
-        console.log(chats);
+        // console.log(JSON.stringify(chats, null, 2));
+        // console.log(chats);
 
         return chats;
       } catch (error) {
@@ -263,14 +265,22 @@ const conversationResolver = {
       const { id } = session.user;
       const chatId = new mongoose.Types.ObjectId(args.chatId);
 
-      // chat_superAdmin: User; ✅
-      // chat_groupAdmins: [User!]; ✅
-      // chat_latestMessage: Message; ✅
-      // chat_members: [ChatMember!]; ✅
-      // chat_joinRequests: [ChatJoinRequest!];
+      // check if user is a member of the chat
+      const isMember = await chatMemberModel.exists({
+        chatId,
+        memberId: id
+      });
+
+      if (!isMember) {
+        throw new GraphQLError(
+          `We could not find the chat you are looking for.`
+        );
+      }
 
       try {
-        const [chat] = await chatModel.aggregate([
+        const [chat] = await chatModel.aggregate<
+          ChatPopulated & { joinRequestUsers?: User<string>[] }
+        >([
           /* ------------- // 1) Match the chatId ------------ */
           {
             $match: {
@@ -391,7 +401,7 @@ const conversationResolver = {
                   $addFields: { id: { $toString: "$_id" } }
                 }
               ],
-              as: "populatedJoinRequests"
+              as: "joinRequestUsers"
             }
           },
 
@@ -415,7 +425,7 @@ const conversationResolver = {
               chat_groupAdmins: 1,
               chat_latestMessage: 1,
               chat_members: 1,
-              populatedJoinRequests: 1 // TODO: fix this
+              joinRequestUsers: 1
             }
           }
           //   $lookup: {
@@ -447,30 +457,28 @@ const conversationResolver = {
           // },
         ]);
 
+        // if no chat found, throw error
         if (!chat) {
           throw new GraphQLError(`Chat with id ${args.chatId} not found`);
         }
 
-        if (chat.populatedJoinRequests) {
+        if (chat.joinRequestUsers) {
           const userMap = new Map(
-            chat.populatedJoinRequests.map((user: any) => [
-              String(user._id),
-              user
-            ])
+            chat.joinRequestUsers.map((user) => [String(user._id), user])
           );
 
-          const chat_joinRequests = chat.joinRequests.map((req: any) => ({
+          const chat_joinRequests = chat.joinRequests.map((req) => ({
             createdAt: req.createdAt,
             userId: req.userId,
             user: userMap.get(String(req.userId)) || null
           }));
 
           chat.chat_joinRequests = chat_joinRequests;
-          delete chat.populatedJoinRequests; // Clean up the temporary field
+          delete chat.joinRequestUsers; // Clean up the temporary field
         }
 
-        console.log(JSON.stringify(chat, null, 2));
-        console.log(chat);
+        // console.log(JSON.stringify(chat, null, 2));
+        // console.log(chat);
 
         return chat;
       } catch (error) {

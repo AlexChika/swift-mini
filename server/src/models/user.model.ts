@@ -1,11 +1,11 @@
 import { User } from "swift-mini";
 import { connectDB } from "lib/db";
 const mongoose = await connectDB();
-import { type Document, Model } from "mongoose";
+import { type Document, Model, Types } from "mongoose";
 
-type TUserDocument = User & Document;
+type TUserDocument = User<Types.ObjectId> & Document;
 
-const userSchema = new mongoose.Schema<User>(
+const userSchema = new mongoose.Schema<User<Types.ObjectId>>(
   {
     name: String,
     email: String,
