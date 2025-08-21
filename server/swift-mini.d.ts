@@ -5,7 +5,8 @@ import { PubSub } from "graphql-subscriptions";
 import { Context } from "graphql-ws";
 
 /* ------------ model types ----------- */
-type User = {
+type User<T> = {
+  _id: T; // MongoDB ObjectId
   id: string;
   username?: string | null;
   emailVerified?: boolean | null;
@@ -56,10 +57,10 @@ type ChatMember<T> = {
   joinedAt: Date;
 };
 
-type Messages = {
+type Messages<T> = {
   id: string;
-  chatId: string;
-  senderId: string;
+  chatId: T;
+  senderId: T;
   body: string;
   createdAt: Date;
   updatedAt: Date;
@@ -81,7 +82,7 @@ type ChatMemberPopulated = ChatMember<string> & {
   member: User;
 };
 
-type MessagePopulated = Messages & {
+type MessagePopulated = Messages<string> & {
   sender: User;
 };
 
@@ -94,8 +95,12 @@ type ChatLean = Chat<string> & {
 type ChatPopulated = Chat<string> & {
   chat_superAdmin: User;
   chat_groupAdmins: User[];
-  chat_joinRequests: User[];
-  chat_latestMessage: MessagePopulated;
+  chat_joinRequests: {
+    user: User | null;
+    createdAt: Date;
+    userId: string;
+  }[];
+  chat_latestMessage: MessagePopulated | null;
   chat_members: ChatMemberPopulated[];
 };
 

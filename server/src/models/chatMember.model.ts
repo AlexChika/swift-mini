@@ -85,8 +85,7 @@ const chatMemberSchema = new mongoose.Schema<ChatMember<Types.ObjectId>>(
 chatMemberSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
-chatMemberSchema.index({ chatId: 1, memberId: 1 });
-
+chatMemberSchema.index({ chatId: 1, memberId: 1 }, { unique: true });
 type ChatMemberModel = Model<TChatMember>;
 const chatMemberModel =
   (mongoose.models.ChatMember as ChatMemberModel) ||

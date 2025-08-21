@@ -1,5 +1,5 @@
 const messageDefs = `#graphql
-type Message {
+type MessageNew {
     id:String!
     chatId:String!
     senderId:String!
@@ -14,7 +14,21 @@ type Message {
 }
 
 type Query {
-    getMessages(chatId:String!):[Message!]
+    getMessagesNew(chatId:String!): getMessageResponseNew
+}
+
+type Mutation {
+    sendMessageNew( chatId:String!, senderId:String!, body:String!) : Boolean!
+}
+
+type Subscription {
+    messageSentNew(chatId:String):MessageNew
+}
+
+type getMessageResponseNew {
+    success:Boolean!
+    msg:String!
+    messages:[MessageNew!]
 }
 
 `;

@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
-const DATABASE_URL = process.env.DATABASE_URL as string;
+const DATABASE_URL_NEW = process.env.DATABASE_URL_NEW as string;
 let isConnected = false;
 
 export async function connectDB() {
   if (isConnected) return mongoose;
 
-  const db = await mongoose.connect(DATABASE_URL, {
+  const db = await mongoose.connect(DATABASE_URL_NEW, {
     dbName: "swift"
   });
 

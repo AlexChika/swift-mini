@@ -82,27 +82,65 @@ function Messages({ session, id }: Props) {
   const [bg, setBg] = useState(0);
 
   const { theme } = ColorMode.useTheme();
+
+  // old implementation
+  // const { data, error, loading, subscribeToMore } = useQuery<
+  //   MessagesData,
+  //   { conversationId: string }
+  // >(messageOperations.Queries.messages, {
+  //   variables: { conversationId: id }
+  // });
+
+  // new implementation
   const { data, error, loading, subscribeToMore } = useQuery<
-    MessagesData,
-    { conversationId: string }
-  >(messageOperations.Queries.messages, {
-    variables: { conversationId: id }
+    MessagesDataNew,
+    { chatId: string }
+  >(messageOperations.Queries.messagesNew, {
+    variables: { chatId: id }
   });
 
+  //old implementation
+  // function subToNewMessage(id: string) {
+  //   subscribeToMore({
+  //     variables: { conversationId: id },
+  //     document: messageOperations.Subscriptions.messageSent,
+  //     updateQuery: (prev, update: MessageUpdate) => {
+  //       if (!update.subscriptionData.data) return prev;
+
+  //       const newMessage = update.subscriptionData.data.messageSent;
+
+  //       return Object.assign({}, prev, {
+  //         getMessages: {
+  //           ...prev.getMessages,
+  //           messages: [
+  //             ...((prev.getMessages.success && prev.getMessages.messages) ||
+  //               []),
+  //             newMessage
+  //           ]
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  // new implementation
   function subToNewMessage(id: string) {
     subscribeToMore({
-      variables: { conversationId: id },
-      document: messageOperations.Subscriptions.messageSent,
-      updateQuery: (prev, update: MessageUpdate) => {
+      variables: { chatId: id },
+      document: messageOperations.Subscriptions.messageSentNew,
+      updateQuery: (prev, update: MessageUpdateNew) => {
         if (!update.subscriptionData.data) return prev;
 
-        const newMessage = update.subscriptionData.data.messageSent;
+        const newMessage = update.subscriptionData.data.messageSentNew;
+
+        console.log(new Date().getSeconds(), "published 3");
 
         return Object.assign({}, prev, {
-          getMessages: {
-            ...prev.getMessages,
+          getMessagesNew: {
+            ...prev.getMessagesNew,
             messages: [
-              ...((prev.getMessages.success && prev.getMessages.messages) ||
+              ...((prev.getMessagesNew.success &&
+                prev.getMessagesNew.messages) ||
                 []),
               newMessage
             ]
@@ -131,7 +169,7 @@ function Messages({ session, id }: Props) {
   }, [data]);
 
   const renderObj = renderObjectForDateDemacator(
-    (data?.getMessages.success && data?.getMessages.messages) || []
+    (data?.getMessagesNew.success && data?.getMessagesNew.messages) || []
   );
 
   return (
@@ -169,15 +207,16 @@ function Messages({ session, id }: Props) {
         {error && <MessageErrorUI error="Please Refresh The browser" />}
 
         {/* success false */}
-        {data?.getMessages.success === false && (
-          <MessageErrorUI error={data.getMessages.msg} />
+        {data?.getMessagesNew.success === false && (
+          <MessageErrorUI error={data.getMessagesNew.msg} />
         )}
 
         {/* data */}
-        {data?.getMessages.success &&
-          data.getMessages.messages.map((m, i) => {
+        {data?.getMessagesNew.success &&
+          data.getMessagesNew.messages.map((m, i) => {
             const messages =
-              (data.getMessages.success && data.getMessages.messages) || [];
+              (data.getMessagesNew.success && data.getMessagesNew.messages) ||
+              [];
 
             return (
               <React.Fragment key={i}>

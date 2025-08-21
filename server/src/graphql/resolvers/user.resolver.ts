@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import { GraphqlContext, User } from "swift-mini";
 import userModel from "@src/models/user.model";
 import { createPermanentUrl } from "@lib/utils";
+import { Types } from "mongoose";
 
 type CreateUsernameResponse = {
   success: boolean;
@@ -20,7 +21,7 @@ const resolvers = {
       _: unknown,
       args: { username: string },
       ctx: GraphqlContext
-    ): Promise<User[]> => {
+    ): Promise<User<Types.ObjectId>[]> => {
       const { username: searchedUsername } = args;
       const { session } = ctx;
 
