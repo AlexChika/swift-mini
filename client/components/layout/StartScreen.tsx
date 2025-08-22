@@ -27,9 +27,8 @@ type Props = {
 
 function StartScreen({ Child }: Props) {
   // initialize / fetch all queries for caching
-  // const { data, error } = useFetchChats();
-  const { data, error } = useFetchConversation();
-  // useFetchChats();
+  const { data, error } = useFetchChats();
+  // const { data, error } = useFetchConversation();
   // useFetchChat();
 
   if (data) return Child;

@@ -23,7 +23,7 @@ function useFetchChats() {
     }
 
     if (error) {
-      console.error("Error fetching chats:", error);
+      console.warn("Error fetching chats:", error);
       // Handle the error, e.g., show a notification
     }
   }, [data, error]);

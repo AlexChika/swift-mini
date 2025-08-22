@@ -272,6 +272,96 @@ const conversationCreated = gql`
     }
   }
 `;
+const chatCreated = gql`
+  subscription ChatCreated {
+    chatCreated {
+      id
+      description
+      # superAdmin
+      # groupAdmins
+      chatName
+      chatType
+      # groupType
+      # inviteLink
+      # joinRequests {
+      #   createdAt
+      #   userId
+      # }
+      # latestMessageId
+      # createdAt
+      updatedAt
+      chat_latestMessage {
+        body
+        createdAt
+        id
+        sender {
+          id
+          username
+        }
+      }
+      duo_chat_members {
+        id
+        chatId
+        chatType
+        memberId
+        role
+        lastRead {
+          time
+          messageId
+          id
+        }
+        lastDelivered {
+          time
+          id
+        }
+        messageMeta {
+          key
+          value {
+            messageId
+            showMessage
+            time
+          }
+        }
+        member {
+          id
+          username
+          image
+        }
+      }
+      self_member {
+        id
+        chatId
+        chatType
+        memberId
+        role
+        showChat
+        joinedAt
+        member {
+          id
+          username
+          image
+        }
+        lastRead {
+          time
+          messageId
+          id
+        }
+        lastDelivered {
+          time
+          id
+        }
+        messageMeta {
+          key
+          value {
+            messageId
+            showMessage
+            time
+          }
+        }
+      }
+    }
+  }
+`;
 
 const Queries = {
   conversations,
@@ -286,7 +376,8 @@ const Mutations = {
 };
 
 const Subscriptions = {
-  conversationCreated
+  conversationCreated,
+  chatCreated
 };
 
 const conversationOperations = { Queries, Mutations, Subscriptions };

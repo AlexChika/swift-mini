@@ -123,7 +123,7 @@ const messageResolver = {
           memberId: userId
         });
 
-        console.log({ isUserAChatMember, chatId, userId });
+        // console.log({ isUserAChatMember, chatId, userId });
 
         if (!isUserAChatMember)
           return {
@@ -163,7 +163,7 @@ const messageResolver = {
           { $sort: { createdAt: 1 } }
         ]);
 
-        console.log({ messages });
+        // console.log({ messages });
 
         return {
           success: true,

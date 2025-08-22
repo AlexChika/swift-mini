@@ -7,7 +7,12 @@ import GoogleProvider from "next-auth/providers/google";
 //   output = "app/generated/prisma/client";
 // import { PrismaClient } from "@/prisma/app/generated/prisma/client"; for v7 (not supported by nextAuth yet)
 
-const prisma = new PrismaClient();
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
 export const getAuthConfig = (): NextAuthConfig => {
   const dev = process.env.NODE_ENV === "development";
   const domain = "globalstack.dev";
