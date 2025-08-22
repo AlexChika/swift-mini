@@ -15,9 +15,16 @@ function MessageInput(props: Props) {
   const { id, session } = props;
 
   // send message mutation
-  const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
-    messageOperations.Mutations.sendMessage
-  );
+  //old implementation
+  // const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
+  //   messageOperations.Mutations.sendMessage
+  // );
+
+  // new implementation
+  const [send, { error }] = useMutation<
+    sendMessageData,
+    sendMessageVariableNew
+  >(messageOperations.Mutations.sendMessageNew);
 
   // ref
   const InputBox = useRef<null | HTMLDivElement>(null);
@@ -42,9 +49,17 @@ function MessageInput(props: Props) {
 
   // called by the submit and enter btn:sends message
   async function sendMessage(str: string) {
+    // old implementation
+    // const newMessage = {
+    //   body: str,
+    //   conversationId: id,
+    //   senderId: session.user.id
+    // };
+
+    // new implementation
     const newMessage = {
       body: str,
-      conversationId: id,
+      chatId: id,
       senderId: session.user.id
     };
 

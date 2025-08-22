@@ -1,19 +1,10 @@
-import mongoose from "mongoose";
-import { GraphQLError } from "graphql";
-import { dateScalar } from "./scalers";
-import { Prisma } from "@prisma/client";
 import { inviteLinkEncoder } from "@lib/utils";
 import chatModel from "@src/models/chat.model";
-import userModel from "@src/models/user.model";
-import { withFilter } from "graphql-subscriptions";
 import chatMemberModel from "@src/models/chatMember.model";
-import {
-  ChatLean,
-  ChatPopulated,
-  Conversation,
-  GraphqlContext,
-  User
-} from "swift-mini";
+import userModel from "@src/models/user.model";
+import { GraphQLError } from "graphql";
+import mongoose from "mongoose";
+import { ChatPopulated, GraphqlContext, User } from "swift-mini";
 
 type createGroupChatArgs = {
   description: string;
@@ -26,41 +17,8 @@ type createDuoChatArgs = {
   otherUserId: string;
 };
 
-// TODO: refactor for conssistent returns and user error messages. also provides system only errors for server/client debugging
-
-const conversationResolver = {
-  Date: dateScalar,
+const chatResolver = {
   Query: {
-    conversations: async (_: unknown, __: unknown, ctx: GraphqlContext) => {
-      const { session, prisma } = ctx;
-
-      if (!session?.user.username) {
-        throw new GraphQLError("User is not authenticated");
-      }
-
-      const { id } = session.user;
-
-      try {
-        const convos = await prisma.conversation.findMany({
-          where: {
-            participants: {
-              some: {
-                userId: {
-                  equals: id
-                }
-              }
-            }
-          },
-
-          include: conversationsInclude
-        });
-        return convos;
-      } catch (error) {
-        const err = error as unknown as { message: string };
-        console.log("Conversation error", error);
-        throw new GraphQLError(err.message);
-      }
-    },
     getChats: async (_: unknown, __: unknown, ctx: GraphqlContext) => {
       const { session } = ctx;
 
@@ -242,8 +200,8 @@ const conversationResolver = {
           }
         ]);
 
-        // console.log(JSON.stringify(chats, null, 2));
-        // console.log(chats);
+        console.log(JSON.stringify(chats, null, 2));
+        console.log(chats);
 
         return chats;
       } catch (error) {
@@ -271,17 +229,11 @@ const conversationResolver = {
       const { id } = session.user;
       const chatId = new mongoose.Types.ObjectId(args.chatId);
 
-      // check if user is a member of the chat
-      const isMember = await chatMemberModel.exists({
-        chatId,
-        memberId: id
-      });
-
-      if (!isMember) {
-        throw new GraphQLError(
-          `We could not find the chat you are looking for.`
-        );
-      }
+      // chat_superAdmin: User; ✅
+      // chat_groupAdmins: [User!]; ✅
+      // chat_latestMessage: Message; ✅
+      // chat_members: [ChatMember!]; ✅
+      // chat_joinRequests: [ChatJoinRequest!];
 
       try {
         const [chat] = await chatModel.aggregate<
@@ -483,8 +435,8 @@ const conversationResolver = {
           delete chat.joinRequestUsers; // Clean up the temporary field
         }
 
-        // console.log(JSON.stringify(chat, null, 2));
-        // console.log(chat);
+        console.log(JSON.stringify(chat, null, 2));
+        console.log(chat);
 
         return chat;
       } catch (error) {
@@ -495,55 +447,12 @@ const conversationResolver = {
     }
   },
   Mutation: {
-    createConversation: async (
-      _: unknown,
-      args: { participantIds: string[] },
-      ctx: GraphqlContext
-    ): Promise<{ conversationId: string }> => {
-      const { prisma, session, pubsub } = ctx;
-      const { participantIds } = args;
-
-      if (!session?.user) throw new GraphQLError("User is not authenticated");
-
-      const { id: userId } = session.user;
-
-      try {
-        const conversation = await prisma.conversation.create({
-          data: {
-            participants: {
-              createMany: {
-                data: participantIds.map((id) => {
-                  return {
-                    userId: id,
-                    hasSeenLatestMessage: id === userId
-                  };
-                })
-              }
-            }
-          },
-
-          include: conversationsInclude
-        });
-
-        // emit create subscription event
-        pubsub.publish("CONVERSATION_CREATED", {
-          conversationCreated: conversation
-        });
-
-        return { conversationId: conversation.id };
-      } catch (error) {
-        const err = error as unknown as { message: string };
-        console.log("createConversation error", error);
-        throw new GraphQLError(err.message);
-      }
-    },
-
     createDuoChat: async (
       _: unknown,
       args: createDuoChatArgs,
       ctx: GraphqlContext
     ): Promise<{ chatId: string }> => {
-      const { session, pubsub } = ctx;
+      const { session } = ctx;
       const { otherUserId } = args;
 
       // is user authenticated
@@ -563,19 +472,19 @@ const conversationResolver = {
         );
 
       // check if duo chat already exists with the other user
-      // const existingChat = await chatMemberModel.findOne({
-      //   memberId: session.user.id,
-      //   chatType: "duo",
-      //   chatId: {
-      //     $in: await chatMemberModel
-      //       .find({ memberId: otherUserId, chatType: "duo" })
-      //       .distinct("chatId")
-      //   }
-      // });
+      const existingChat = await chatMemberModel.findOne({
+        memberId: session.user.id,
+        chatType: "duo",
+        chatId: {
+          $in: await chatMemberModel
+            .find({ memberId: otherUserId, chatType: "duo" })
+            .distinct("chatId")
+        }
+      });
 
-      // if (existingChat) {
-      //   return { chatId: existingChat.chatId.toString() };
-      // }
+      if (existingChat) {
+        return { chatId: existingChat.chatId.toString() };
+      }
 
       const msession = await mongoose.startSession();
       msession.startTransaction();
@@ -586,7 +495,7 @@ const conversationResolver = {
           { session: msession }
         );
 
-        const chatId = chat.id as string;
+        const chatId = chat.id;
         const memberIds = [otherUserId, session.user.id];
 
         const chatMembers = memberIds.map((id) => {
@@ -601,153 +510,10 @@ const conversationResolver = {
         await chatMemberModel.insertMany(chatMembers, { session: msession });
         await msession.commitTransaction();
 
-        // start of temporal code
-        const _chatId = new mongoose.Types.ObjectId(chatId);
-        const userId = new mongoose.Types.ObjectId(session.user.id);
-
-        const [chatCreated] = await chatModel.aggregate<ChatLean>([
-          /* ------------- // 1) Match the chatId ------------ */
-          {
-            $match: {
-              _id: _chatId
-            }
-          },
-
-          // 2) Lookup self_member document
-          {
-            $lookup: {
-              from: "ChatMember",
-              let: { cid: "$_id" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$chatId", "$$cid"] },
-                        { $eq: ["$memberId", userId] }
-                      ]
-                    }
-                  }
-                },
-                { $limit: 1 },
-                {
-                  $lookup: {
-                    from: "User",
-                    localField: "memberId",
-                    foreignField: "_id",
-                    as: "member"
-                  }
-                },
-                {
-                  $unwind: {
-                    path: "$member",
-                    preserveNullAndEmptyArrays: true
-                  }
-                },
-                {
-                  $addFields: {
-                    "member.id": { $toString: "$member._id" },
-                    id: { $toString: "$_id" }
-                  }
-                }
-              ],
-              as: "self_member"
-            }
-          },
-
-          { $match: { self_member: { $ne: [] } } },
-          { $unwind: "$self_member" },
-
-          /* ---- // 3) Lookup latestMessage documents --- */
-          {
-            $lookup: {
-              from: "Message",
-              localField: "latestMessageId",
-              foreignField: "_id",
-              as: "chat_latestMessage",
-              pipeline: [
-                { $limit: 1 },
-                { $addFields: { id: { $toString: "$_id" } } }
-              ]
-            }
-          },
-          {
-            $unwind: {
-              path: "$chat_latestMessage",
-              preserveNullAndEmptyArrays: true
-            }
-          },
-
-          /* ------ // 4) Lookup duo_chat_members documents ------ */
-          {
-            $lookup: {
-              from: "ChatMember",
-              let: { cid: "$_id", ctype: "$chatType" },
-              as: "duo_chat_members",
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$chatId", "$$cid"] },
-                        { $eq: ["$chatType", "$$ctype"] }
-                      ]
-                    }
-                  }
-                },
-                {
-                  $lookup: {
-                    from: "User",
-                    localField: "memberId",
-                    foreignField: "_id",
-                    as: "member",
-                    pipeline: [{ $limit: 1 }]
-                  }
-                },
-                {
-                  $unwind: {
-                    path: "$member",
-                    preserveNullAndEmptyArrays: true
-                  }
-                },
-                {
-                  $addFields: {
-                    id: { $toString: "$_id" },
-                    "member.id": { $toString: "$member._id" }
-                  }
-                }
-              ]
-            }
-          },
-
-          // 5) Project the final shape of the Chat object
-          {
-            $project: {
-              _id: 0,
-              id: { $toString: "$_id" },
-              description: 1,
-              superAdmin: 1,
-              groupAdmins: 1,
-              chatName: 1,
-              chatType: 1,
-              groupType: 1,
-              inviteLink: 1,
-              joinRequests: 1,
-              latestMessageId: 1,
-              createdAt: 1,
-              updatedAt: 1,
-              chat_latestMessage: 1,
-              duo_chat_members: 1,
-              self_member: 1
-            }
-          }
-        ]);
-
-        // end of temporal code
         // emit create subscription event
-        pubsub.publish("CHAT_CREATED", {
-          chatCreated
-        });
+        // pubsub.publish("CONVERSATION_CREATED", {
+        //   conversationCreated: chat
+        // });
 
         return { chatId: chat.id };
       } catch (error) {
@@ -858,107 +624,7 @@ const conversationResolver = {
         throw new GraphQLError(err.message);
       }
     }
-  },
-  Subscription: {
-    conversationCreated: {
-      subscribe: withFilter(
-        (_: unknown, __: unknown, ctx: GraphqlContext) => {
-          const { pubsub } = ctx;
-          return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
-        },
-        (
-          payload: { conversationCreated: Conversation },
-          _: unknown,
-          ctx: GraphqlContext
-        ) => {
-          const { session } = ctx;
-          const { participants } = payload.conversationCreated;
-          const userIsParticipant = !!participants.find(
-            (p: { userId: string | undefined }) => p.userId === session?.user.id
-          );
-          return userIsParticipant;
-        }
-      )
-
-      // subscribe: (_: any, __: any, ctx: GraphqlContext) => {
-      //   const { pubsub } = ctx;
-      //   return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
-      // },
-    },
-    chatCreated: {
-      subscribe: withFilter(
-        (_: unknown, __: unknown, ctx: GraphqlContext) => {
-          const { pubsub } = ctx;
-          return pubsub.asyncIterator(["CHAT_CREATED"]);
-        },
-        (
-          payload: {
-            chatCreated: ChatLean;
-          },
-          _: unknown,
-          ctx: GraphqlContext
-        ) => {
-          const { session } = ctx;
-          const { chatCreated } = payload;
-
-          console.log({ chatCreated });
-
-          const userIsAMember = !!chatCreated.duo_chat_members.find(
-            (m) => m.memberId.toString() === session?.user.id
-          );
-          return userIsAMember;
-        }
-      )
-    }
   }
 };
 
-export const participantsInclude =
-  Prisma.validator<Prisma.ConversationParticipantsInclude>()({
-    user: {
-      select: {
-        id: true,
-        username: true
-      }
-    }
-  });
-
-export const conversationsInclude =
-  Prisma.validator<Prisma.ConversationInclude>()({
-    participants: {
-      select: {
-        hasSeenLatestMessage: true,
-        conversationId: true,
-        userId: true,
-        user: {
-          select: {
-            id: true,
-            image: true,
-            username: true
-          }
-        }
-      }
-    },
-    latestMessage: {
-      include: {
-        sender: {
-          select: {
-            id: true,
-            username: true
-          }
-        }
-      }
-    }
-  });
-export default conversationResolver;
-
-// const user = await User.findById(userId);
-// const cutoff = new Date(newDateFromUserAction);
-
-// for (const [key, value] of user.meta.entries()) {
-//   if (value.timestamp < cutoff) {
-//     user.meta.delete(key);
-//   }
-// }
-
-// await user.save();
+export default chatResolver;

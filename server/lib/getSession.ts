@@ -1,7 +1,5 @@
-// import { Session } from "next-auth";
-
 import axios from "axios";
-import { Request } from "express";
+import { type Request } from "express";
 import { Session } from "swift-mini";
 
 async function getSession(req: Request, url: string): Promise<Session | null> {
@@ -11,7 +9,11 @@ async function getSession(req: Request, url: string): Promise<Session | null> {
     const res = await axios.get<Session>(url, fetchOptions);
     const session = res.data;
 
-    if (Object.keys(session).length === 0 && session.constructor === Object) {
+    if (
+      session &&
+      Object.keys(session).length === 0 &&
+      session.constructor === Object
+    ) {
       return null;
     }
 

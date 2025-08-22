@@ -1,4 +1,4 @@
-import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
+import { Alert, Box, Center, Spinner, Stack, Text } from "@chakra-ui/react";
 import MessageInput from "./MessageInput";
 import { Session } from "next-auth";
 import { hideScrollbar } from "@/chakra/theme";
@@ -82,25 +82,69 @@ function Messages({ session, id }: Props) {
   const [bg, setBg] = useState(0);
 
   const { theme } = ColorMode.useTheme();
+
+  // old implementation
+  // const { data, error, loading, subscribeToMore } = useQuery<
+  //   MessagesData,
+  //   { conversationId: string }
+  // >(messageOperations.Queries.messages, {
+  //   variables: { conversationId: id }
+  // });
+
+  // new implementation
   const { data, error, loading, subscribeToMore } = useQuery<
-    MessagesData,
-    { conversationId: string }
-  >(messageOperations.Queries.messages, {
-    variables: { conversationId: id }
+    MessagesDataNew,
+    { chatId: string }
+  >(messageOperations.Queries.messagesNew, {
+    variables: { chatId: id }
   });
 
+  //old implementation
+  // function subToNewMessage(id: string) {
+  //   subscribeToMore({
+  //     variables: { conversationId: id },
+  //     document: messageOperations.Subscriptions.messageSent,
+  //     updateQuery: (prev, update: MessageUpdate) => {
+  //       if (!update.subscriptionData.data) return prev;
+
+  //       const newMessage = update.subscriptionData.data.messageSent;
+
+  //       return Object.assign({}, prev, {
+  //         getMessages: {
+  //           ...prev.getMessages,
+  //           messages: [
+  //             ...((prev.getMessages.success && prev.getMessages.messages) ||
+  //               []),
+  //             newMessage
+  //           ]
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  // new implementation
   function subToNewMessage(id: string) {
     subscribeToMore({
-      variables: { conversationId: id },
-      document: messageOperations.Subscriptions.messageSent,
-      updateQuery: (prev, update: MessageUpdate) => {
+      variables: { chatId: id },
+      document: messageOperations.Subscriptions.messageSentNew,
+      updateQuery: (prev, update: MessageUpdateNew) => {
         if (!update.subscriptionData.data) return prev;
 
-        const newMessage = update.subscriptionData.data.messageSent;
+        const newMessage = update.subscriptionData.data.messageSentNew;
 
-        console.log(new Date().getSeconds(), "sub func 3");
+        console.log(new Date().getMilliseconds(), "published 3");
+
         return Object.assign({}, prev, {
-          messages: [...prev.messages, newMessage]
+          getMessagesNew: {
+            ...prev.getMessagesNew,
+            messages: [
+              ...((prev.getMessagesNew.success &&
+                prev.getMessagesNew.messages) ||
+                []),
+              newMessage
+            ]
+          }
         });
       }
     });
@@ -124,7 +168,9 @@ function Messages({ session, id }: Props) {
     }
   }, [data]);
 
-  const renderObj = renderObjectForDateDemacator(data?.messages || []);
+  const renderObj = renderObjectForDateDemacator(
+    (data?.getMessagesNew.success && data?.getMessagesNew.messages) || []
+  );
 
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
@@ -158,38 +204,26 @@ function Messages({ session, id }: Props) {
         )}
 
         {/* error */}
-        {error && (
-          <Center h="100%">
-            <Alert.Root
-              bg="{colors.secondaryBg}"
-              color="{colors.primaryText}"
-              status="error"
-              maxW="280px"
-              textAlign="center"
-              alignItems={"center"}>
-              <Alert.Indicator color="{colors.primaryText}" boxSize="40px" />
+        {error && <MessageErrorUI error="Please Refresh The browser" />}
 
-              <Alert.Content>
-                <Alert.Title mt={4} fontSize="sm">
-                  Something Went Wrong!
-                </Alert.Title>
-                <Alert.Description fontSize="small" maxWidth="sm">
-                  Please Refresh The browser
-                </Alert.Description>
-              </Alert.Content>
-            </Alert.Root>
-          </Center>
+        {/* success false */}
+        {data?.getMessagesNew.success === false && (
+          <MessageErrorUI error={data.getMessagesNew.msg} />
         )}
 
         {/* data */}
-        {data &&
-          data.messages.map((m, i) => {
+        {data?.getMessagesNew.success &&
+          data.getMessagesNew.messages.map((m, i) => {
+            const messages =
+              (data.getMessagesNew.success && data.getMessagesNew.messages) ||
+              [];
+
             return (
               <React.Fragment key={i}>
                 <DateDemacator key={m.id} demacatorText={renderObj[m.id]} />
                 <Message
                   usersFirstMessageAfterOthers={(() => {
-                    const prevMessage = data.messages[i - 1];
+                    const prevMessage = messages[i - 1];
                     if (!prevMessage) return true;
 
                     if (m.sender.id === prevMessage.sender.id) return false;
@@ -202,9 +236,10 @@ function Messages({ session, id }: Props) {
               </React.Fragment>
             );
           })}
+
         <button
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
-          style={{ color: "red" }}>
+          style={{ color: "gray" }}>
           {bgStrs[bg].name}
         </button>
       </Stack>
@@ -215,3 +250,26 @@ function Messages({ session, id }: Props) {
 }
 
 export default Messages;
+
+function MessageErrorUI({ error }: { error: string }) {
+  return (
+    <Center dir="column" h="100%">
+      <Alert.Root
+        bg="{colors.secondaryBg}"
+        color="{colors.primaryText}"
+        status="error"
+        maxW="280px"
+        textAlign="center"
+        alignItems={"center"}>
+        <Alert.Indicator color="red.solid" boxSize="40px" />
+
+        <Alert.Content maxWidth="md" width="max-content">
+          <Alert.Title color="red.solid" fontSize="sm">
+            Something Went Wrong!
+          </Alert.Title>
+          <Alert.Description fontSize="small">{error}</Alert.Description>
+        </Alert.Content>
+      </Alert.Root>
+    </Center>
+  );
+}

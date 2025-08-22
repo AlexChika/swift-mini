@@ -1,13 +1,13 @@
 "use client";
 
-import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
-import { Box } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import Auth from "../auth";
-import StartScreen from "./StartScreen";
-import useNetworkChangeNotifier from "@/lib/hooks/useNetworkChangeNotifier";
-import { ColorMode, reloadSession } from "@/lib/helpers";
+import Auth from "@/components/auth";
 import ChatLayout from "./ChatLayout";
+import { Box } from "@chakra-ui/react";
+import StartScreen from "./StartScreen";
+import { useSession } from "next-auth/react";
+import { ColorMode, reloadSession } from "@/lib/helpers";
+import useNetworkChangeNotifier from "@/lib/hooks/useNetworkChangeNotifier";
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
 type Props = {
   children: React.ReactNode;
@@ -22,6 +22,8 @@ function RootLayout({ children }: Props) {
     loadDevMessages();
     loadErrorMessages();
   }
+
+  // return <Auth session={session} reloadSession={reloadSession} />;
 
   return (
     <Box>

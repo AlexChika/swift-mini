@@ -1,4 +1,22 @@
-// rewrite logic. Logic should beb based on first username is the sender of last messsage...wether seen or not
+function formatUserNames2(chat: ChatsLean, id: string) {
+  const isDuoChat = chat.chatType === "duo";
+
+  if (!isDuoChat) {
+    return {
+      avatar: undefined,
+      usernames: chat.chatName,
+      name: chat.chatType
+    };
+  } else {
+    const otherUser = chat.duo_chat_members.find((m) => m.memberId !== id);
+
+    return {
+      usernames: otherUser?.member.username || "",
+      avatar: otherUser?.member.image || undefined,
+      name: chat.chatType
+    };
+  }
+}
 
 function formatUserNames(
   participants: Conversation["participants"],
@@ -8,7 +26,7 @@ function formatUserNames(
   if (participants.length < 1)
     return {
       usernames: "",
-      avatar: "",
+      avatar: undefined,
       name: ""
     };
 
@@ -231,4 +249,4 @@ function dateFormatter(rawdate: string | number | Date) {
   };
 }
 
-export { formatUserNames, dateFormatter };
+export { formatUserNames, dateFormatter, formatUserNames2 };

@@ -4,9 +4,12 @@
   "main": "src/server.ts",
   "scripts": {
     "prisma": "npx prisma generate",
-    "start": "tsx src/server.ts",
-    "dev": "tsc --watch --noEmit --project tsconfig.json & tsx watch --env-file=.env src/server.ts",
-    "deploy": "npm run prisma && npm run start",
+    "start:old": "tsx src/server.ts",
+    "start": "tsx src/newServer.ts",
+    "dev:old": "tsc --watch --noEmit --project tsconfig.json & tsx watch --env-file=.env src/server.ts",
+    "dev": "tsc --watch --noEmit --project tsconfig.json & tsx watch --env-file=.env src/newServer.ts",
+    "deploy:old": "npm run prisma && npm run start",
+    "deploy": "npm run start",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
@@ -31,6 +34,7 @@
     "graphql": "^16.11.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.15.0",
+    "mongoose": "^8.17.1",
     "tsx": "^4.20.3",
     "ws": "^8.14.2"
   },
