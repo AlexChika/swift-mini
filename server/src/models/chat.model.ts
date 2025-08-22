@@ -19,6 +19,7 @@ const joinRequest = new mongoose.Schema(
   { _id: false }
 );
 
+// TODO: add group avatar
 const chatSchema = new mongoose.Schema<Chat<Types.ObjectId>>(
   {
     description: {

@@ -35,22 +35,131 @@ type SearchUsersVariable = {
 };
 
 /* ----------------- conversations ----------------- */
+// narrow down types to returned graphql schema
+type User = {
+  _id: string; // MongoDB ObjectId
+  id: string;
+  username?: string | null;
+  emailVerified?: boolean | null;
+  name?: string | null;
+  email?: string | null; // set by Oauth
+  image?: string | null;
+  lastSeen?: Date | null;
+  hideLastSeen?: boolean;
+  userImageUrl?: string | null; // set/upload by User
+  permanentImageUrl?: string | null;
+};
+
+// narrow down types to returned graphql schema
+type ChatsLean = {
+  id: string;
+  description: string;
+  chatName: string;
+  chatType: "group" | "duo";
+  groupType: "private" | "public";
+  inviteLink: string | null;
+  joinRequests: { createdAt: Date; userId: string }[];
+  groupAdmins: string[];
+  superAdmin: string | null;
+  latestMessageId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  chat_latestMessage?: Messages;
+  duo_chat_members: ChatMember[];
+  self_member: ChatMember;
+};
+
+// TODO => narrow down types to graphql returned schema
+type ChatsPopulated = {
+  id: string;
+  description: string;
+  chatName: string;
+  chatType: "group" | "duo";
+  groupType: "private" | "public";
+  inviteLink: string | null;
+  joinRequests: { createdAt: Date; userId: string }[];
+  groupAdmins: string[];
+  superAdmin: string | null;
+  latestMessageId: string | null;
+  createdAt: Date;
+  chat_latestMessage?: Messages;
+  chat_members: ChatMember[];
+  chat_superAdmin: User;
+  chat_groupAdmins: User[];
+  chat_joinRequests: {
+    user: User | null;
+    createdAt: Date;
+    userId: string;
+  }[];
+};
+
+// narrow down types to returned graphql schema
+type ChatMember = {
+  id: string;
+  chatId: string;
+  chatType: "duo" | "group";
+  memberId: string;
+  role: "admin" | "member";
+  lastRead: {
+    time: Date | null;
+    messageId: string | null;
+  };
+  lastDelivered: {
+    time: Date | null;
+  };
+  messageMeta: {
+    [key: string]: {
+      showMessage: boolean;
+      time: Date;
+      messageId: string;
+    };
+  } | null;
+  showChat: boolean;
+  joinedAt: Date;
+  member: User;
+};
+
+// narrow down types to returned graphql schema
+type Messages = {
+  id: string;
+  chatId: string;
+  senderId: string;
+  body: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deleted: boolean;
+  sender: User;
+};
+
 type CreateConversationData = {
   createConversation: {
     conversationId: string;
   };
 };
+
 type CreateConversationVariable = {
   participantIds: string[];
 };
 
+// old implementation
 type conversationsData = {
   conversations: Conversation[];
 };
 
+// new implementation
+type chatsData = {
+  getChats: ChatsLean[];
+};
+
 // The update query subscription data for create conversations
+// old implementation
 type ConversationUpdate = {
   subscriptionData: { data?: { conversationCreated: Conversation } };
+};
+
+// new implementation
+type ChatUpdate = {
+  subscriptionData: { data?: { chatCreated: ChatsLean } };
 };
 
 type Conversation = {

@@ -133,7 +133,7 @@ function Messages({ session, id }: Props) {
 
         const newMessage = update.subscriptionData.data.messageSentNew;
 
-        console.log(new Date().getSeconds(), "published 3");
+        console.log(new Date().getMilliseconds(), "published 3");
 
         return Object.assign({}, prev, {
           getMessagesNew: {

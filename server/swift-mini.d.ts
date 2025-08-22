@@ -31,6 +31,7 @@ type Chat<T> = {
   superAdmin: T | null;
   latestMessageId: string | null;
   createdAt: Date;
+  updatedAt: Date;
 };
 
 type ChatMember<T> = {

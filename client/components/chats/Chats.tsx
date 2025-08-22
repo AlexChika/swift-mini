@@ -6,6 +6,7 @@ import ConversationList from "@/components/chats/ConversationList";
 import StartConversationBtn from "@/components/chats/StartConversationBtn";
 import StartConversationBtn2 from "./StartConversationBtn2";
 import StartConversationBtn3 from "./StartConversationBtn3";
+import ConversationList1 from "./ConversationList1";
 
 type Props = {
   session: Session;
@@ -28,10 +29,11 @@ function Chats({ session }: Props) {
       maxW={{ xmd: "300px", lg: "380px", xl: "420px" }}
       py={3}
       px={3}>
-      <StartConversationBtn session={session} />
+      {/* <StartConversationBtn session={session} /> */}
       <StartConversationBtn2 session={session} />
-      <StartConversationBtn3 session={session} />
-      <ConversationList session={session} />
+      {/* create group chat */}
+      {/* <StartConversationBtn3 session={session} /> */}
+      <ConversationList1 session={session} />
     </Box>
   );
 }
