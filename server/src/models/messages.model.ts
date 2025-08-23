@@ -26,7 +26,7 @@ const messageSchema = new mongoose.Schema<Messages<Types.ObjectId>>(
       default: false
     },
     clientSentAt: {
-      type: Date,
+      type: String,
       required: [true, "MongoDB error: clientSentAt is required"]
     }
   },

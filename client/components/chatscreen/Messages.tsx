@@ -83,13 +83,32 @@ function Messages({ session, id }: Props) {
 
   const { theme } = ColorMode.useTheme();
 
-  // old implementation
-  // const { data, error, loading, subscribeToMore } = useQuery<
-  //   MessagesData,
-  //   { conversationId: string }
-  // >(messageOperations.Queries.messages, {
-  //   variables: { conversationId: id }
-  // });
+  function logLatency({
+    source,
+    message,
+    clientSentAt,
+    createdAt
+  }: {
+    source: string;
+    message: string;
+    clientSentAt: string;
+    createdAt: number;
+  }) {
+    const now = Date.now();
+    const latency = now - new Date(clientSentAt).getTime(); // full trip
+    const serverLatency = now - new Date(createdAt).getTime(); // server -> client
+
+    console.table([
+      {
+        Source: source, // "subMore" or "effect"
+        Latency_ms: latency,
+        ServerLatency_ms: serverLatency,
+        Message: message,
+        CreatedAt: createdAt,
+        ClientSentAt: clientSentAt
+      }
+    ]);
+  }
 
   // new implementation
   const { data, error, loading, subscribeToMore } = useQuery<
@@ -104,11 +123,12 @@ function Messages({ session, id }: Props) {
       const len = data.getMessagesNew.messages.length;
       const msg = data.getMessagesNew.messages[len - 1];
       if (!msg) return;
-      const message = msg.body;
-      const clientSentAt = msg.clientSentAt;
-      const latency = Date.now() - clientSentAt;
-
-      console.log({ latency, message, clientSentAt });
+      logLatency({
+        source: "effect",
+        message: msg.body,
+        clientSentAt: msg.clientSentAt,
+        createdAt: msg.createdAt
+      });
     }
   }, [data]);
 
@@ -145,9 +165,12 @@ function Messages({ session, id }: Props) {
         if (!update.subscriptionData.data) return prev;
 
         const newMessage = update.subscriptionData.data.messageSentNew;
-        const latency = Date.now() - newMessage.clientSentAt;
-
-        console.log("End-to-end latency:", latency, "ms");
+        logLatency({
+          source: "subMore",
+          message: newMessage.body,
+          clientSentAt: newMessage.clientSentAt,
+          createdAt: newMessage.createdAt
+        });
 
         return Object.assign({}, prev, {
           getMessagesNew: {

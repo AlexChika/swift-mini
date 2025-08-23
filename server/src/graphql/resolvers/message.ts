@@ -153,7 +153,8 @@ const messageResolver = {
               createdAt: 1,
               updatedAt: 1,
               sender: 1,
-              deleted: 1
+              deleted: 1,
+              clientSentAt: 1
               // sender: {
               //   id: "$sender._id",
               //   username: "$sender.username",

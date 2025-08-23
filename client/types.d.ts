@@ -207,7 +207,7 @@ type sendMessageVariableNew = {
   body: string;
   chatId: string;
   senderId: string;
-  clientSentAt: number;
+  clientSentAt: string;
 };
 
 type MessageUpdate = {
@@ -223,7 +223,7 @@ type Message = {
   id: string;
   body: string;
   createdAt: number;
-  clientSentAt: number;
+  clientSentAt: string;
   sender: {
     id: string;
     username: string;

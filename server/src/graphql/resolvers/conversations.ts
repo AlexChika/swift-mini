@@ -563,19 +563,19 @@ const conversationResolver = {
         );
 
       // check if duo chat already exists with the other user
-      // const existingChat = await chatMemberModel.findOne({
-      //   memberId: session.user.id,
-      //   chatType: "duo",
-      //   chatId: {
-      //     $in: await chatMemberModel
-      //       .find({ memberId: otherUserId, chatType: "duo" })
-      //       .distinct("chatId")
-      //   }
-      // });
+      const existingChat = await chatMemberModel.findOne({
+        memberId: session.user.id,
+        chatType: "duo",
+        chatId: {
+          $in: await chatMemberModel
+            .find({ memberId: otherUserId, chatType: "duo" })
+            .distinct("chatId")
+        }
+      });
 
-      // if (existingChat) {
-      //   return { chatId: existingChat.chatId.toString() };
-      // }
+      if (existingChat) {
+        return { chatId: existingChat.chatId.toString() };
+      }
 
       const msession = await mongoose.startSession();
       msession.startTransaction();

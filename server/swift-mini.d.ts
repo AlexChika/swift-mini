@@ -65,7 +65,7 @@ type Messages<T> = {
   body: string;
   createdAt: Date;
   updatedAt: Date;
-  clientSentAt: Date;
+  clientSentAt: string;
   deleted: boolean;
 };
 

@@ -55,7 +55,7 @@ const sendMessageNew = gql`
     $senderId: String!
     $chatId: String!
     $body: String!
-    $clientSentAt: Date!
+    $clientSentAt: String!
   ) {
     sendMessageNew(
       senderId: $senderId
