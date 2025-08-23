@@ -6,6 +6,7 @@ type MessageNew {
     body:String!
     createdAt:Date!
     updatedAt:Date!
+    clientSentAt:Date!
     deleted:Boolean!
 
     # below fields are not part of message model, they are reference fields returned from db lookup queries
@@ -18,7 +19,7 @@ type Query {
 }
 
 type Mutation {
-    sendMessageNew( chatId:String!, senderId:String!, body:String!) : Boolean!
+    sendMessageNew( chatId:String!, senderId:String!, body:String!, clientSentAt: Date!) : Boolean!
 }
 
 type Subscription {

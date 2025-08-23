@@ -66,7 +66,8 @@ function MessageInput(props: Props) {
     try {
       await send({
         variables: {
-          ...newMessage
+          ...newMessage,
+          clientSentAt: Date.now()
         }
         // optimisticResponse: true,
         // update:(cache)=>{

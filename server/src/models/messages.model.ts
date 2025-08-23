@@ -24,6 +24,10 @@ const messageSchema = new mongoose.Schema<Messages<Types.ObjectId>>(
     deleted: {
       type: Boolean,
       default: false
+    },
+    clientSentAt: {
+      type: Date,
+      required: [true, "MongoDB error: clientSentAt is required"]
     }
   },
   {

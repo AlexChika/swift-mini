@@ -103,11 +103,12 @@ function Messages({ session, id }: Props) {
     if (data?.getMessagesNew.success) {
       const len = data.getMessagesNew.messages.length;
       const msg = data.getMessagesNew.messages[len - 1];
-      const createdAt = msg.createdAt;
+      if (!msg) return;
       const message = msg.body;
-      const latency = Date.now() - new Date(createdAt).getTime();
+      const clientSentAt = msg.clientSentAt;
+      const latency = Date.now() - clientSentAt;
 
-      console.log({ latency, message });
+      console.log({ latency, message, clientSentAt });
     }
   }, [data]);
 
@@ -144,9 +145,7 @@ function Messages({ session, id }: Props) {
         if (!update.subscriptionData.data) return prev;
 
         const newMessage = update.subscriptionData.data.messageSentNew;
-
-        const createdAt = new Date(newMessage.createdAt).getTime();
-        const latency = Date.now() - createdAt;
+        const latency = Date.now() - newMessage.clientSentAt;
 
         console.log("End-to-end latency:", latency, "ms");
 

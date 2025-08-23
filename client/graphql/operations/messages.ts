@@ -4,6 +4,7 @@ const messageFields = `
        id
         body
         createdAt
+        clientSentAt
       sender {
         id
         username
@@ -54,8 +55,14 @@ const sendMessageNew = gql`
     $senderId: String!
     $chatId: String!
     $body: String!
+    $clientSentAt: Date!
   ) {
-    sendMessageNew(senderId: $senderId, chatId: $chatId, body: $body)
+    sendMessageNew(
+      senderId: $senderId
+      chatId: $chatId
+      body: $body
+      clientSentAt: $clientSentAt
+    )
   }
 `;
 

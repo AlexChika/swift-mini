@@ -25,6 +25,7 @@ type SendMessageArgsNew = {
   senderId: string;
   chatId: string;
   body: string;
+  clientSentAt: Date;
 };
 
 type MessageResponse = ApiReturn<Message[], "messages">;
@@ -268,7 +269,7 @@ const messageResolver = {
       // check if user is authenticated
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
-      const { body, chatId, senderId } = args;
+      const { body, chatId, senderId, clientSentAt } = args;
 
       if (senderId !== session.user.id)
         throw new GraphQLError("Operation not allowed");
@@ -281,6 +282,16 @@ const messageResolver = {
       // validate senderId is a valid mongo id
       if (!mongoose.isValidObjectId(senderId)) {
         throw new GraphQLError("Invalid sender ID");
+      }
+
+      // validate clientSentAt is a valid date
+      if (isNaN(new Date(clientSentAt).getTime())) {
+        throw new GraphQLError("Invalid clientSentAt date");
+      }
+
+      //validate body is a string
+      if (typeof body !== "string" || body.trim().length === 0) {
+        throw new GraphQLError("Message body must be a non-empty string");
       }
 
       console.time("create mesage");
@@ -300,7 +311,8 @@ const messageResolver = {
         const newMessage = await messageModel.create({
           body,
           chatId,
-          senderId
+          senderId,
+          clientSentAt
         });
 
         console.timeEnd("create mesage");
