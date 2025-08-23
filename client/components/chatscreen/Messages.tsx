@@ -120,7 +120,7 @@ function Messages({ session, id }: Props) {
   });
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || window.swtf_offset) return;
     console.log("effect for syncClock");
     async function runSync() {
       const offset = await syncClock();
