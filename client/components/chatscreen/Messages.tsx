@@ -99,6 +99,18 @@ function Messages({ session, id }: Props) {
     variables: { chatId: id }
   });
 
+  useEffect(() => {
+    if (data?.getMessagesNew.success) {
+      const len = data.getMessagesNew.messages.length;
+      const msg = data.getMessagesNew.messages[len - 1];
+      const createdAt = msg.createdAt;
+      const message = msg.body;
+      const latency = Date.now() - new Date(createdAt).getTime();
+
+      console.log({ latency, message });
+    }
+  }, [data]);
+
   //old implementation
   // function subToNewMessage(id: string) {
   //   subscribeToMore({
