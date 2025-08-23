@@ -5,6 +5,7 @@ import { auth } from "@/lib/api/nextAuth";
 import Layout from "@/components/layout/RootLayout";
 import Provider from "@/components/Providers/Provider";
 import { getServerTheme } from "@/components/Providers/getServerTheme";
+import { syncClock } from "@/lib/helpers";
 
 const inter = Inter({ subsets: ["latin"] });
 

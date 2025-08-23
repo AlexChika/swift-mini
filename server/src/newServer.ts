@@ -84,13 +84,20 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const sessionUrl = req.headers["x-session-url"] as string;
+      console.log("Each graphql op passes thu middleware and fetches session");
       const session = await getSession(req, sessionUrl);
       return { session, prisma, pubsub };
     }
   })
 );
 
+app.use(cors<cors.CorsRequest>(corsOpts));
+
 app.use("/images", imagesRouter);
+
+app.get("/time", (_, res) => {
+  res.json({ serverNow: Date.now() });
+});
 
 app.get("/cron", (_, res) => {
   res.end("SERVER RUNING");

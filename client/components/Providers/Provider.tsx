@@ -17,7 +17,9 @@ type Props = {
   serverTheme: "light" | "dark" | undefined;
 };
 
-function Provider({ children, session, defaultTheme, serverTheme }: Props) {
+function Provider(prop: Props) {
+  const { children, session, defaultTheme, serverTheme } = prop;
+
   return (
     <ApolloProvider client={client}>
       <SessionProvider session={session}>

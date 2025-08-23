@@ -94,18 +94,19 @@ function Messages({ session, id }: Props) {
     clientSentAt: string;
     createdAt: number;
   }) {
-    const now = Date.now();
-    const latency = now - new Date(clientSentAt).getTime(); // full trip
-    const serverLatency = now - new Date(createdAt).getTime(); // server -> client
+    const roundTripLatency = Date.now() - new Date(clientSentAt).getTime(); // no offset
+    const now = Date.now() + (window.swtf_offset || 0);
+    const serverLatency = now - new Date(createdAt).getTime(); // offset applied
 
     console.table([
       {
-        Source: source, // "subMore" or "effect"
-        Latency_ms: latency,
+        Source: source,
+        RoundTripLatency_ms: roundTripLatency,
         ServerLatency_ms: serverLatency,
         Message: message,
         CreatedAt: createdAt,
-        ClientSentAt: clientSentAt
+        ClientSentAt: clientSentAt,
+        OffsetApplied: window.swtf_offset
       }
     ]);
   }
