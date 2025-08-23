@@ -125,7 +125,7 @@ function Messages({ session, id }: Props) {
 
   // new implementation
   function subToNewMessage(id: string) {
-    subscribeToMore({
+    return subscribeToMore({
       variables: { chatId: id },
       document: messageOperations.Subscriptions.messageSentNew,
       updateQuery: (prev, update: MessageUpdateNew) => {
@@ -133,7 +133,10 @@ function Messages({ session, id }: Props) {
 
         const newMessage = update.subscriptionData.data.messageSentNew;
 
-        console.log(new Date().getMilliseconds(), "published 3");
+        const createdAt = new Date(newMessage.createdAt).getTime();
+        const latency = Date.now() - createdAt;
+
+        console.log("End-to-end latency:", latency, "ms");
 
         return Object.assign({}, prev, {
           getMessagesNew: {
@@ -156,7 +159,14 @@ function Messages({ session, id }: Props) {
     if (subscribedCoversationIds.current.find((ids) => ids === id)) return;
     subscribedCoversationIds.current.push(id);
 
-    subToNewMessage(id); // sub to conversation
+    const unsubscribe = subToNewMessage(id); // sub to conversation
+
+    return () => {
+      // cleanup
+      unsubscribe?.();
+      subscribedCoversationIds.current =
+        subscribedCoversationIds.current.filter((ids) => ids !== id);
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
