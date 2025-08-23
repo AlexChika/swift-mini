@@ -7,7 +7,7 @@ import { useQuery } from "@apollo/client";
 import messageOperations from "@/graphql/operations/messages";
 import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
-import { ColorMode } from "@/lib/helpers";
+import { ColorMode, syncClock } from "@/lib/helpers";
 
 type Props = {
   session: Session;
@@ -118,6 +118,17 @@ function Messages({ session, id }: Props) {
   >(messageOperations.Queries.messagesNew, {
     variables: { chatId: id }
   });
+
+  useEffect(() => {
+    if (!data) return;
+    console.log("effect for syncClock");
+    async function runSync() {
+      const offset = await syncClock();
+      window.swtf_offset = offset;
+      console.log("Clock offset synced:", offset);
+    }
+    runSync();
+  }, [data]);
 
   useEffect(() => {
     if (data?.getMessagesNew.success) {
