@@ -1,16 +1,15 @@
-import { Prisma } from "@prisma/client";
+import mongoose from "mongoose";
 import { GraphQLError } from "graphql";
 import { withFilter } from "graphql-subscriptions";
-import { ApiReturn, Conversation, GraphqlContext, Message } from "swift-mini";
-import { conversationsInclude } from "./conversations";
-import isUserAConversationParticipant from "@lib/utils/isUserAConversationParticipant";
-import mongoose from "mongoose";
+import messageModel from "@src/models/messages.model";
+import chatMemberModel from "@src/models/chatMember.model";
+import { ApiReturn, GraphqlContext, Message, Messages } from "swift-mini";
 
 type SendMessageArgs = {
   senderId: string;
-  conversationId: string;
-  id: string;
+  chatId: string;
   body: string;
+  clientSentAt: Date;
 };
 
 type MessageResponse = ApiReturn<Message[], "messages">;
@@ -19,56 +18,70 @@ const messageResolver = {
   Query: {
     getMessages: async (
       _: unknown,
-      args: { conversationId: string },
+      args: { chatId: string },
       ctx: GraphqlContext
     ): Promise<MessageResponse> => {
-      const { session, prisma } = ctx;
+      const { session } = ctx;
+
+      // check if user is authenticated
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
-      const { id: userId } = session.user;
+      // validate chatId is a valid mongo id
+      if (!mongoose.isValidObjectId(args.chatId)) {
+        return {
+          success: false,
+          msg: "Url may be broken or invalid"
+        };
+      }
 
       try {
-        // validate conversationId is a valid mongo id
-        if (!mongoose.isValidObjectId(args.conversationId)) {
-          return {
-            success: false,
-            msg: "Url may be broken or invalid"
-          };
-        }
+        const userId = new mongoose.Types.ObjectId(session.user.id);
+        const chatId = new mongoose.Types.ObjectId(args.chatId);
 
-        // does conversation exist?
-        const conversation = await prisma.conversation.findUnique({
-          where: {
-            id: args.conversationId
-          },
-          include: conversationsInclude
+        // checks if chat exists and if user is a member of the chat
+        const isUserAChatMember = await chatMemberModel.exists({
+          chatId,
+          memberId: userId
         });
 
-        if (!conversation)
+        if (!isUserAChatMember)
           return {
             success: false,
-            msg: "We could not find this conversation"
+            msg: "We could not find the chat you are looking for"
           };
 
-        // does user belong to the conversation?
-        if (
-          !isUserAConversationParticipant(conversation.participants, userId)
-        ) {
-          return {
-            success: false,
-            msg: "You are not a member of this conversation"
-          };
-        }
-
-        const messages = await prisma.message.findMany({
-          where: {
-            conversationId: args.conversationId
+        const messages = await messageModel.aggregate([
+          { $match: { chatId } },
+          {
+            $lookup: {
+              from: "User",
+              localField: "senderId",
+              foreignField: "_id",
+              pipeline: [{ $addFields: { id: { $toString: "$_id" } } }],
+              as: "sender"
+            }
           },
-          include: MessageInclude,
-          orderBy: {
-            createdAt: "asc"
-          }
-        });
+          { $unwind: "$sender" },
+          {
+            $project: {
+              id: { $toString: "$_id" },
+              chatId: 1,
+              senderId: 1,
+              body: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              sender: 1,
+              deleted: 1,
+              clientSentAt: 1
+              // sender: {
+              //   id: "$sender._id",
+              //   username: "$sender.username",
+              //   image: "$sender.image"
+              // },
+            }
+          },
+          { $sort: { createdAt: 1 } }
+        ]);
 
         return {
           success: true,
@@ -89,74 +102,72 @@ const messageResolver = {
       args: SendMessageArgs,
       ctx: GraphqlContext
     ): Promise<boolean> => {
-      const { session, prisma, pubsub } = ctx;
+      const { session, pubsub } = ctx;
+
+      // check if user is authenticated
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
-      const { body, conversationId, senderId } = args;
-      const { id: userId } = session.user;
+      const { body, chatId, senderId, clientSentAt } = args;
 
-      if (senderId !== userId)
-        throw new GraphQLError("User is not authenticated");
+      if (senderId !== session.user.id)
+        throw new GraphQLError("Operation not allowed");
+
+      // validate chatId is a valid mongo id
+      if (!mongoose.isValidObjectId(chatId)) {
+        throw new GraphQLError("Url may be broken or invalid");
+      }
+
+      // validate senderId is a valid mongo id
+      if (!mongoose.isValidObjectId(senderId)) {
+        throw new GraphQLError("Invalid sender ID");
+      }
+
+      // validate clientSentAt is a valid date
+      if (isNaN(new Date(clientSentAt).getTime())) {
+        throw new GraphQLError("Invalid clientSentAt date");
+      }
+
+      //validate body is a string
+      if (typeof body !== "string" || body.trim().length === 0) {
+        throw new GraphQLError("Message body must be a non-empty string");
+      }
 
       console.time("create mesage");
+
+      // const isUserAChatMember = await chatMemberModel
+      //   .findOne({
+      //     chatId,
+      //     memberId: senderId
+      //   })
+      //   .lean();
+
+      // if (!isUserAChatMember) {
+      //   throw new GraphQLError("You are not a member of this chat");
+      // }
+
       try {
-        const newMessage = await prisma.message.create({
-          data: { body, conversationId, senderId },
-          include: MessageInclude
+        const newMessage = await messageModel.create({
+          body,
+          chatId,
+          senderId,
+          clientSentAt
         });
+
         console.timeEnd("create mesage");
 
         // publish events to users
         pubsub.publish("MESSAGE_SENT", {
-          messageSent: newMessage
-        });
-        console.log(new Date().getSeconds(), "published 1");
-
-        // find the current participant object
-        const participant = await prisma.conversationParticipants.findFirst({
-          where: {
-            conversationId,
-            userId
+          messageSent: {
+            ...newMessage.toObject(),
+            sender: {
+              id: session.user.id,
+              username: session.user.username,
+              image: session.user.image
+            }
           }
         });
-
-        const conversation = await prisma.conversation.update({
-          where: {
-            id: conversationId
-          },
-          data: {
-            latestMessageId: newMessage.id,
-            participants: {
-              update: {
-                where: {
-                  id: participant?.id || ""
-                },
-                data: {
-                  hasSeenLatestMessage: true
-                }
-              },
-
-              updateMany: {
-                where: {
-                  NOT: {
-                    userId
-                  }
-                },
-                data: {
-                  hasSeenLatestMessage: false
-                }
-              }
-            }
-          },
-
-          include: conversationsInclude
-        });
-
+        console.log(new Date().getMilliseconds(), "published");
         return true;
-
-        // pubsub.publish("CONVERSATION_UPDATED", {
-        //   conversationUpdated: conversation,
-        // });
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("sendMessage error", error);
@@ -173,12 +184,12 @@ const messageResolver = {
           return pubsub.asyncIterator(["MESSAGE_SENT"]);
         },
         (
-          payload: { messageSent: Message },
-          args: { conversationId: string },
+          payload: { messageSent: Messages<string> },
+          args: { chatId: string },
           ___: unknown
         ) => {
-          console.log(new Date().getSeconds(), "subscription 2 ");
-          return payload.messageSent.conversationId === args.conversationId;
+          console.log(new Date().getMilliseconds(), "published 2");
+          return payload.messageSent.chatId.toString() === args.chatId;
         }
       )
     }
@@ -186,13 +197,3 @@ const messageResolver = {
 };
 
 export default messageResolver;
-
-export const MessageInclude = Prisma.validator<Prisma.MessageInclude>()({
-  sender: {
-    select: {
-      id: true,
-      username: true,
-      image: true
-    }
-  }
-});

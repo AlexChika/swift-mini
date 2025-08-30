@@ -26,7 +26,7 @@ function Chats({ session }: Props) {
       }}
       display={{ base: id ? "none" : "block", xmd: "block" }}
       w="100%"
-      maxW={{ xmd: "300px", lg: "380px", xl: "420px" }}
+      maxW={{ xmd: "300px", lg: "380px", xl: "400px" }}
       py={3}
       px={3}>
       {/* <StartConversationBtn session={session} /> */}

@@ -1,26 +1,25 @@
-import dotenv from "dotenv";
-import { createServer } from "http";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { expressMiddleware } from "@as-integrations/express4";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { WebSocketServer } from "ws";
-import { useServer } from "graphql-ws/lib/use/ws";
-import express from "express";
-import { ApolloServer } from "@apollo/server";
 import cors from "cors";
-// import pkg from "body-parser";
+import dotenv from "dotenv";
+import express from "express";
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
+import { ApolloServer } from "@apollo/server";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { expressMiddleware } from "@as-integrations/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 
-import resolvers from "src/graphql/resolvers";
-import typeDefs from "src/graphql/typeDefs";
-import { getSession } from "lib/getSession";
-import { GraphqlContext, SubscriptionContext } from "swift-mini";
+import typeDefs from "@src/graphql/typeDefs";
 import { PrismaClient } from "@prisma/client";
 import { PubSub } from "graphql-subscriptions";
-import restartJob from "lib/cron";
-// const { json } = pkg;
+import resolvers from "@src/graphql/resolvers";
+import { connectDB, restartJob, getSession } from "lib";
+import imagesRouter from "src/routes/images/images.route";
+import { GraphqlContext, SubscriptionContext } from "swift-mini";
 
 // configs
 dotenv.config();
+await connectDB();
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
 
@@ -61,6 +60,7 @@ const serverCleanup = useServer(
 const server = new ApolloServer<GraphqlContext>({
   schema,
   csrfPrevention: true,
+  introspection: process.env.NODE_ENV !== "production",
   plugins: [
     ApolloServerPluginDrainHttpServer({ httpServer }),
     {
@@ -84,11 +84,20 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const sessionUrl = req.headers["x-session-url"] as string;
+      console.log("Each graphql op passes thu middleware and fetches session");
       const session = await getSession(req, sessionUrl);
       return { session, prisma, pubsub };
     }
   })
 );
+
+app.use(cors<cors.CorsRequest>(corsOpts));
+
+app.use("/images", imagesRouter);
+
+app.get("/time", (_, res) => {
+  res.json({ serverNow: Date.now() });
+});
 
 app.get("/cron", (_, res) => {
   res.end("SERVER RUNING");

@@ -71,7 +71,7 @@ function ConversationList1({ session }: Props) {
       {/* loading */}
       {convLoading && (
         <Stack h="100%" gap={3}>
-          <SkeletonLoader duration={1} no={10} height="calc(100% / 10)" />
+          <SkeletonLoader duration={1} no={14} height="calc(100% / 14)" />
         </Stack>
         // <Center h="100%">
         //   <Box>

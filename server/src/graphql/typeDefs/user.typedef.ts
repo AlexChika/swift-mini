@@ -25,10 +25,6 @@ type Mutation {
     createUsername(username:String!, userHasImage:Boolean!):CreateUserResponse
 }
 
-# type Subscription {
-
-# }
-
 type CreateUserResponse {
     username:String!
     success:Boolean!
