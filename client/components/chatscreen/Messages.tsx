@@ -1,10 +1,10 @@
-import { Alert, Box, Center, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 import MessageInput from "./MessageInput";
 import { Session } from "next-auth";
 import { hideScrollbar } from "@/chakra/theme";
 import Message from "./Message";
 import { useQuery } from "@apollo/client";
-import messageOperations from "@/graphql/operations/messages";
+import messageOps from "@/graphql/operations/messageOps";
 import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
 import { ColorMode, syncClock } from "@/lib/helpers";
@@ -115,7 +115,7 @@ function Messages({ session, id }: Props) {
   const { data, error, loading, subscribeToMore } = useQuery<
     MessagesDataNew,
     { chatId: string }
-  >(messageOperations.Queries.messagesNew, {
+  >(messageOps.Queries.messagesNew, {
     variables: { chatId: id }
   });
 
@@ -148,7 +148,7 @@ function Messages({ session, id }: Props) {
   // function subToNewMessage(id: string) {
   //   subscribeToMore({
   //     variables: { conversationId: id },
-  //     document: messageOperations.Subscriptions.messageSent,
+  //     document: messageOps.Subscriptions.messageSent,
   //     updateQuery: (prev, update: MessageUpdate) => {
   //       if (!update.subscriptionData.data) return prev;
 
@@ -172,7 +172,7 @@ function Messages({ session, id }: Props) {
   function subToNewMessage(id: string) {
     return subscribeToMore({
       variables: { chatId: id },
-      document: messageOperations.Subscriptions.messageSentNew,
+      document: messageOps.Subscriptions.messageSentNew,
       updateQuery: (prev, update: MessageUpdateNew) => {
         if (!update.subscriptionData.data) return prev;
 

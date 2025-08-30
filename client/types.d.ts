@@ -34,7 +34,7 @@ type SearchUsersVariable = {
   username: string;
 };
 
-/* ----------------- conversations ----------------- */
+/* ----------------- Chats ----------------- */
 // narrow down types to returned graphql schema
 type User = {
   _id: string; // MongoDB ObjectId
@@ -51,7 +51,7 @@ type User = {
 };
 
 // narrow down types to returned graphql schema
-type ChatsLean = {
+type ChatLean = {
   id: string;
   description: string;
   chatName: string;
@@ -70,7 +70,7 @@ type ChatsLean = {
 };
 
 // TODO => narrow down types to graphql returned schema
-type ChatsPopulated = {
+type ChatPopulated = {
   id: string;
   description: string;
   chatName: string;

@@ -1,4 +1,4 @@
-import messageOperations from "@/graphql/operations/messages";
+import messageOperations from "@/graphql/operations/messageOps";
 import { SendIcon } from "@/lib/icons";
 import { ApolloError, useMutation } from "@apollo/client";
 import { Flex, IconButton, Box } from "@chakra-ui/react";

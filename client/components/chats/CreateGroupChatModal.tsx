@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import userOperations from "@/graphql/operations/users";
-import convoOperations from "@/graphql/operations/conversations";
+import convoOperations from "@/graphql/operations/chat.ops";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
@@ -25,17 +25,20 @@ type Props = {
   session: Session;
 };
 
-type CreateDuoChatVariable = {
-  otherUserId: string;
+type CreateGroupChatVariable = {
+  description: string;
+  chatName: string;
+  groupType: "private" | "public";
+  memberIds: string[];
 };
 
-type CreateDuoChatData = {
-  createDuoChat: {
+type CreateGroupChatData = {
+  createGroupChat: {
     chatId: string;
   };
 };
 
-function ConversationModal2({ isOpen, setIsOpen, session }: Props) {
+function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
@@ -45,10 +48,10 @@ function ConversationModal2({ isOpen, setIsOpen, session }: Props) {
     SearchUsersVariable
   >(userOperations.Queries.searchUsers);
 
-  const [createDuoChat, { loading: createConversationLoading }] = useMutation<
-    CreateDuoChatData,
-    CreateDuoChatVariable
-  >(convoOperations.Mutations.createDuoChat);
+  const [createGroupChat, { loading: createConversationLoading }] = useMutation<
+    CreateGroupChatData,
+    CreateGroupChatVariable
+  >(convoOperations.Mutations.createGroupChat);
 
   // functions
   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
@@ -72,13 +75,18 @@ function ConversationModal2({ isOpen, setIsOpen, session }: Props) {
   }
 
   async function onCreateConversation() {
-    const otherUserId = participants[0]?.id;
+    const memberIds = participants.map((p) => p.id);
     try {
-      const { data } = await createDuoChat({
-        variables: { otherUserId }
+      const { data } = await createGroupChat({
+        variables: {
+          memberIds,
+          chatName: `${session.user.username}'s group chat`,
+          description: "You are welcome to the group chat",
+          groupType: "public"
+        }
       });
 
-      const { chatId } = data?.createDuoChat || {};
+      const { chatId } = data?.createGroupChat || {};
       console.log({ chatId });
 
       if (!chatId) throw new Error("Failed to create conversation");
@@ -262,4 +270,4 @@ function SelectedParticipants({
   );
 }
 
-export default ConversationModal2;
+export default CreateGroupChatModal;

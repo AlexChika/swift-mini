@@ -1,18 +1,17 @@
-import { formatUserNames } from "@/lib";
+// import { useQuery } from "@apollo/client";
+import { formatUserNames2 } from "@/lib";
+import { ColorMode } from "@/lib/helpers";
+import { LeftArrowIcon } from "@/lib/icons";
+import { useRouter } from "next/navigation";
+// import chatOps from "@/graphql/operations/chats.ops";
 import {
   Avatar,
-  Box,
   IconButton,
   Center,
   Flex,
   HStack,
   Text
 } from "@chakra-ui/react";
-import conversationOperations from "@/graphql/operations/conversations";
-import { useQuery } from "@apollo/client";
-import { useRouter } from "next/navigation";
-import { LeftArrowIcon } from "@/lib/icons";
-import { ColorMode } from "@/lib/helpers";
 
 type Props = {
   id: string; // this is conversationId
@@ -23,18 +22,10 @@ function MessagesHeader({ id, userId }: Props) {
   const router = useRouter();
 
   // recommended implementation
-  // query for conversation directly not all conversations
-  const { data, loading } = useQuery<conversationsData>(
-    conversationOperations.Queries.conversations
-  );
-  //
-  const conversation = data?.conversations.find((c) => c.id === id);
+  // query for chat directly not all chats
+  // const { data } = useQuery<chatsData>(chatOps.Queries.getChats);
 
-  const { usernames, avatar, name } = formatUserNames(
-    conversation?.participants || [],
-    userId,
-    "long"
-  );
+  const { usernames, avatar, name } = formatUserNames2({} as ChatLean, userId);
 
   return (
     <HStack

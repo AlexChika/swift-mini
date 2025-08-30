@@ -1,32 +1,6 @@
 import { gql } from "@apollo/client";
 
 /* ------------------ queries ----------------- */
-const conversations = gql`
-  query Conversations {
-    conversations {
-      id
-      updatedAt
-      participants {
-        hasSeenLatestMessage
-        user {
-          id
-          image
-          username
-        }
-      }
-      latestMessage {
-        body
-        createdAt
-        id
-        sender {
-          id
-          username
-        }
-      }
-    }
-  }
-`;
-
 const getChat = gql`
   query GetChat($chatId: String!) {
     getChat(chatId: $chatId) {
@@ -212,14 +186,6 @@ const getChats = gql`
 `;
 
 /* ----------------- mutations ---------------- */
-const createConversation = gql`
-  mutation CreateConversation($participantIds: [String!]!) {
-    createConversation(participantIds: $participantIds) {
-      conversationId
-    }
-  }
-`;
-
 const createDuoChat = gql`
   mutation CreateDuoChat($otherUserId: String!) {
     createDuoChat(otherUserId: $otherUserId) {
@@ -246,32 +212,7 @@ const createGroupChat = gql`
   }
 `;
 
-/* ----------------- subscriptiond ---------------- */
-const conversationCreated = gql`
-  subscription ConversationCreated {
-    conversationCreated {
-      id
-      updatedAt
-      participants {
-        hasSeenLatestMessage
-        user {
-          id
-          image
-          username
-        }
-      }
-      latestMessage {
-        body
-        createdAt
-        id
-        sender {
-          id
-          username
-        }
-      }
-    }
-  }
-`;
+/* ----------------- subscriptions ---------------- */
 const chatCreated = gql`
   subscription ChatCreated {
     chatCreated {
@@ -364,19 +305,16 @@ const chatCreated = gql`
 `;
 
 const Queries = {
-  conversations,
   getChat,
   getChats
 };
 
 const Mutations = {
-  createConversation,
   createDuoChat,
   createGroupChat
 };
 
 const Subscriptions = {
-  conversationCreated,
   chatCreated
 };
 

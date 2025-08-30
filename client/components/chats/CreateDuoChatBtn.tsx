@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import ConversationModal2 from "./ConversationModal2";
+import CreateDuoChatModal from "./CreateDuoChatModal";
 
 type Props = {
   session: Session;
 };
 
-function StartConversationBtn2({ session }: Props) {
+function CreateDuoChatBtn({ session }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -26,7 +26,7 @@ function StartConversationBtn2({ session }: Props) {
         Create Duo Chat tester
       </Text>
 
-      <ConversationModal2
+      <CreateDuoChatModal
         session={session}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -35,4 +35,4 @@ function StartConversationBtn2({ session }: Props) {
   );
 }
 
-export default StartConversationBtn2;
+export default CreateDuoChatBtn;

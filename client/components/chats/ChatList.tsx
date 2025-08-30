@@ -1,29 +1,29 @@
 import { hideScrollbar } from "@/chakra/theme";
 import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import conversationOperations from "@/graphql/operations/conversations";
+import chatOps from "@/graphql/operations/chat.ops";
 import { useQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import SkeletonLoader from "@/components/general/SkeletonLoader";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
-import ConversationItem1 from "./ConversationItem1";
+import ChatItem from "./ChatItem";
 
 type Props = {
   session: Session;
 };
 
-function ConversationList1({ session }: Props) {
+function ChatList({ session }: Props) {
   const {
     data,
     error: convError,
     loading: convLoading,
     subscribeToMore
-  } = useQuery<chatsData>(conversationOperations.Queries.getChats);
+  } = useQuery<chatsData>(chatOps.Queries.getChats);
 
   function subToNewConversation() {
     subscribeToMore({
-      document: conversationOperations.Subscriptions.chatCreated,
+      document: chatOps.Subscriptions.chatCreated,
       updateQuery: (prev, update: ChatUpdate) => {
         if (!update.subscriptionData.data) return prev;
 
@@ -108,7 +108,7 @@ function ConversationList1({ session }: Props) {
         <Stack>
           {[...data.getChats].reverse().map((c) => {
             return (
-              <ConversationItem1
+              <ChatItem
                 key={c.id}
                 {...{
                   chatsOnClick,
@@ -124,4 +124,4 @@ function ConversationList1({ session }: Props) {
   );
 }
 
-export default ConversationList1;
+export default ChatList;

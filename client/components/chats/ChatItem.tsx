@@ -1,34 +1,31 @@
 import { Avatar, Flex, Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import { useParams } from "next/navigation";
-import { formatUserNames, dateFormatter } from "@/lib";
+import { dateFormatter, formatUserNames2 } from "@/lib";
 
 type Props = {
   session: Session;
-  conversation: Conversation;
-  conversationOnClick: (conversationId: string) => Promise<void>;
+  chat: ChatLean;
+  chatsOnClick: (chatId: string) => Promise<void>;
 };
 
-function ConversationItem(props: Props) {
-  const { conversation, conversationOnClick, session } = props;
-  const { id, latestMessage, participants, latestMessageId, updatedAt } =
-    conversation;
+function ChatItem(props: Props) {
+  const { chat, chatsOnClick, session } = props;
+  const { id, chat_latestMessage, updatedAt } = chat;
 
   const chatId = useParams().chatId;
 
   // variable depends on stateful values,
   const isSelected = id === chatId;
   const { getTimePassed } = dateFormatter(updatedAt);
-  const { usernames, avatar, name } = formatUserNames(
-    participants,
-    session.user.id
-  );
+
+  const { usernames, avatar, name } = formatUserNames2(chat, session.user.id);
 
   return (
     <Box
       title={usernames}
       cursor="pointer"
-      onClick={() => conversationOnClick(id)}
+      onClick={() => chatsOnClick(id)}
       px={2}
       py={2}
       bg={isSelected ? "{colors.primaryBg}/40" : "transparent"}
@@ -61,7 +58,7 @@ function ConversationItem(props: Props) {
               textOverflow="ellipsis"
               lineClamp={1}
               fontSize="11px">
-              {latestMessage?.body}
+              {chat_latestMessage?.body}
             </Text>
           </Flex>
         </Flex>
@@ -82,4 +79,4 @@ function ConversationItem(props: Props) {
 
 // .....
 
-export default ConversationItem;
+export default ChatItem;
