@@ -4,7 +4,7 @@ import chatMemberModel from "@src/models/chatMember.model";
 import userModel from "@src/models/user.model";
 import { GraphQLError } from "graphql";
 import mongoose from "mongoose";
-import { ChatPopulated, GraphqlContext, User } from "swift-mini";
+import { ChatLean, ChatPopulated, GraphqlContext, User } from "swift-mini";
 
 type createGroupChatArgs = {
   description: string;
@@ -200,8 +200,8 @@ const chatResolver = {
           }
         ]);
 
-        console.log(JSON.stringify(chats, null, 2));
-        console.log(chats);
+        // console.log(JSON.stringify(chats, null, 2));
+        // console.log(chats);
 
         return chats;
       } catch (error) {
@@ -229,11 +229,17 @@ const chatResolver = {
       const { id } = session.user;
       const chatId = new mongoose.Types.ObjectId(args.chatId);
 
-      // chat_superAdmin: User; ✅
-      // chat_groupAdmins: [User!]; ✅
-      // chat_latestMessage: Message; ✅
-      // chat_members: [ChatMember!]; ✅
-      // chat_joinRequests: [ChatJoinRequest!];
+      // check if user is a member of the chat
+      const isMember = await chatMemberModel.exists({
+        chatId,
+        memberId: id
+      });
+
+      if (!isMember) {
+        throw new GraphQLError(
+          `We could not find the chat you are looking for.`
+        );
+      }
 
       try {
         const [chat] = await chatModel.aggregate<
@@ -435,8 +441,8 @@ const chatResolver = {
           delete chat.joinRequestUsers; // Clean up the temporary field
         }
 
-        console.log(JSON.stringify(chat, null, 2));
-        console.log(chat);
+        // console.log(JSON.stringify(chat, null, 2));
+        // console.log(chat);
 
         return chat;
       } catch (error) {
@@ -452,7 +458,7 @@ const chatResolver = {
       args: createDuoChatArgs,
       ctx: GraphqlContext
     ): Promise<{ chatId: string }> => {
-      const { session } = ctx;
+      const { session, pubsub } = ctx;
       const { otherUserId } = args;
 
       // is user authenticated
@@ -495,7 +501,7 @@ const chatResolver = {
           { session: msession }
         );
 
-        const chatId = chat.id;
+        const chatId = chat.id as string;
         const memberIds = [otherUserId, session.user.id];
 
         const chatMembers = memberIds.map((id) => {
@@ -510,10 +516,153 @@ const chatResolver = {
         await chatMemberModel.insertMany(chatMembers, { session: msession });
         await msession.commitTransaction();
 
+        // start of temporal code
+        const _chatId = new mongoose.Types.ObjectId(chatId);
+        const userId = new mongoose.Types.ObjectId(session.user.id);
+
+        const [chatCreated] = await chatModel.aggregate<ChatLean>([
+          /* ------------- // 1) Match the chatId ------------ */
+          {
+            $match: {
+              _id: _chatId
+            }
+          },
+
+          // 2) Lookup self_member document
+          {
+            $lookup: {
+              from: "ChatMember",
+              let: { cid: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$chatId", "$$cid"] },
+                        { $eq: ["$memberId", userId] }
+                      ]
+                    }
+                  }
+                },
+                { $limit: 1 },
+                {
+                  $lookup: {
+                    from: "User",
+                    localField: "memberId",
+                    foreignField: "_id",
+                    as: "member"
+                  }
+                },
+                {
+                  $unwind: {
+                    path: "$member",
+                    preserveNullAndEmptyArrays: true
+                  }
+                },
+                {
+                  $addFields: {
+                    "member.id": { $toString: "$member._id" },
+                    id: { $toString: "$_id" }
+                  }
+                }
+              ],
+              as: "self_member"
+            }
+          },
+
+          { $match: { self_member: { $ne: [] } } },
+          { $unwind: "$self_member" },
+
+          /* ---- // 3) Lookup latestMessage documents --- */
+          {
+            $lookup: {
+              from: "Message",
+              localField: "latestMessageId",
+              foreignField: "_id",
+              as: "chat_latestMessage",
+              pipeline: [
+                { $limit: 1 },
+                { $addFields: { id: { $toString: "$_id" } } }
+              ]
+            }
+          },
+          {
+            $unwind: {
+              path: "$chat_latestMessage",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+
+          /* ------ // 4) Lookup duo_chat_members documents ------ */
+          {
+            $lookup: {
+              from: "ChatMember",
+              let: { cid: "$_id", ctype: "$chatType" },
+              as: "duo_chat_members",
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$chatId", "$$cid"] },
+                        { $eq: ["$chatType", "$$ctype"] }
+                      ]
+                    }
+                  }
+                },
+                {
+                  $lookup: {
+                    from: "User",
+                    localField: "memberId",
+                    foreignField: "_id",
+                    as: "member",
+                    pipeline: [{ $limit: 1 }]
+                  }
+                },
+                {
+                  $unwind: {
+                    path: "$member",
+                    preserveNullAndEmptyArrays: true
+                  }
+                },
+                {
+                  $addFields: {
+                    id: { $toString: "$_id" },
+                    "member.id": { $toString: "$member._id" }
+                  }
+                }
+              ]
+            }
+          },
+
+          // 5) Project the final shape of the Chat object
+          {
+            $project: {
+              _id: 0,
+              id: { $toString: "$_id" },
+              description: 1,
+              superAdmin: 1,
+              groupAdmins: 1,
+              chatName: 1,
+              chatType: 1,
+              groupType: 1,
+              inviteLink: 1,
+              joinRequests: 1,
+              latestMessageId: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              chat_latestMessage: 1,
+              duo_chat_members: 1,
+              self_member: 1
+            }
+          }
+        ]);
+
+        // end of temporal code
         // emit create subscription event
-        // pubsub.publish("CONVERSATION_CREATED", {
-        //   conversationCreated: chat
-        // });
+        pubsub.publish("CHAT_CREATED", {
+          chatCreated
+        });
 
         return { chatId: chat.id };
       } catch (error) {

@@ -1,16 +1,8 @@
-// import merge from "lodash.merge";
-// import userResolvers from "./user";
-
 import { merge } from "@lib/utils";
-import messageResolver from "./message";
+import chatResolver from "./chat.resolver";
 import userResolver from "./user.resolver";
-import conversationResolver from "./conversations";
+import messageResolver from "./message.resolver";
 
-const resolvers = merge(
-  {},
-  conversationResolver,
-  userResolver,
-  messageResolver
-);
+const resolvers = merge({}, chatResolver, userResolver, messageResolver);
 
 export default resolvers;

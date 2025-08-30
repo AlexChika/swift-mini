@@ -1,13 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { GraphQLError } from "graphql";
 import { withFilter } from "graphql-subscriptions";
-import {
-  ApiReturn,
-  Conversation,
-  GraphqlContext,
-  Message,
-  Messages
-} from "swift-mini";
+import { ApiReturn, GraphqlContext, Message, Messages } from "swift-mini";
 import { conversationsInclude } from "./conversations";
 import isUserAConversationParticipant from "@lib/utils/isUserAConversationParticipant";
 import mongoose from "mongoose";
