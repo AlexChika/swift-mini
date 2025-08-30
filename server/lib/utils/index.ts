@@ -116,7 +116,7 @@ function getRandomId(opts: RandomIdOptions) {
   }
 }
 
-/* ----------------------- M ----------------------- */
+/* --------------- M --------------- */
 
 /**
  * Deep merges multiple objects into the base object.
@@ -143,4 +143,3 @@ function merge(
 }
 
 export { createPermanentUrl, getRandomId, inviteLinkEncoder, merge };
-export { default as isUserAConversationParticipant } from "./isUserAConversationParticipant";
