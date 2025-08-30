@@ -318,5 +318,5 @@ const Subscriptions = {
   chatCreated
 };
 
-const conversationOperations = { Queries, Mutations, Subscriptions };
-export default conversationOperations;
+const chatOps = { Queries, Mutations, Subscriptions };
+export default chatOps;

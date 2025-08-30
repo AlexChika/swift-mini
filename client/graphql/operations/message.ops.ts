@@ -57,5 +57,5 @@ const Mutations = { sendMessage };
 
 const Subscriptions = { messageSent };
 
-const messageOperations = { Queries, Mutations, Subscriptions };
-export default messageOperations;
+const messageOps = { Queries, Mutations, Subscriptions };
+export default messageOps;
