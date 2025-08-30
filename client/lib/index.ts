@@ -1,4 +1,4 @@
-function formatUserNames2(chat: ChatsLean, id: string) {
+function formatUserNames2(chat: ChatLean, id: string) {
   const isDuoChat = chat.chatType === "duo";
 
   if (!isDuoChat) {
