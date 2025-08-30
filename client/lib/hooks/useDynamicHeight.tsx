@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 // Mobile....
 
-type Ref = React.MutableRefObject<HTMLDivElement | null>;
+type Ref = React.RefObject<HTMLDivElement | null>;
 type Condition = boolean | (() => boolean);
 
 /**
@@ -20,29 +20,30 @@ const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
     function set(_height: number) {
       if (!refElement) return;
 
+      function _set(cond: boolean, el: HTMLElement, def?: "default") {
+        if (def === "default") return (el.style.height = `${_height - sub}px`);
+
+        if (cond) el.style.height = `${_height - sub}px`;
+        else el.style.height = `${_height}px`;
+      }
+
       if (typeof condition === "function") {
-        condition()
-          ? (refElement.style.height = `${_height - sub}px`)
-          : (refElement.style.height = `${_height - 0}px`);
+        _set(condition(), refElement);
       } else if (typeof condition === "boolean") {
-        condition
-          ? (refElement.style.height = `${_height - sub}px`)
-          : (refElement.style.height = `${_height - 0}px`);
-      } else refElement.style.height = `${_height - sub}px`;
+        _set(condition, refElement);
+      } else _set(true, refElement, "default");
     }
 
     let _height = window.innerHeight;
     set(_height); //initial set on render
 
     function handleScrollEvent() {
-      // console.log("i ran scrolls");
       if (_height === window.innerHeight) return;
       _height = window.innerHeight;
       set(_height);
     }
 
     function handleResizeEvent() {
-      // console.log("I ran resuiz");
       _height = window.innerHeight;
       set(_height);
     }

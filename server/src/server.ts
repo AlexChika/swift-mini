@@ -10,7 +10,6 @@ import { expressMiddleware } from "@as-integrations/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 
 import typeDefs from "@src/graphql/typeDefs";
-import { PrismaClient } from "@prisma/client";
 import { PubSub } from "graphql-subscriptions";
 import resolvers from "@src/graphql/resolvers";
 import { connectDB, restartJob, getSession } from "lib";
@@ -20,7 +19,6 @@ import { GraphqlContext, SubscriptionContext } from "swift-mini";
 // configs
 dotenv.config();
 await connectDB();
-const prisma = new PrismaClient();
 const pubsub = new PubSub();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -51,7 +49,7 @@ const serverCleanup = useServer(
     schema,
     context: async (ctx: SubscriptionContext): Promise<GraphqlContext> => {
       const { session } = ctx?.connectionParams || {};
-      return { session, pubsub, prisma };
+      return { session, pubsub };
     }
   },
   wsServer
@@ -84,9 +82,8 @@ app.use(
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const sessionUrl = req.headers["x-session-url"] as string;
-      console.log("Each graphql op passes thu middleware and fetches session");
       const session = await getSession(req, sessionUrl);
-      return { session, prisma, pubsub };
+      return { session, pubsub };
     }
   })
 );

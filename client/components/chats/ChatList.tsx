@@ -1,5 +1,5 @@
 import { hideScrollbar } from "@/chakra/theme";
-import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
+import { Alert, Box, Center, Stack } from "@chakra-ui/react";
 import { Session } from "next-auth";
 import chatOps from "@/graphql/operations/chat.ops";
 import { useQuery } from "@apollo/client";
@@ -58,9 +58,6 @@ function ChatList({ session }: Props) {
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
   useDynamicHeight(BoxRef, 80);
-
-  // console.log({ data });
-  // return "";
 
   return (
     <Box

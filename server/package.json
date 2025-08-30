@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "src/server.ts",
   "scripts": {
-    "prisma": "npx prisma generate",
     "start": "tsx src/server.ts",
     "dev": "tsc --watch --noEmit --project tsconfig.json & tsx watch --env-file=.env src/server.ts",
     "deploy": "npm run start",
@@ -21,7 +20,6 @@
     "@apollo/server": "^5.0.0",
     "@as-integrations/express4": "^1.1.2",
     "@graphql-tools/schema": "^10.0.0",
-    "@prisma/client": "^5.7.0",
     "axios": "^1.6.2",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -43,7 +41,6 @@
     "@typescript-eslint/parser": "^8.39.0",
     "eslint": "^9.33.0",
     "prettier": "^3.6.2",
-    "prisma": "^5.7.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0"
   },

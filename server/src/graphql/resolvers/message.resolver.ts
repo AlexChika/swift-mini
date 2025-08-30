@@ -3,7 +3,7 @@ import { GraphQLError } from "graphql";
 import { withFilter } from "graphql-subscriptions";
 import messageModel from "@src/models/messages.model";
 import chatMemberModel from "@src/models/chatMember.model";
-import { ApiReturn, GraphqlContext, Message, Messages } from "swift-mini";
+import { ApiReturn, GraphqlContext, Message } from "swift-mini";
 
 type SendMessageArgs = {
   senderId: string;
@@ -12,7 +12,7 @@ type SendMessageArgs = {
   clientSentAt: Date;
 };
 
-type MessageResponse = ApiReturn<Message[], "messages">;
+type MessageResponse = ApiReturn<Message<string>[], "messages">;
 
 const messageResolver = {
   Query: {
@@ -184,7 +184,7 @@ const messageResolver = {
           return pubsub.asyncIterator(["MESSAGE_SENT"]);
         },
         (
-          payload: { messageSent: Messages<string> },
+          payload: { messageSent: Message<string> },
           args: { chatId: string },
           ___: unknown
         ) => {

@@ -34,7 +34,11 @@ function formatUserNames(
   const sorted: Conversation["participants"] = [];
 
   participants.forEach((p) => {
-    p.hasSeenLatestMessage ? sorted.unshift(p) : sorted.push(p);
+    if (p.hasSeenLatestMessage) {
+      sorted.unshift(p);
+    } else {
+      sorted.push(p);
+    }
   });
 
   /** Joins usernames into a comma separated strings while ommitting the current user */
