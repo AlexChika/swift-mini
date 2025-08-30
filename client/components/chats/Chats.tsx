@@ -1,12 +1,10 @@
 import { memo } from "react";
+import ChatList from "./ChatList";
 import { Session } from "next-auth";
 import { Box } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
-import ConversationList from "@/components/chats/ConversationList";
-import StartConversationBtn from "@/components/chats/StartConversationBtn";
-import StartConversationBtn2 from "./StartConversationBtn2";
-import StartConversationBtn3 from "./StartConversationBtn3";
-import ConversationList1 from "./ConversationList1";
+import CreateDuoChatBtn from "./CreateDuoChatBtn";
+// import CreateGroupChatBtn from "./CreateGroupChatBtn";
 
 type Props = {
   session: Session;
@@ -29,11 +27,10 @@ function Chats({ session }: Props) {
       maxW={{ xmd: "300px", lg: "380px", xl: "400px" }}
       py={3}
       px={3}>
-      {/* <StartConversationBtn session={session} /> */}
-      <StartConversationBtn2 session={session} />
+      <CreateDuoChatBtn session={session} />
       {/* create group chat */}
-      {/* <StartConversationBtn3 session={session} /> */}
-      <ConversationList1 session={session} />
+      {/* <CreateGroupChatBtn session={session} /> */}
+      <ChatList session={session} />
     </Box>
   );
 }

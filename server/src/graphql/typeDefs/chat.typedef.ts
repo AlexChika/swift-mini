@@ -25,14 +25,6 @@ type Subscription {
   chatCreated:ChatLean!
 }
 
-# type Conversation {
-#     id:String!
-#     latestMessage:Message
-#     participants:[Participant!]
-#     createdAt:Date!
-#     updatedAt:Date!
-# }
-
 # returns a complete chat object
 type ChatPopulated {
     id: String!
