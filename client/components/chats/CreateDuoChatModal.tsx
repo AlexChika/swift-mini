@@ -35,7 +35,7 @@ type CreateDuoChatData = {
   };
 };
 
-function CreateDuoChatModal({ isOpen, setIsOpen, session }: Props) {
+function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);

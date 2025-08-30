@@ -28,7 +28,7 @@ export const getAuthConfig = (): NextAuthConfig => {
     ],
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-      async session({ session, user, token }) {
+      async session({ session, user }) {
         return {
           ...session,
           user: {

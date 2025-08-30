@@ -1,15 +1,12 @@
-import { Center, Flex, HStack, Image, Text, VStack } from "@chakra-ui/react";
-import { Session } from "next-auth";
-import Spinner from "@/components/general/Spinner";
-import MessagesHeader from "./MessagesHeader";
 import Messages from "./Messages";
+import { Session } from "next-auth";
+import { Flex } from "@chakra-ui/react";
+import MessagesHeader from "./MessagesHeader";
 
 type Props = {
   session: Session;
   id: string; //chatId
 };
-
-// border={"2px solid yellow"}
 
 function ChatScreen({ session, id }: Props) {
   return (

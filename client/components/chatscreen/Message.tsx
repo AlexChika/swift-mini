@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { dateFormatter } from "@/lib";
 
 type Props = {

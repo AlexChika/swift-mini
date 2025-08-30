@@ -1,11 +1,11 @@
 import { connectDB } from "lib/db";
 const mongoose = await connectDB();
 import { type Document, Model, Types } from "mongoose";
-import { Messages } from "swift-mini";
+import { Message } from "swift-mini";
 
-type TMessage = Document & Messages<Types.ObjectId>;
+type TMessage = Document & Message<Types.ObjectId>;
 
-const messageSchema = new mongoose.Schema<Messages<Types.ObjectId>>(
+const messageSchema = new mongoose.Schema<Message<Types.ObjectId>>(
   {
     chatId: {
       type: mongoose.Schema.Types.ObjectId,

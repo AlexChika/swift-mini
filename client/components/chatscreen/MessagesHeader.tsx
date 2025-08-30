@@ -14,11 +14,11 @@ import {
 } from "@chakra-ui/react";
 
 type Props = {
-  id: string; // this is conversationId
+  id: string; // this is chatId
   userId: string; // this is users ID
 };
 
-function MessagesHeader({ id, userId }: Props) {
+function MessagesHeader({ userId }: Props) {
   const router = useRouter();
 
   // recommended implementation

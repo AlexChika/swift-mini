@@ -67,7 +67,11 @@ function Auth({ session, reloadSession }: AuthProps) {
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const regex = /[^A-Za-z0-9]/;
-    e.target.value.match(regex) ? setErr(true) : setErr(false);
+    if (e.target.value.match(regex)) {
+      setErr(true);
+    } else {
+      setErr(false);
+    }
     setUsername(e.target.value);
   }
 
