@@ -31,5 +31,6 @@ const Mutations = {
 
 const Subscriptions = {};
 
-const userOperations = { Queries, Mutations, Subscriptions };
-export default userOperations;
+const userOps = { Queries, Mutations, Subscriptions };
+
+export default userOps;

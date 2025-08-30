@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation } from "@apollo/client";
 
-import userOperations from "@/graphql/operations/users";
+import userOps from "@/graphql/operations/user.ops";
 import toast from "react-hot-toast";
 
 type AuthProps = {
@@ -26,10 +26,10 @@ function Auth({ session, reloadSession }: AuthProps) {
   const [Username, setUsername] = useState("");
   const [err, setErr] = useState(false); // input error
 
-  const [createUsername, { loading, error }] = useMutation<
+  const [createUsername, { loading }] = useMutation<
     CreateUsernameData,
     CreateUsernameVariable
-  >(userOperations.Mutations.createUsername);
+  >(userOps.Mutations.createUsername);
 
   async function onSubmit() {
     const username = Username.trim().toLowerCase();

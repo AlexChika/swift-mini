@@ -11,8 +11,8 @@ import {
   CloseButton
 } from "@chakra-ui/react";
 import React from "react";
-import userOperations from "@/graphql/operations/users";
-import convoOperations from "@/graphql/operations/chat.ops";
+import chatOps from "@/graphql/operations/chat.ops";
+import userOps from "@/graphql/operations/user.ops";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
@@ -46,12 +46,12 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
   const [searchUsers, { loading, data }] = useLazyQuery<
     SearchUsersData,
     SearchUsersVariable
-  >(userOperations.Queries.searchUsers);
+  >(userOps.Queries.searchUsers);
 
   const [createGroupChat, { loading: createConversationLoading }] = useMutation<
     CreateGroupChatData,
     CreateGroupChatVariable
-  >(convoOperations.Mutations.createGroupChat);
+  >(chatOps.Mutations.createGroupChat);
 
   // functions
   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
