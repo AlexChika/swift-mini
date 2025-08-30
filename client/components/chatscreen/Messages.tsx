@@ -1,17 +1,17 @@
-import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
-import MessageInput from "./MessageInput";
-import { Session } from "next-auth";
-import { hideScrollbar } from "@/chakra/theme";
 import Message from "./Message";
+import { Session } from "next-auth";
+import MessageInput from "./MessageInput";
 import { useQuery } from "@apollo/client";
-import messageOps from "@/graphql/operations/messageOps";
+import { hideScrollbar } from "@/chakra/theme";
+import messageOps from "@/graphql/operations/message.ops";
 import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
 import { ColorMode, syncClock } from "@/lib/helpers";
+import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 
 type Props = {
   session: Session;
-  id: string; //conversationID
+  id: string; //chatId
 };
 
 const bgStrs = [
@@ -111,14 +111,14 @@ function Messages({ session, id }: Props) {
     ]);
   }
 
-  // new implementation
   const { data, error, loading, subscribeToMore } = useQuery<
-    MessagesDataNew,
+    MessagesData,
     { chatId: string }
-  >(messageOps.Queries.messagesNew, {
+  >(messageOps.Queries.messages, {
     variables: { chatId: id }
   });
 
+  // debug only
   useEffect(() => {
     if (!data || window.swtf_offset) return;
     console.log("effect for syncClock");
@@ -130,10 +130,11 @@ function Messages({ session, id }: Props) {
     runSync();
   }, [data]);
 
+  // log latency when messages are fetched
   useEffect(() => {
-    if (data?.getMessagesNew.success) {
-      const len = data.getMessagesNew.messages.length;
-      const msg = data.getMessagesNew.messages[len - 1];
+    if (data?.getMessages.success) {
+      const len = data.getMessages.messages.length;
+      const msg = data.getMessages.messages[len - 1];
       if (!msg) return;
       logLatency({
         source: "effect",
@@ -144,39 +145,14 @@ function Messages({ session, id }: Props) {
     }
   }, [data]);
 
-  //old implementation
-  // function subToNewMessage(id: string) {
-  //   subscribeToMore({
-  //     variables: { conversationId: id },
-  //     document: messageOps.Subscriptions.messageSent,
-  //     updateQuery: (prev, update: MessageUpdate) => {
-  //       if (!update.subscriptionData.data) return prev;
-
-  //       const newMessage = update.subscriptionData.data.messageSent;
-
-  //       return Object.assign({}, prev, {
-  //         getMessages: {
-  //           ...prev.getMessages,
-  //           messages: [
-  //             ...((prev.getMessages.success && prev.getMessages.messages) ||
-  //               []),
-  //             newMessage
-  //           ]
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
-  // new implementation
   function subToNewMessage(id: string) {
     return subscribeToMore({
       variables: { chatId: id },
-      document: messageOps.Subscriptions.messageSentNew,
-      updateQuery: (prev, update: MessageUpdateNew) => {
+      document: messageOps.Subscriptions.messageSent,
+      updateQuery: (prev, update: MessageUpdate) => {
         if (!update.subscriptionData.data) return prev;
 
-        const newMessage = update.subscriptionData.data.messageSentNew;
+        const newMessage = update.subscriptionData.data.messageSent;
         logLatency({
           source: "subMore",
           message: newMessage.body,
@@ -185,11 +161,10 @@ function Messages({ session, id }: Props) {
         });
 
         return Object.assign({}, prev, {
-          getMessagesNew: {
-            ...prev.getMessagesNew,
+          getMessages: {
+            ...prev.getMessages,
             messages: [
-              ...((prev.getMessagesNew.success &&
-                prev.getMessagesNew.messages) ||
+              ...((prev.getMessages.success && prev.getMessages.messages) ||
                 []),
               newMessage
             ]
@@ -199,19 +174,20 @@ function Messages({ session, id }: Props) {
     });
   }
 
-  const subscribedCoversationIds = useRef<string[]>([]);
+  const subscribedChats = useRef<string[]>([]);
   useEffect(() => {
     // if a conversation has been subscribed... we return
-    if (subscribedCoversationIds.current.find((ids) => ids === id)) return;
-    subscribedCoversationIds.current.push(id);
+    if (subscribedChats.current.find((ids) => ids === id)) return;
+    subscribedChats.current.push(id);
 
     const unsubscribe = subToNewMessage(id); // sub to conversation
 
     return () => {
       // cleanup
       unsubscribe?.();
-      subscribedCoversationIds.current =
-        subscribedCoversationIds.current.filter((ids) => ids !== id);
+      subscribedChats.current = subscribedChats.current.filter(
+        (ids) => ids !== id
+      );
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -225,7 +201,7 @@ function Messages({ session, id }: Props) {
   }, [data]);
 
   const renderObj = renderObjectForDateDemacator(
-    (data?.getMessagesNew.success && data?.getMessagesNew.messages) || []
+    (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
   return (
@@ -263,16 +239,15 @@ function Messages({ session, id }: Props) {
         {error && <MessageErrorUI error="Please Refresh The browser" />}
 
         {/* success false */}
-        {data?.getMessagesNew.success === false && (
-          <MessageErrorUI error={data.getMessagesNew.msg} />
+        {data?.getMessages.success === false && (
+          <MessageErrorUI error={data.getMessages.msg} />
         )}
 
         {/* data */}
-        {data?.getMessagesNew.success &&
-          data.getMessagesNew.messages.map((m, i) => {
+        {data?.getMessages.success &&
+          data.getMessages.messages.map((m, i) => {
             const messages =
-              (data.getMessagesNew.success && data.getMessagesNew.messages) ||
-              [];
+              (data.getMessages.success && data.getMessages.messages) || [];
 
             return (
               <React.Fragment key={i}>

@@ -184,26 +184,13 @@ type Conversation = {
 /* -------------------- Messages ------------------- */
 type MessagesResponse = ApiReturn<Message[], "messages">;
 
-//old
 type MessagesData = {
   getMessages: MessagesResponse;
 };
 
-// new
-type MessagesDataNew = {
-  getMessagesNew: MessagesResponse;
-};
-
 type sendMessageData = boolean;
 
-// old
 type sendMessageVariable = {
-  body: string;
-  conversationId: string;
-  senderId: string;
-};
-// new
-type sendMessageVariableNew = {
   body: string;
   chatId: string;
   senderId: string;
@@ -215,8 +202,8 @@ type MessageUpdate = {
 };
 
 // types is incomplete, but this is the expected structure
-type MessageUpdateNew = {
-  subscriptionData: { data?: { messageSentNew: Message } };
+type MessageUpdate = {
+  subscriptionData: { data?: { messageSent: Message } };
 };
 
 type Message = {

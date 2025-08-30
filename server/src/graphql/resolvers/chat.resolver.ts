@@ -1,9 +1,10 @@
+import mongoose from "mongoose";
+import { GraphQLError } from "graphql";
 import { inviteLinkEncoder } from "@lib/utils";
 import chatModel from "@src/models/chat.model";
-import chatMemberModel from "@src/models/chatMember.model";
 import userModel from "@src/models/user.model";
-import { GraphQLError } from "graphql";
-import mongoose from "mongoose";
+import chatMemberModel from "@src/models/chatMember.model";
+import { withFilter } from "graphql-subscriptions";
 import { ChatLean, ChatPopulated, GraphqlContext, User } from "swift-mini";
 
 type createGroupChatArgs = {
@@ -772,6 +773,33 @@ const chatResolver = {
         console.log("createDuoChat error", error);
         throw new GraphQLError(err.message);
       }
+    }
+  },
+  Subscription: {
+    chatCreated: {
+      subscribe: withFilter(
+        (_: unknown, __: unknown, ctx: GraphqlContext) => {
+          const { pubsub } = ctx;
+          return pubsub.asyncIterator(["CHAT_CREATED"]);
+        },
+        (
+          payload: {
+            chatCreated: ChatLean;
+          },
+          _: unknown,
+          ctx: GraphqlContext
+        ) => {
+          const { session } = ctx;
+          const { chatCreated } = payload;
+
+          console.log({ chatCreated });
+
+          const userIsAMember = !!chatCreated.duo_chat_members.find(
+            (m) => m.memberId.toString() === session?.user.id
+          );
+          return userIsAMember;
+        }
+      )
     }
   }
 };

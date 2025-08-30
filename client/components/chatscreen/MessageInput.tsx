@@ -1,30 +1,22 @@
-import messageOperations from "@/graphql/operations/messageOps";
+import { useRef } from "react";
+import toast from "react-hot-toast";
+import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
 import { ApolloError, useMutation } from "@apollo/client";
 import { Flex, IconButton, Box } from "@chakra-ui/react";
-import { Session } from "next-auth";
-import { useRef } from "react";
-import toast from "react-hot-toast";
+import messageOps from "@/graphql/operations/message.ops";
 
 type Props = {
   session: Session;
-  id: string; //conversationID
+  id: string; //chatID
 };
 
 function MessageInput(props: Props) {
   const { id, session } = props;
 
-  // send message mutation
-  //old implementation
-  // const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
-  //   messageOperations.Mutations.sendMessage
-  // );
-
-  // new implementation
-  const [send, { error }] = useMutation<
-    sendMessageData,
-    sendMessageVariableNew
-  >(messageOperations.Mutations.sendMessageNew);
+  const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
+    messageOps.Mutations.sendMessage
+  );
 
   // ref
   const InputBox = useRef<null | HTMLDivElement>(null);
@@ -49,14 +41,6 @@ function MessageInput(props: Props) {
 
   // called by the submit and enter btn:sends message
   async function sendMessage(str: string) {
-    // old implementation
-    // const newMessage = {
-    //   body: str,
-    //   conversationId: id,
-    //   senderId: session.user.id
-    // };
-
-    // new implementation
     const newMessage = {
       body: str,
       chatId: id,
@@ -69,20 +53,6 @@ function MessageInput(props: Props) {
           ...newMessage,
           clientSentAt: new Date().toISOString()
         }
-        // optimisticResponse: true,
-        // update:(cache)=>{
-        //   const existing = cache.readQuery<MessagesData>({
-        //     query: messageOperations.Queries.messages,
-        //     variables: {conversationId:id}
-        //   })
-
-        //   cache.writeQuery<MessagesData, { conversationId: string }>({
-        //     query: messageOperations.Queries.messages,
-        //     variables: {conversationId:id },
-        //     data: {...existing, messages:[{...newMessage}, ...existing?.messages || []]}
-        //   });
-
-        // }
       });
 
       if (error) toast.error("Could not send");
