@@ -1,7 +1,7 @@
-import HomePage from "@/components/home/EmptyChatScreen";
+import EmptyChatScreen from "@/components/home/EmptyChatScreen";
 
 async function Page() {
-  return <HomePage />;
+  return <EmptyChatScreen />;
 }
 
 export default Page;

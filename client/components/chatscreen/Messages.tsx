@@ -1,17 +1,17 @@
-import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
-import MessageInput from "./MessageInput";
-import { Session } from "next-auth";
-import { hideScrollbar } from "@/chakra/theme";
 import Message from "./Message";
+import { Session } from "next-auth";
+import MessageInput from "./MessageInput";
 import { useQuery } from "@apollo/client";
-import messageOperations from "@/graphql/operations/messages";
+import { hideScrollbar } from "@/chakra/theme";
+import messageOps from "@/graphql/operations/message.ops";
 import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
-import { ColorMode } from "@/lib/helpers";
+import { ColorMode, syncClock } from "@/lib/helpers";
+import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 
 type Props = {
   session: Session;
-  id: string; //conversationID
+  id: string; //chatId
 };
 
 const bgStrs = [
@@ -82,37 +82,113 @@ function Messages({ session, id }: Props) {
   const [bg, setBg] = useState(0);
 
   const { theme } = ColorMode.useTheme();
+
+  function logLatency({
+    source,
+    message,
+    clientSentAt,
+    createdAt
+  }: {
+    source: string;
+    message: string;
+    clientSentAt: string;
+    createdAt: number;
+  }) {
+    const roundTripLatency = Date.now() - new Date(clientSentAt).getTime(); // no offset
+    const now = Date.now() + (window.swtf_offset || 0);
+    const serverLatency = now - new Date(createdAt).getTime(); // offset applied
+
+    console.table([
+      {
+        Source: source,
+        RoundTripLatency_ms: roundTripLatency,
+        ServerLatency_ms: serverLatency,
+        Message: message,
+        CreatedAt: createdAt,
+        ClientSentAt: clientSentAt,
+        OffsetApplied: window.swtf_offset
+      }
+    ]);
+  }
+
   const { data, error, loading, subscribeToMore } = useQuery<
     MessagesData,
-    { conversationId: string }
-  >(messageOperations.Queries.messages, {
-    variables: { conversationId: id }
+    { chatId: string }
+  >(messageOps.Queries.messages, {
+    variables: { chatId: id }
   });
 
+  // debug only
+  useEffect(() => {
+    if (!data || window.swtf_offset) return;
+    console.log("effect for syncClock");
+    async function runSync() {
+      const offset = await syncClock();
+      window.swtf_offset = offset;
+      console.log("Clock offset synced:", offset);
+    }
+    runSync();
+  }, [data]);
+
+  // log latency when messages are fetched
+  useEffect(() => {
+    if (data?.getMessages.success) {
+      const len = data.getMessages.messages.length;
+      const msg = data.getMessages.messages[len - 1];
+      if (!msg) return;
+      logLatency({
+        source: "effect",
+        message: msg.body,
+        clientSentAt: msg.clientSentAt,
+        createdAt: msg.createdAt
+      });
+    }
+  }, [data]);
+
   function subToNewMessage(id: string) {
-    subscribeToMore({
-      variables: { conversationId: id },
-      document: messageOperations.Subscriptions.messageSent,
+    return subscribeToMore({
+      variables: { chatId: id },
+      document: messageOps.Subscriptions.messageSent,
       updateQuery: (prev, update: MessageUpdate) => {
         if (!update.subscriptionData.data) return prev;
 
         const newMessage = update.subscriptionData.data.messageSent;
+        logLatency({
+          source: "subMore",
+          message: newMessage.body,
+          clientSentAt: newMessage.clientSentAt,
+          createdAt: newMessage.createdAt
+        });
 
-        console.log(new Date().getSeconds(), "sub func 3");
         return Object.assign({}, prev, {
-          messages: [...prev.messages, newMessage]
+          getMessages: {
+            ...prev.getMessages,
+            messages: [
+              ...((prev.getMessages.success && prev.getMessages.messages) ||
+                []),
+              newMessage
+            ]
+          }
         });
       }
     });
   }
 
-  const subscribedCoversationIds = useRef<string[]>([]);
+  const subscribedChats = useRef<string[]>([]);
   useEffect(() => {
     // if a conversation has been subscribed... we return
-    if (subscribedCoversationIds.current.find((ids) => ids === id)) return;
-    subscribedCoversationIds.current.push(id);
+    if (subscribedChats.current.find((ids) => ids === id)) return;
+    subscribedChats.current.push(id);
 
-    subToNewMessage(id); // sub to conversation
+    const unsubscribe = subToNewMessage(id); // sub to conversation
+
+    return () => {
+      // cleanup
+      unsubscribe?.();
+      subscribedChats.current = subscribedChats.current.filter(
+        (ids) => ids !== id
+      );
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -124,7 +200,9 @@ function Messages({ session, id }: Props) {
     }
   }, [data]);
 
-  const renderObj = renderObjectForDateDemacator(data?.messages || []);
+  const renderObj = renderObjectForDateDemacator(
+    (data?.getMessages.success && data?.getMessages.messages) || []
+  );
 
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
@@ -158,38 +236,25 @@ function Messages({ session, id }: Props) {
         )}
 
         {/* error */}
-        {error && (
-          <Center h="100%">
-            <Alert.Root
-              bg="{colors.secondaryBg}"
-              color="{colors.primaryText}"
-              status="error"
-              maxW="280px"
-              textAlign="center"
-              alignItems={"center"}>
-              <Alert.Indicator color="{colors.primaryText}" boxSize="40px" />
+        {error && <MessageErrorUI error="Please Refresh The browser" />}
 
-              <Alert.Content>
-                <Alert.Title mt={4} fontSize="sm">
-                  Something Went Wrong!
-                </Alert.Title>
-                <Alert.Description fontSize="small" maxWidth="sm">
-                  Please Refresh The browser
-                </Alert.Description>
-              </Alert.Content>
-            </Alert.Root>
-          </Center>
+        {/* success false */}
+        {data?.getMessages.success === false && (
+          <MessageErrorUI error={data.getMessages.msg} />
         )}
 
         {/* data */}
-        {data &&
-          data.messages.map((m, i) => {
+        {data?.getMessages.success &&
+          data.getMessages.messages.map((m, i) => {
+            const messages =
+              (data.getMessages.success && data.getMessages.messages) || [];
+
             return (
               <React.Fragment key={i}>
                 <DateDemacator key={m.id} demacatorText={renderObj[m.id]} />
                 <Message
                   usersFirstMessageAfterOthers={(() => {
-                    const prevMessage = data.messages[i - 1];
+                    const prevMessage = messages[i - 1];
                     if (!prevMessage) return true;
 
                     if (m.sender.id === prevMessage.sender.id) return false;
@@ -202,9 +267,10 @@ function Messages({ session, id }: Props) {
               </React.Fragment>
             );
           })}
+
         <button
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
-          style={{ color: "red" }}>
+          style={{ color: "gray" }}>
           {bgStrs[bg].name}
         </button>
       </Stack>
@@ -215,3 +281,26 @@ function Messages({ session, id }: Props) {
 }
 
 export default Messages;
+
+function MessageErrorUI({ error }: { error: string }) {
+  return (
+    <Center dir="column" h="100%">
+      <Alert.Root
+        bg="{colors.secondaryBg}"
+        color="{colors.primaryText}"
+        status="error"
+        maxW="280px"
+        textAlign="center"
+        alignItems={"center"}>
+        <Alert.Indicator color="red.solid" boxSize="40px" />
+
+        <Alert.Content maxWidth="md" width="max-content">
+          <Alert.Title color="red.solid" fontSize="sm">
+            Something Went Wrong!
+          </Alert.Title>
+          <Alert.Description fontSize="small">{error}</Alert.Description>
+        </Alert.Content>
+      </Alert.Root>
+    </Center>
+  );
+}

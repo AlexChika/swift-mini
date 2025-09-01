@@ -1,45 +1,46 @@
 import { hideScrollbar } from "@/chakra/theme";
-import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
+import { Alert, Box, Center, Stack } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import conversationOperations from "@/graphql/operations/conversations";
+import chatOps from "@/graphql/operations/chat.ops";
 import { useQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import ConversationItem from "./ConversationItem";
 import SkeletonLoader from "@/components/general/SkeletonLoader";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
+import ChatItem from "./ChatItem";
 
 type Props = {
   session: Session;
 };
 
-function ConversationList({ session }: Props) {
+function ChatList({ session }: Props) {
   const {
     data,
     error: convError,
     loading: convLoading,
     subscribeToMore
-  } = useQuery<conversationsData>(conversationOperations.Queries.conversations);
+  } = useQuery<chatsData>(chatOps.Queries.getChats);
 
   function subToNewConversation() {
     subscribeToMore({
-      document: conversationOperations.Subscriptions.conversationCreated,
-      updateQuery: (prev, update: ConversationUpdate) => {
+      document: chatOps.Subscriptions.chatCreated,
+      updateQuery: (prev, update: ChatUpdate) => {
         if (!update.subscriptionData.data) return prev;
 
-        const newConversation =
-          update.subscriptionData.data.conversationCreated;
+        console.log({ update, prev });
+
+        const newChat = update.subscriptionData.data.chatCreated;
 
         return Object.assign({}, prev, {
-          conversations: [...prev.conversations, newConversation]
+          getChats: [...prev.getChats, newChat]
         });
       }
     });
   }
 
-  async function conversationOnClick(conversationId: string) {
-    // router.replace(`/?conversationId=${conversationId}`);
-    router.push(conversationId);
+  async function chatsOnClick(chatId: string) {
+    // router.replace(`/?chatId=${conversationId}`);
+    router.push(chatId);
     // mark Convo as read
   }
 
@@ -67,7 +68,7 @@ function ConversationList({ session }: Props) {
       {/* loading */}
       {convLoading && (
         <Stack h="100%" gap={3}>
-          <SkeletonLoader duration={1} no={10} height="calc(100% / 10)" />
+          <SkeletonLoader duration={1} no={14} height="calc(100% / 14)" />
         </Stack>
         // <Center h="100%">
         //   <Box>
@@ -102,13 +103,13 @@ function ConversationList({ session }: Props) {
       {/* data */}
       {data && (
         <Stack>
-          {[...data.conversations].reverse().map((c) => {
+          {[...data.getChats].reverse().map((c) => {
             return (
-              <ConversationItem
+              <ChatItem
                 key={c.id}
                 {...{
-                  conversationOnClick,
-                  conversation: c,
+                  chatsOnClick,
+                  chat: c,
                   session
                 }}
               />
@@ -120,4 +121,4 @@ function ConversationList({ session }: Props) {
   );
 }
 
-export default ConversationList;
+export default ChatList;

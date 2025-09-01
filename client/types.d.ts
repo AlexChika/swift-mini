@@ -1,3 +1,13 @@
+type ApiReturn<T, Name extends string> =
+  | {
+      success: false;
+      msg: string;
+    }
+  | ({
+      success: true;
+      msg: string;
+    } & { [P in Name]: T });
+
 /* --------------------- users --------------------- */
 
 type CreateUsernameData = {
@@ -9,6 +19,7 @@ type CreateUsernameData = {
 };
 type CreateUsernameVariable = {
   username: string;
+  userHasImage: boolean;
 };
 
 type SearchedUser = {
@@ -23,23 +34,132 @@ type SearchUsersVariable = {
   username: string;
 };
 
-/* ----------------- conversations ----------------- */
+/* ----------------- Chats ----------------- */
+// narrow down types to returned graphql schema
+type User = {
+  _id: string; // MongoDB ObjectId
+  id: string;
+  username?: string | null;
+  emailVerified?: boolean | null;
+  name?: string | null;
+  email?: string | null; // set by Oauth
+  image?: string | null;
+  lastSeen?: Date | null;
+  hideLastSeen?: boolean;
+  userImageUrl?: string | null; // set/upload by User
+  permanentImageUrl?: string | null;
+};
+
+// narrow down types to returned graphql schema
+type ChatLean = {
+  id: string;
+  description: string;
+  chatName: string;
+  chatType: "group" | "duo";
+  groupType: "private" | "public";
+  inviteLink: string | null;
+  joinRequests: { createdAt: Date; userId: string }[];
+  groupAdmins: string[];
+  superAdmin: string | null;
+  latestMessageId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  chat_latestMessage?: Messages;
+  duo_chat_members: ChatMember[];
+  self_member: ChatMember;
+};
+
+// TODO => narrow down types to graphql returned schema
+type ChatPopulated = {
+  id: string;
+  description: string;
+  chatName: string;
+  chatType: "group" | "duo";
+  groupType: "private" | "public";
+  inviteLink: string | null;
+  joinRequests: { createdAt: Date; userId: string }[];
+  groupAdmins: string[];
+  superAdmin: string | null;
+  latestMessageId: string | null;
+  createdAt: Date;
+  chat_latestMessage?: Messages;
+  chat_members: ChatMember[];
+  chat_superAdmin: User;
+  chat_groupAdmins: User[];
+  chat_joinRequests: {
+    user: User | null;
+    createdAt: Date;
+    userId: string;
+  }[];
+};
+
+// narrow down types to returned graphql schema
+type ChatMember = {
+  id: string;
+  chatId: string;
+  chatType: "duo" | "group";
+  memberId: string;
+  role: "admin" | "member";
+  lastRead: {
+    time: Date | null;
+    messageId: string | null;
+  };
+  lastDelivered: {
+    time: Date | null;
+  };
+  messageMeta: {
+    [key: string]: {
+      showMessage: boolean;
+      time: Date;
+      messageId: string;
+    };
+  } | null;
+  showChat: boolean;
+  joinedAt: Date;
+  member: User;
+};
+
+// narrow down types to returned graphql schema
+type Messages = {
+  id: string;
+  chatId: string;
+  senderId: string;
+  body: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deleted: boolean;
+  sender: User;
+};
+
 type CreateConversationData = {
   createConversation: {
     conversationId: string;
   };
 };
+
 type CreateConversationVariable = {
   participantIds: string[];
 };
 
+// old implementation
 type conversationsData = {
   conversations: Conversation[];
 };
 
+// new implementation
+type chatsData = {
+  getChats: ChatsLean[];
+};
+
 // The update query subscription data for create conversations
+// old implementation
 type ConversationUpdate = {
   subscriptionData: { data?: { conversationCreated: Conversation } };
+};
+
+// new implementation
+type ChatUpdate = {
+  subscriptionData: { data?: { chatCreated: ChatsLean } };
 };
 
 type Conversation = {
@@ -62,17 +182,26 @@ type Conversation = {
 };
 
 /* -------------------- Messages ------------------- */
+type MessagesResponse = ApiReturn<Message[], "messages">;
+
 type MessagesData = {
-  messages: Message[];
+  getMessages: MessagesResponse;
 };
 
 type sendMessageData = boolean;
+
 type sendMessageVariable = {
   body: string;
-  conversationId: string;
+  chatId: string;
   senderId: string;
+  clientSentAt: string;
 };
 
+type MessageUpdate = {
+  subscriptionData: { data?: { messageSent: Message } };
+};
+
+// types is incomplete, but this is the expected structure
 type MessageUpdate = {
   subscriptionData: { data?: { messageSent: Message } };
 };
@@ -81,6 +210,7 @@ type Message = {
   id: string;
   body: string;
   createdAt: number;
+  clientSentAt: string;
   sender: {
     id: string;
     username: string;
@@ -90,6 +220,7 @@ type Message = {
 
 type IconProp = {
   className?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style?: any;
   color?: string;
 };

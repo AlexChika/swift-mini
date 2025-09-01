@@ -2,9 +2,14 @@ const userDefs = `#graphql
 type User {
   id:String!
   name:String!
+  emailVerified:Boolean
+  userImageUrl:String
+  permanentImageUrl:String
   username:String
   email:String
   image:String
+  hideLastSeen: Boolean
+  lastSeen: Date
 }
 
   type SearchedUser {
@@ -17,12 +22,8 @@ type Query {
 }
 
 type Mutation {
-    createUsername(username:String!):CreateUserResponse
+    createUsername(username:String!, userHasImage:Boolean!):CreateUserResponse
 }
-
-# type Subscription {
-
-# }
 
 type CreateUserResponse {
     username:String!

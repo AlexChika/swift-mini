@@ -1,7 +1,6 @@
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { reloadSession } from "../helpers";
 
 function useNetworkChangeNotifier() {
   const { update } = useSession();
@@ -19,7 +18,7 @@ function useNetworkChangeNotifier() {
       });
     };
 
-    const onlineHandler = () => {
+    const onlineHandler = async () => {
       toast.loading("You are back online", {
         id: "onlineoffline",
         duration: 7000,
@@ -29,8 +28,25 @@ function useNetworkChangeNotifier() {
           primary: "green"
         }
       });
-      reloadSession();
-      update();
+
+      let session = null;
+
+      session = await update();
+
+      if (!session) {
+        session = await getSession({
+          broadcast: true,
+          triggerEvent: true,
+          event: "authenticated"
+        });
+      }
+
+      if (session) {
+        await update(session);
+      } else {
+        console.log("no session, reloading");
+        window.location.reload();
+      }
     };
 
     window.addEventListener("offline", offlineHandler);

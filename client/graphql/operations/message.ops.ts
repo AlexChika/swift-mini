@@ -4,6 +4,7 @@ const messageFields = `
        id
         body
         createdAt
+        clientSentAt
       sender {
         id
         username
@@ -13,9 +14,13 @@ const messageFields = `
 
 // Queries
 const messages = gql`
-  query Messages($conversationId: String!) {
-    messages(conversationId: $conversationId) {
+  query GetMessages($chatId: String!) {
+    getMessages(chatId: $chatId) {
+      success
+      msg
+      messages {
        ${messageFields}
+      }
     }
   }
 `;
@@ -24,21 +29,23 @@ const messages = gql`
 const sendMessage = gql`
   mutation SendMessage(
     $senderId: String!
-    $conversationId: String!
+    $chatId: String!
     $body: String!
+    $clientSentAt: String!
   ) {
     sendMessage(
       senderId: $senderId
-      conversationId: $conversationId
+      chatId: $chatId
       body: $body
+      clientSentAt: $clientSentAt
     )
   }
 `;
 
 // Subscriptions
 const messageSent = gql`
-subscription MessageSent ($conversationId:String!) {
-    messageSent(conversationId:$conversationId) {
+subscription MessageSent ($chatId:String!) {
+    messageSent(chatId:$chatId) {
         ${messageFields}
     }
 }
@@ -50,5 +57,5 @@ const Mutations = { sendMessage };
 
 const Subscriptions = { messageSent };
 
-const messageOperations = { Queries, Mutations, Subscriptions };
-export default messageOperations;
+const messageOps = { Queries, Mutations, Subscriptions };
+export default messageOps;

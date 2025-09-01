@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import ConversationModal from "@/components/chats/ConversationModal";
+import CreateGroupChatModal from "./CreateGroupChatModal";
 
 type Props = {
   session: Session;
 };
 
-function StartConversationBtn({ session }: Props) {
+function StartConversationBtn3({ session }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -23,10 +23,10 @@ function StartConversationBtn({ session }: Props) {
         color="{colors.primaryText}"
         fontSize={{ base: "14px", md: "15px" }}
         fontWeight={500}>
-        Find or start a conversation
+        Create Group Chat tester
       </Text>
 
-      <ConversationModal
+      <CreateGroupChatModal
         session={session}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -35,4 +35,4 @@ function StartConversationBtn({ session }: Props) {
   );
 }
 
-export default StartConversationBtn;
+export default StartConversationBtn3;

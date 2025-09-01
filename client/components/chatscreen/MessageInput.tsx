@@ -1,22 +1,21 @@
-import messageOperations from "@/graphql/operations/messages";
+import { useRef } from "react";
+import toast from "react-hot-toast";
+import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
 import { ApolloError, useMutation } from "@apollo/client";
 import { Flex, IconButton, Box } from "@chakra-ui/react";
-import { Session } from "next-auth";
-import { useRef } from "react";
-import toast from "react-hot-toast";
+import messageOps from "@/graphql/operations/message.ops";
 
 type Props = {
   session: Session;
-  id: string; //conversationID
+  id: string; //chatID
 };
 
 function MessageInput(props: Props) {
   const { id, session } = props;
 
-  // send message mutation
   const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
-    messageOperations.Mutations.sendMessage
+    messageOps.Mutations.sendMessage
   );
 
   // ref
@@ -44,29 +43,16 @@ function MessageInput(props: Props) {
   async function sendMessage(str: string) {
     const newMessage = {
       body: str,
-      conversationId: id,
+      chatId: id,
       senderId: session.user.id
     };
 
     try {
       await send({
         variables: {
-          ...newMessage
+          ...newMessage,
+          clientSentAt: new Date().toISOString()
         }
-        // optimisticResponse: true,
-        // update:(cache)=>{
-        //   const existing = cache.readQuery<MessagesData>({
-        //     query: messageOperations.Queries.messages,
-        //     variables: {conversationId:id}
-        //   })
-
-        //   cache.writeQuery<MessagesData, { conversationId: string }>({
-        //     query: messageOperations.Queries.messages,
-        //     variables: {conversationId:id },
-        //     data: {...existing, messages:[{...newMessage}, ...existing?.messages || []]}
-        //   });
-
-        // }
       });
 
       if (error) toast.error("Could not send");

@@ -1,11 +1,18 @@
 import { GraphQLError } from "graphql";
-import { GraphqlContext } from "../../../swift-mini";
-import { User } from "@prisma/client";
+import { GraphqlContext, User } from "swift-mini";
+import userModel from "@src/models/user.model";
+import { createPermanentUrl } from "@lib/utils";
+import { Types } from "mongoose";
 
 type CreateUsernameResponse = {
   success: boolean;
   error?: string;
   username: string;
+};
+
+type Args = {
+  username: string;
+  userHasImage: boolean;
 };
 
 const resolvers = {
@@ -14,22 +21,20 @@ const resolvers = {
       _: unknown,
       args: { username: string },
       ctx: GraphqlContext
-    ): Promise<User[]> => {
+    ): Promise<User<Types.ObjectId>[]> => {
       const { username: searchedUsername } = args;
-      const { session, prisma } = ctx;
+      const { session } = ctx;
 
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
       const { username: myUsername } = session.user;
 
       try {
-        const users = prisma.user.findMany({
-          where: {
-            username: {
-              contains: searchedUsername,
-              not: myUsername,
-              mode: "insensitive"
-            }
+        const users = await userModel.find({
+          username: {
+            $regex: searchedUsername,
+            $options: "i",
+            $ne: myUsername
           }
         });
 
@@ -45,11 +50,11 @@ const resolvers = {
   Mutation: {
     createUsername: async (
       _: unknown,
-      args: { username: string },
+      args: Args,
       ctx: GraphqlContext
     ): Promise<CreateUsernameResponse> => {
-      const { username } = args;
-      const { session, prisma } = ctx;
+      const { username, userHasImage } = args;
+      const { session } = ctx;
 
       if (!session?.user)
         return {
@@ -62,11 +67,11 @@ const resolvers = {
 
       try {
         // check uniqueness of username
-        const existingUser = await prisma.user.findUnique({
-          where: {
+        const existingUser = await userModel
+          .findOne({
             username
-          }
-        });
+          })
+          .exec();
 
         // user exists
         if (existingUser) {
@@ -78,16 +83,15 @@ const resolvers = {
         }
 
         // update user
-        await prisma.user.update({
-          where: {
-            id: userId
-          },
-          data: {
-            username
-          }
-        });
+        await userModel
+          .findByIdAndUpdate(userId, {
+            username,
+            permanentImageUrl: userHasImage
+              ? createPermanentUrl(userId)
+              : undefined
+          })
+          .exec();
 
-        //
         return {
           username,
           success: true,

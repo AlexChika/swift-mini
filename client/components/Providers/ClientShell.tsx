@@ -1,6 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
+
+declare global {
+  interface Window {
+    swtf_offset: number;
+  }
+}
 
 export default function ClientShell({
   children

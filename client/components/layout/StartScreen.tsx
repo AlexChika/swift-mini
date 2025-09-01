@@ -1,4 +1,4 @@
-import useFetchConversation from "@/lib/hooks/useFetchConversation";
+import useFetchChats from "@/lib/hooks/useFetchChats";
 import { Image } from "@chakra-ui/react";
 import { Center, Alert, Text } from "@chakra-ui/react";
 import Spinner from "../general/Spinner";
@@ -24,7 +24,7 @@ type Props = {
 
 function StartScreen({ Child }: Props) {
   // initialize / fetch all queries for caching
-  const { data, error } = useFetchConversation();
+  const { data, error } = useFetchChats();
 
   if (data) return Child;
 

@@ -11,8 +11,8 @@ import {
   CloseButton
 } from "@chakra-ui/react";
 import React from "react";
-import userOperations from "@/graphql/operations/users";
-import convoOperations from "@/graphql/operations/conversations";
+import chatOps from "@/graphql/operations/chat.ops";
+import userOps from "@/graphql/operations/user.ops";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
@@ -25,7 +25,20 @@ type Props = {
   session: Session;
 };
 
-function ConversationModal({ isOpen, setIsOpen, session }: Props) {
+type CreateGroupChatVariable = {
+  description: string;
+  chatName: string;
+  groupType: "private" | "public";
+  memberIds: string[];
+};
+
+type CreateGroupChatData = {
+  createGroupChat: {
+    chatId: string;
+  };
+};
+
+function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
@@ -33,12 +46,12 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
   const [searchUsers, { loading, data }] = useLazyQuery<
     SearchUsersData,
     SearchUsersVariable
-  >(userOperations.Queries.searchUsers);
+  >(userOps.Queries.searchUsers);
 
-  const [createConversation, { loading: createConversationLoading }] =
-    useMutation<CreateConversationData, CreateConversationVariable>(
-      convoOperations.Mutations.createConversation
-    );
+  const [createGroupChat, { loading: createConversationLoading }] = useMutation<
+    CreateGroupChatData,
+    CreateGroupChatVariable
+  >(chatOps.Mutations.createGroupChat);
 
   // functions
   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
@@ -62,20 +75,26 @@ function ConversationModal({ isOpen, setIsOpen, session }: Props) {
   }
 
   async function onCreateConversation() {
-    const participantIds = [...participants.map((p) => p.id), session.user.id];
+    const memberIds = participants.map((p) => p.id);
     try {
-      const { data } = await createConversation({
-        variables: { participantIds }
+      const { data } = await createGroupChat({
+        variables: {
+          memberIds,
+          chatName: `${session.user.username}'s group chat`,
+          description: "You are welcome to the group chat",
+          groupType: "public"
+        }
       });
 
-      const { conversationId } = data?.createConversation || {};
+      const { chatId } = data?.createGroupChat || {};
+      console.log({ chatId });
 
-      if (!conversationId) throw new Error("Failed to create conversation");
+      if (!chatId) throw new Error("Failed to create conversation");
 
-      router.replace(`/?conversationId=${conversationId}`);
       setParticipants([]);
       setUsername("");
       setIsOpen(false);
+      router.push(`/${chatId}`);
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
@@ -251,4 +270,4 @@ function SelectedParticipants({
   );
 }
 
-export default ConversationModal;
+export default CreateGroupChatModal;

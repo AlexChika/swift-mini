@@ -1,12 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import type { Viewport } from "next";
 import { Inter } from "next/font/google";
-import { getServerSession } from "next-auth";
-import Provider from "@/components/Providers/Provider";
-import { getAuthOptions } from "@/lib/api/nextAuth";
-import { getServerTheme } from "@/components/Providers/getServerTheme";
+import { auth } from "@/lib/api/nextAuth";
 import Layout from "@/components/layout/RootLayout";
+import Provider from "@/components/Providers/Provider";
+import { getServerTheme } from "@/components/Providers/getServerTheme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +18,7 @@ type Props = {
 };
 
 export default async function RootLayout({ children }: Props) {
-  const session = await getServerSession(getAuthOptions());
+  const session = await auth();
   const theme = await getServerTheme();
 
   return (

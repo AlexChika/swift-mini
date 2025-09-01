@@ -12,8 +12,8 @@ const searchUsers = gql`
 
 /* ---------------- mutatations --------------- */
 const createUsername = gql`
-  mutation CreateUsername($username: String!) {
-    createUsername(username: $username) {
+  mutation CreateUsername($username: String!, $userHasImage: Boolean!) {
+    createUsername(username: $username, userHasImage: $userHasImage) {
       username
       success
       error
@@ -31,5 +31,6 @@ const Mutations = {
 
 const Subscriptions = {};
 
-const userOperations = { Queries, Mutations, Subscriptions };
-export default userOperations;
+const userOps = { Queries, Mutations, Subscriptions };
+
+export default userOps;

@@ -1,16 +1,19 @@
-import { NextAuthOptions } from "next-auth";
+import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth, { type NextAuthConfig } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 
 // add the below to generator fun in prisma schema
 //   output = "app/generated/prisma/client";
 // import { PrismaClient } from "@/prisma/app/generated/prisma/client"; for v7 (not supported by nextAuth yet)
 
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaClient } from "@prisma/client";
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-const prisma = new PrismaClient();
+export const prisma = globalForPrisma.prisma || new PrismaClient();
 
-export const getAuthOptions = (): NextAuthOptions => {
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+export const getAuthConfig = (): NextAuthConfig => {
   const dev = process.env.NODE_ENV === "development";
   const domain = "globalstack.dev";
   const cookiePrefix = "__Secure-";
@@ -25,7 +28,7 @@ export const getAuthOptions = (): NextAuthOptions => {
     ],
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-      async session({ session, user, token }) {
+      async session({ session, user }) {
         return {
           ...session,
           user: {
@@ -70,3 +73,5 @@ export const getAuthOptions = (): NextAuthOptions => {
         }
   };
 };
+
+export const { auth, handlers, signIn, signOut } = NextAuth(getAuthConfig());

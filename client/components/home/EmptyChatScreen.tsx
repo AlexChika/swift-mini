@@ -14,7 +14,7 @@ function EmptyChatScreen() {
       }}
       w="100%">
       <VStack>
-        <Image opacity={0.5} maxW="150px" alt="Logo Image" src="/icon.png" />
+        <Image opacity={0.7} maxW="150px" alt="Logo Image" src="/icon.png" />
 
         <Text userSelect="none" opacity={0.3} color="{colors.primaryText}">
           No conversation selected
