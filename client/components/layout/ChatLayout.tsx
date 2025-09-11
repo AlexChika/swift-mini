@@ -21,7 +21,12 @@ function ChatLayout({ session, children }: ChatProps) {
       {/* temp addition */}
       <InProgressModal></InProgressModal>
 
-      <Flex ref={containerRef} margin={0} gap={0}>
+      <Flex
+        w={"100%"}
+        ref={containerRef}
+        maxW={{ base: "500px", xmd: "100%" }}
+        margin={0}
+        gap={0}>
         <Chats session={session} />
         {children}
       </Flex>

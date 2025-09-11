@@ -21,6 +21,8 @@ function ChatItem(props: Props) {
 
   const { usernames, avatar, name } = formatUserNames2(chat, session.user.id);
 
+  console.log({ chat });
+
   return (
     <Box
       title={usernames}

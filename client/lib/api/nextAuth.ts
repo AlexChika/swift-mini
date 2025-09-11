@@ -1,11 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@/prisma/swift";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-
-// add the below to generator fun in prisma schema
-//   output = "app/generated/prisma/client";
-// import { PrismaClient } from "@/prisma/app/generated/prisma/client"; for v7 (not supported by nextAuth yet)
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
@@ -16,17 +12,22 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 export const getAuthConfig = (): NextAuthConfig => {
   const dev = process.env.NODE_ENV === "development";
   const domain = "globalstack.dev";
-  const cookiePrefix = "__Secure-";
+  const cookiePrefix = "__Secure-SwiftMini";
 
   return {
+    // @ts-expect-error: PrismaAdaper (v: 2.10.0) expects a prisma instance of a type that is currently not compatiible with the instance returned from the generated PrismaClient but compatible with the instance returned from "@prisma/client" package .
     adapter: PrismaAdapter(prisma),
+    session: {
+      strategy: "database",
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      updateAge: 24 * 60 * 60 // 24 hours
+    },
     providers: [
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!
       })
     ],
-    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
       async session({ session, user }) {
         return {
@@ -42,7 +43,7 @@ export const getAuthConfig = (): NextAuthConfig => {
       ? {}
       : {
           sessionToken: {
-            name: `${cookiePrefix}next-auth.session-token`,
+            name: `${cookiePrefix}.session-token`,
             options: {
               httpOnly: true,
               sameSite: "lax",
@@ -52,7 +53,7 @@ export const getAuthConfig = (): NextAuthConfig => {
             }
           },
           callbackUrl: {
-            name: `${cookiePrefix}next-auth.callback-url`,
+            name: `${cookiePrefix}.callback-url`,
             options: {
               sameSite: "lax",
               path: "/",
@@ -61,7 +62,7 @@ export const getAuthConfig = (): NextAuthConfig => {
             }
           },
           csrfToken: {
-            name: `${cookiePrefix}next-auth.csrf-token`,
+            name: `${cookiePrefix}.csrf-token`,
             options: {
               httpOnly: true,
               sameSite: "lax",

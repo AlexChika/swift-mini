@@ -1,6 +1,6 @@
-import { useSession, getSession } from "next-auth/react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 function useNetworkChangeNotifier() {
   const { update } = useSession();
@@ -29,21 +29,9 @@ function useNetworkChangeNotifier() {
         }
       });
 
-      let session = null;
-
-      session = await update();
+      const session = await update();
 
       if (!session) {
-        session = await getSession({
-          broadcast: true,
-          triggerEvent: true,
-          event: "authenticated"
-        });
-      }
-
-      if (session) {
-        await update(session);
-      } else {
         console.log("no session, reloading");
         window.location.reload();
       }

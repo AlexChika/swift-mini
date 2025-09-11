@@ -75,6 +75,7 @@ const config = defineConfig({
       sm: "25rem",
       md: "35rem",
       xmd: "48rem",
+      "2xmd": "55rem",
       lg: "60rem",
       xl: "75rem",
       "2xl": "96rem"

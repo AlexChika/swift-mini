@@ -22,7 +22,11 @@ function Provider(prop: Props) {
 
   return (
     <ApolloProvider client={client}>
-      <SessionProvider session={session}>
+      <SessionProvider
+        session={session}
+        refetchInterval={30 * 60} // 30 mins
+        refetchOnWindowFocus={false}
+        refetchWhenOffline={false}>
         <ChakraProvider value={system}>
           <ThemeProvider defaultTheme={defaultTheme} serverTheme={serverTheme}>
             <ClientShell>
