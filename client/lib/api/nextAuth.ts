@@ -15,7 +15,8 @@ export const getAuthConfig = (): NextAuthConfig => {
   const cookiePrefix = "__Secure-SwiftMini";
 
   return {
-    // @ts-expect-error: PrismaAdaper (v: 2.10.0) expects a prisma instance of a type that is currently not compatiible with the instance returned from the generated PrismaClient but compatible with the instance returned from "@prisma/client" package .
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: PrismaAdaper (v: 2.10.0) expects a prisma instance of a type that is currently not compatiible with the instance returned from the generated PrismaClient but compatible with the instance returned from "@prisma/client" package .
     adapter: PrismaAdapter(prisma),
     session: {
       strategy: "database",

@@ -39,8 +39,7 @@ function ChatList({ session }: Props) {
   }
 
   async function chatsOnClick(chatId: string) {
-    // router.replace(`/?chatId=${conversationId}`);
-    router.push(chatId);
+    router.push(`/${chatId}`);
     // mark Convo as read
   }
 

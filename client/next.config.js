@@ -10,6 +10,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 const nextConfig = withBundleAnalyzer({
+  typedRoutes: true,
   turbopack: {
     root: path.join(__dirname)
   }
