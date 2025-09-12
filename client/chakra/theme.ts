@@ -140,6 +140,13 @@ const config = defineConfig({
           }
         }, // default text color
 
+        reversePrimaryText: {
+          value: {
+            base: "#ffffff",
+            _dark: "#000000"
+          }
+        }, // revrsed default text color
+
         usernameColor: {
           value: {
             base: "#507c7c",

@@ -269,9 +269,10 @@ function Messages({ session, id }: Props) {
           })}
 
         <button
+          className="swftMini"
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
           style={{ color: "gray" }}>
-          {bgStrs[bg].name}
+          {bgStrs[bg].name} Swift Mini
         </button>
       </Stack>
 

@@ -11,6 +11,9 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 const nextConfig = withBundleAnalyzer({
   typedRoutes: true,
+  experimental: {
+    globalNotFound: true
+  },
   turbopack: {
     root: path.join(__dirname)
   }
