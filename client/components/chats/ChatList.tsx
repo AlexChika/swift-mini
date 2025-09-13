@@ -62,8 +62,8 @@ function ChatList({ session }: Props) {
   useDynamicHeight({
     ref: BoxRef,
     sub: () => {
-      // 80 for nav, 60 for creatChat btn, 55 for footer (small screen only)
-      return window.matchMedia("(min-width: 48rem)").matches ? 140 : 195;
+      // 80 for nav, 60 for creatChat btn, 60 for footer (small screen only)
+      return window.matchMedia("(min-width: 48rem)").matches ? 140 : 200;
     },
     useRems: true
   });

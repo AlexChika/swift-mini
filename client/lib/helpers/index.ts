@@ -31,7 +31,8 @@ function getParam(searchParam: string | null) {
     group: "group",
     swiftAi: "swiftAi",
     settings: "settings",
-    profile: "profile"
+    profile: "profile",
+    calls: "calls"
   }[searchParam || ""] as Param | undefined;
   return page;
 }
@@ -48,7 +49,8 @@ function getPageName(param: Param) {
     group: "Group Chats",
     swiftAi: "Swift AI",
     settings: "Settings",
-    profile: "Profile"
+    profile: "Profile",
+    calls: "Call History"
   };
 
   return pageName[param];

@@ -2,7 +2,6 @@ import { memo } from "react";
 import ChatList from "./ChatList";
 import { Session } from "next-auth";
 import { Box } from "@chakra-ui/react";
-import Home from "@/components/home/Home";
 import CreateDuoChatBtn from "./CreateDuoChatBtn";
 
 type Props = {
@@ -18,13 +17,4 @@ function Chats({ session }: Props) {
   );
 }
 
-const _Chats = memo(Chats);
-
-function Temp({ session }: Props) {
-  return (
-    <Home session={session}>
-      <_Chats session={session} />
-    </Home>
-  );
-}
-export default Temp;
+export default memo(Chats);

@@ -1,5 +1,6 @@
+import { AIIcon } from "@/lib/icons";
 import SwiftMini from "./SwiftMini";
-import { HStack, Text } from "@chakra-ui/react";
+import { HStack, Icon, Text } from "@chakra-ui/react";
 
 function NavBar({ page }: { page: PageName }) {
   console.log({ page });
@@ -9,9 +10,14 @@ function NavBar({ page }: { page: PageName }) {
       <SwiftMini />
 
       <HStack border="1px solid redy">
-        <Text fontWeight={600} textTransform="capitalize">
-          {page}
-        </Text>
+        <HStack alignItems="center" fontWeight={600} textTransform="capitalize">
+          <Text>{page}</Text>
+          {page === "Swift AI" && (
+            <Icon color="red.600">
+              <AIIcon />
+            </Icon>
+          )}
+        </HStack>
       </HStack>
     </HStack>
   );

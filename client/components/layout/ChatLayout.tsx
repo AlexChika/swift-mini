@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { Session } from "next-auth";
 import { toRems } from "@/lib/helpers";
 import { Flex } from "@chakra-ui/react";
-import Chats from "@/components/chats/Chats";
+import Home from "@/components/home/Home";
 import InProgressModal from "../general/InProgressModal";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 
@@ -30,7 +30,7 @@ function ChatLayout({ session, children }: ChatProps) {
         maxW={{ base: toRems(500), xmd: "100%" }}
         margin={0}
         gap={0}>
-        <Chats session={session} />
+        <Home session={session} />
         {children}
       </Flex>
     </>

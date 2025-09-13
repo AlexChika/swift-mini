@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+import Footer from "./Footer";
 import { Session } from "next-auth";
 import NavBar from "../home/NavBar";
-import { Box, HStack, VStack } from "@chakra-ui/react";
+import { MenuIcon } from "@/lib/icons";
+import Chats from "@/components/chats/Chats";
+import { useCallback, useEffect, useMemo } from "react";
+import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { getPageName, getParam, toEms, toRems } from "@/lib/helpers";
 import {
   useParams,
@@ -9,14 +12,12 @@ import {
   useRouter,
   useSearchParams
 } from "next/navigation";
-import { MenuIcon } from "@/lib/icons";
 
 type Props = {
   session: Session;
-  children: React.ReactNode;
 };
 
-function Home({ session, children }: Props) {
+function Home({ session }: Props) {
   const { chatId: id } = useParams<{ chatId: string }>();
   const router = useRouter();
   const path = usePathname();
@@ -28,6 +29,17 @@ function Home({ session, children }: Props) {
     if (param) return;
     router.replace(`/${path.slice(1)}?swift=home`);
   }, [param, path]);
+
+  const paramValue = useMemo(() => {
+    return param || "home";
+  }, [param || "home"]);
+
+  const handleMenuClick = useCallback(
+    (param: Param) => {
+      router.replace(`/${path.slice(1)}?swift=${param}`);
+    },
+    [path]
+  );
 
   return (
     <HStack
@@ -56,22 +68,18 @@ function Home({ session, children }: Props) {
       </Box>
 
       {/* Home content */}
-      <VStack px={2.5} w="100%" h="100%" gap={0}>
-        <Box w="100%" h="100%">
+      <VStack w="100%" h="100%" gap={0}>
+        <Box border={"1px solid redy"} px={2.5} w="100%" h="100%">
           <NavBar page={pageName} />
-          {children}
+          {paramValue === "home" && <Chats session={session} />}
+          {paramValue === "duo" && <Text>Duo</Text>}
+          {paramValue === "swiftAi" && <Text>AI</Text>}
+          {paramValue === "group" && <Text>Group</Text>}
+          {paramValue === "calls" && <Text>Calls</Text>}
         </Box>
 
         {/* footer */}
-        <Box
-          display={{ base: "block", xmd: "none" }}
-          w="100%"
-          alignSelf="flex-end"
-          border="2px solid red"
-          minH={toRems(60)}
-          h={toRems(60)}>
-          hello footer
-        </Box>
+        <Footer handleMenuClick={handleMenuClick} param={paramValue} />
       </VStack>
     </HStack>
   );

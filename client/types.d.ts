@@ -207,7 +207,14 @@ type Message = {
 };
 
 /* ------------------- Utilities ------------------- */
-type Param = "home" | "duo" | "group" | "swiftAi" | "settings" | "profile";
+type Param =
+  | "home"
+  | "duo"
+  | "group"
+  | "swiftAi"
+  | "settings"
+  | "profile"
+  | "calls";
 
 type PageName =
   | "All Chats"
@@ -215,7 +222,8 @@ type PageName =
   | "Group Chats"
   | "Swift AI"
   | "Settings"
-  | "Profile";
+  | "Profile"
+  | "Call History";
 
 type IconProp = {
   className?: string;
