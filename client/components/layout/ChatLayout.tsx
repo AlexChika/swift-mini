@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Session } from "next-auth";
+import { toRems } from "@/lib/helpers";
 import { Flex } from "@chakra-ui/react";
 import Chats from "@/components/chats/Chats";
 import InProgressModal from "../general/InProgressModal";
@@ -14,7 +15,9 @@ type ChatProps = {
 
 function ChatLayout({ session, children }: ChatProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  useDynamicHeight(containerRef);
+  useDynamicHeight({
+    ref: containerRef
+  });
 
   return (
     <>
@@ -24,7 +27,7 @@ function ChatLayout({ session, children }: ChatProps) {
       <Flex
         w={"100%"}
         ref={containerRef}
-        maxW={{ base: "500px", xmd: "100%" }}
+        maxW={{ base: toRems(500), xmd: "100%" }}
         margin={0}
         gap={0}>
         <Chats session={session} />

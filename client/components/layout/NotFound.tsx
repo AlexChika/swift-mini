@@ -74,7 +74,7 @@ function NotFound() {
               textTransform="capitalize"
               variant="surface"
               onClick={() => router.back()}>
-              Take me to previous page
+              Take me to the previous page
             </Button>
           </VStack>
         </Center>

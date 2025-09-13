@@ -1,17 +1,46 @@
 import { useEffect } from "react";
+import { throttle } from "@/lib/helpers";
 
 // Mobile....
-
-type Ref = React.RefObject<HTMLDivElement | null>;
-type Condition = boolean | (() => boolean);
+type Options = {
+  ref: React.RefObject<HTMLDivElement | null>;
+  sub?: number | (() => number);
+  useRems?: boolean;
+  condition?: boolean | (() => boolean);
+};
 
 /**
- * Hooks is used to dynamically set the height of an element to the visible browser height excluding browse-nav-bars using the window.innerHeight aproach
- * @param condition a bool or function that return a bool, which defines when the {sub} should be deducted or not. conditon can also be a boolean. a true would mean always deduct while a false and undefined will mean never deduct
- * @param ref the react ref of target element
- * @param sub the height to deduct which could account for navbars, footer that are static on a page when useDynamicHeight is used inside a div containing navs or any otherr element
+ * A React hook that dynamically sets the height of a referenced element to the visible browser height,
+ * excluding browser navigation bars, using the `window.innerHeight` approach.
+ *
+ * @remarks
+ * This hook is useful for mobile layouts where you want an element to fill the visible viewport,
+ * optionally subtracting a fixed height (e.g., for navbars or footers).
+ *
+ * @param options - Configuration options for the hook.
+ * @param options.ref - The React ref of the target element whose height will be set.
+ * @param options.sub - The height in pixels to deduct from the visible height (e.g., for static navbars or footers). sub can be a number or a function that returns a number.
+ * @param options.useRems - If `true`, the deducted height `sub` will be computed based on its `rem` equivalent value. If your element is using `rem` units, set this to `true`.
+ * @param options.condition - A boolean or function returning a boolean that determines whether the `sub` value should be deducted.
+ *   - If a function, it is called on every scroll/resize event.
+ *   - If `true`, the deduction is always applied.
+ *   - If `false` or `undefined`, the deduction is never applied.
+ *
+ * @example
+  ```tsx
+  const ref = useRef<HTMLDivElement>(null);
+  useDynamicHeight({
+    ref,
+    sub: () => window.matchMedia("(min-width: 48rem)").matches ? 140 : 195;
+    useRems: true,
+    condition: () => window.scrollY > 0
+    });
+ * ```
  */
-const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
+
+const useDynamicHeight = (options: Options) => {
+  const { ref, useRems = false, sub = 0, condition } = options;
+
   /* -- dynamic  Wrapper Height logic - */
   useEffect(() => {
     const refElement = ref.current;
@@ -20,11 +49,14 @@ const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
     function set(_height: number) {
       if (!refElement) return;
 
-      function _set(cond: boolean, el: HTMLElement, def?: "default") {
-        if (def === "default") return (el.style.height = `${_height - sub}px`);
+      const computed = (sub: number) =>
+        `calc(${_height}px - ${useRems ? `${sub / 16}rem` : `${sub}px`})`;
 
-        if (cond) el.style.height = `${_height - sub}px`;
-        else el.style.height = `${_height}px`;
+      function _set(cond: boolean, el: HTMLElement, def?: "default") {
+        const _sub = typeof sub === "function" ? sub() : sub;
+        if (def === "default") return (el.style.height = computed(_sub));
+        if (cond) el.style.height = computed(_sub);
+        else el.style.height = computed(0);
       }
 
       if (typeof condition === "function") {
@@ -37,16 +69,16 @@ const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
     let _height = window.innerHeight;
     set(_height); //initial set on render
 
-    function handleScrollEvent() {
+    const handleScrollEvent = throttle(function () {
       if (_height === window.innerHeight) return;
       _height = window.innerHeight;
       set(_height);
-    }
+    });
 
-    function handleResizeEvent() {
+    const handleResizeEvent = throttle(function () {
       _height = window.innerHeight;
       set(_height);
-    }
+    });
 
     refElement.addEventListener("scroll", handleScrollEvent);
     window.addEventListener("resize", handleResizeEvent);
@@ -55,7 +87,7 @@ const useDynamicHeight = (ref: Ref, sub = 0, condition?: Condition) => {
       refElement.removeEventListener("scroll", handleScrollEvent);
       window.removeEventListener("resize", handleResizeEvent);
     };
-  }, [ref, sub, condition]);
+  }, [ref, sub, condition, useRems]);
 };
 
 export default useDynamicHeight;

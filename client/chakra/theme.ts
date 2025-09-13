@@ -50,7 +50,7 @@ const config = defineConfig({
       boxSizing: "border-box"
     },
     body: {
-      maxWidth: "63.75rem",
+      maxWidth: "70.75rem",
       // maxWidth: "93.75rem",
       margin: "0 auto !important"
     },

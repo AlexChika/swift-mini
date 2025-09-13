@@ -1,6 +1,7 @@
 import React from "react";
-import { Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
+import { toRems } from "@/lib/helpers";
+import { Box, Text } from "@chakra-ui/react";
 import CreateDuoChatModal from "./CreateDuoChatModal";
 
 type Props = {
@@ -14,14 +15,14 @@ function CreateDuoChatBtn({ session }: Props) {
     <Box
       py={2}
       mb={4}
-      bg="{colors.primaryBg}"
-      borderRadius={4}
+      border="2px solid {colors.primaryBg}"
+      borderRadius={12}
       cursor="pointer"
       onClick={() => setIsOpen(true)}>
       <Text
         textAlign="center"
         color="{colors.primaryText}"
-        fontSize={{ base: "14px", md: "15px" }}
+        fontSize={{ base: toRems(14), md: toRems(15) }}
         fontWeight={500}>
         Create Duo Chat tester
       </Text>

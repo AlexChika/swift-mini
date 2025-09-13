@@ -1,13 +1,14 @@
-import { hideScrollbar } from "@/chakra/theme";
-import { Alert, Box, Center, Stack } from "@chakra-ui/react";
-import { Session } from "next-auth";
-import chatOps from "@/graphql/operations/chat.ops";
-import { useQuery } from "@apollo/client";
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import SkeletonLoader from "@/components/general/SkeletonLoader";
-import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 import ChatItem from "./ChatItem";
+import { Session } from "next-auth";
+import { useEffect, useRef } from "react";
+import { useQuery } from "@apollo/client";
+import { hideScrollbar } from "@/chakra/theme";
+import { getParam } from "@/lib/helpers";
+import chatOps from "@/graphql/operations/chat.ops";
+import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Alert, Box, Center, Stack } from "@chakra-ui/react";
+import SkeletonLoader from "@/components/general/SkeletonLoader";
 
 type Props = {
   session: Session;
@@ -38,8 +39,10 @@ function ChatList({ session }: Props) {
     });
   }
 
+  const sp = useSearchParams().get("swift");
+  const param = getParam(sp) || "home";
   async function chatsOnClick(chatId: string) {
-    router.push(`/${chatId}`);
+    router.push(`/${chatId}?swift=${param}`);
     // mark Convo as read
   }
 
@@ -56,17 +59,24 @@ function ChatList({ session }: Props) {
   }, []);
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
-  useDynamicHeight(BoxRef, 80);
+  useDynamicHeight({
+    ref: BoxRef,
+    sub: () => {
+      // 80 for nav, 60 for creatChat btn, 55 for footer (small screen only)
+      return window.matchMedia("(min-width: 48rem)").matches ? 140 : 195;
+    },
+    useRems: true
+  });
 
   return (
     <Box
       ref={BoxRef}
       css={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
-      pb="10px">
+      pb={2.5}>
       {/* loading */}
       {convLoading && (
-        <Stack h="100%" gap={3}>
+        <Stack h="100%" gap="12px">
           <SkeletonLoader duration={1} no={14} height="calc(100% / 14)" />
         </Stack>
         // <Center h="100%">

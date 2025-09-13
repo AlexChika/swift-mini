@@ -141,23 +141,11 @@ type CreateConversationVariable = {
   participantIds: string[];
 };
 
-// old implementation
-type conversationsData = {
-  conversations: Conversation[];
-};
-
-// new implementation
 type chatsData = {
   getChats: ChatsLean[];
 };
 
-// The update query subscription data for create conversations
-// old implementation
-type ConversationUpdate = {
-  subscriptionData: { data?: { conversationCreated: Conversation } };
-};
-
-// new implementation
+// The update query subscription data for create chats
 type ChatUpdate = {
   subscriptionData: { data?: { chatCreated: ChatsLean } };
 };
@@ -217,6 +205,17 @@ type Message = {
     image: string;
   };
 };
+
+/* ------------------- Utilities ------------------- */
+type Param = "home" | "duo" | "group" | "swiftAi" | "settings" | "profile";
+
+type PageName =
+  | "All Chats"
+  | "Chats"
+  | "Group Chats"
+  | "Swift AI"
+  | "Settings"
+  | "Profile";
 
 type IconProp = {
   className?: string;
