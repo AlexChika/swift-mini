@@ -1,4 +1,3 @@
-import { toRems } from "@/lib/helpers";
 import {
   AllChatIcon,
   AIIcon,
@@ -6,6 +5,7 @@ import {
   DuoChatIcon,
   GroupChatIcon
 } from "@/lib/icons";
+import { toRems } from "@/lib/helpers";
 import { Box, HStack, Button, Icon, Text } from "@chakra-ui/react";
 
 const footerButtons: {
@@ -50,6 +50,7 @@ type Props = {
   param: Param;
   handleMenuClick: (param: Param) => void;
 };
+
 function Footer({ param, handleMenuClick }: Props) {
   return (
     <Box

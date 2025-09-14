@@ -214,7 +214,8 @@ type Param =
   | "swiftAi"
   | "settings"
   | "profile"
-  | "calls";
+  | "calls"
+  | "search";
 
 type PageName =
   | "All Chats"
@@ -223,7 +224,8 @@ type PageName =
   | "Swift AI"
   | "Settings"
   | "Profile"
-  | "Call History";
+  | "Call History"
+  | "Search";
 
 type IconProp = {
   className?: string;

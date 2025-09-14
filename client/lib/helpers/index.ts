@@ -32,7 +32,8 @@ function getParam(searchParam: string | null) {
     swiftAi: "swiftAi",
     settings: "settings",
     profile: "profile",
-    calls: "calls"
+    calls: "calls",
+    search: "search"
   }[searchParam || ""] as Param | undefined;
   return page;
 }
@@ -50,7 +51,8 @@ function getPageName(param: Param) {
     swiftAi: "Swift AI",
     settings: "Settings",
     profile: "Profile",
-    calls: "Call History"
+    calls: "Call History",
+    search: "Search"
   };
 
   return pageName[param];

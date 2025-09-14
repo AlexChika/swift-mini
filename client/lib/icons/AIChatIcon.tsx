@@ -1,9 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { useThemeValue } from "../helpers/color-mode";
 
 function AIChatIcon({ className, style, color = "currentColor" }: IconProp) {
-  const fill = useThemeValue("white", "black");
-
   return (
     <Box color={color}>
       <svg
