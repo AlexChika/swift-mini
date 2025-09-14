@@ -1,7 +1,7 @@
 import {
-  AllChatIcon,
   AIIcon,
-  CallIcon,
+  AllChatIcon,
+  CallsIcon,
   DuoChatIcon,
   GroupChatIcon
 } from "@/lib/icons";
@@ -39,7 +39,7 @@ const footerButtons: {
     param: "group"
   },
   {
-    icon: <CallIcon />,
+    icon: <CallsIcon />,
     label: "Calls",
     aria: "call history",
     param: "calls"

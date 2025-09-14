@@ -57,7 +57,7 @@ function Home({ session }: Props) {
       {/* Home content */}
       <VStack w="100%" h="100%" gap={0}>
         <Box px={2.5} w="100%" h="100%">
-          <NavBar page={pageName} />
+          <NavBar handleMenuClick={handleMenuClick} page={pageName} />
 
           {param === "home" && <Chats session={session} />}
           {param === "duo" && <Text>Duo</Text>}
@@ -65,6 +65,7 @@ function Home({ session }: Props) {
           {param === "group" && <Text>Group</Text>}
           {param === "calls" && <Text>Calls</Text>}
           {param === "search" && <Text>Search</Text>}
+          {param === "profile" && <Text>Profile</Text>}
         </Box>
 
         <Footer handleMenuClick={handleMenuClick} param={param || "home"} />

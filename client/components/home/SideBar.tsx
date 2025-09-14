@@ -1,6 +1,6 @@
 import {
   AIIcon,
-  CallIcon,
+  CallsIcon,
   GearIcon,
   SearchIcon,
   ProfileIcon,
@@ -55,7 +55,7 @@ const footerButtons: {
     param: "group"
   },
   {
-    icon: <CallIcon />,
+    icon: <CallsIcon />,
     label: "Calls",
     aria: "call history",
     param: "calls"
@@ -72,8 +72,12 @@ function SideBar({ param, handleMenuClick }: Props) {
       justifyContent="space-between"
       display={{ base: "none", xmd: "flex" }}
       borderRight="1px solid {colors.appBorder}">
+      {/* every other sidebar icon */}
       <VStack alignItems="center">
-        <Button variant="plain" p={0} m={0} h="auto">
+        <Button
+          h="auto"
+          variant="plain"
+          onClick={() => handleMenuClick("profile")}>
           <Icon size="lg" color="gray">
             <ProfileIcon />
           </Icon>
@@ -81,7 +85,7 @@ function SideBar({ param, handleMenuClick }: Props) {
 
         <Separator
           my={2}
-          w={"100%"}
+          w={toRems(55)}
           colorPalette="{colors.appBorder}"
           size="sm"
         />
@@ -94,14 +98,13 @@ function SideBar({ param, handleMenuClick }: Props) {
                   <Separator
                     my={2}
                     size="sm"
-                    w={"100%"}
+                    w={toRems(55)}
                     colorPalette="{colors.appBorder}"
                   />
                 )}
 
                 <Button
                   onClick={() => handleMenuClick(btn.param)}
-                  p={0}
                   mb={2}
                   variant="plain"
                   aria-label={btn.aria}>
@@ -119,7 +122,7 @@ function SideBar({ param, handleMenuClick }: Props) {
                 {btn.param.includes("swiftAi") && (
                   <Separator
                     my={2}
-                    w={"100%"}
+                    w={toRems(55)}
                     colorPalette="{colors.appBorder}"
                     size="sm"
                   />
@@ -131,18 +134,26 @@ function SideBar({ param, handleMenuClick }: Props) {
       </VStack>
 
       {/* Settings button pushed to the bottom */}
-      <Button
-        title="Settings"
-        onClick={() => handleMenuClick("settings")}
-        p={0}
-        variant="plain"
-        aria-label="settings">
-        <Icon
-          color={param === "settings" ? "red.600" : "{colors.primaryText}"}
-          size="lg">
-          <GearIcon />
-        </Icon>
-      </Button>
+      <VStack>
+        <Separator
+          my={2}
+          w={toRems(55)}
+          colorPalette="{colors.appBorder}"
+          size="sm"
+        />
+
+        <Button
+          title="Settings"
+          onClick={() => handleMenuClick("settings")}
+          variant="plain"
+          aria-label="settings">
+          <Icon
+            color={param === "settings" ? "red.600" : "{colors.primaryText}"}
+            size="lg">
+            <GearIcon />
+          </Icon>
+        </Button>
+      </VStack>
     </VStack>
   );
 }

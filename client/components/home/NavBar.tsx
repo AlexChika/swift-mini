@@ -1,33 +1,44 @@
-import { AIIcon } from "@/lib/icons";
 import SwiftMini from "./SwiftMini";
 import { HStack, Icon, Text } from "@chakra-ui/react";
+import { AIIcon, SearchIcon, DotsVerticalIcon } from "@/lib/icons";
+import NavMenu from "./NavMenu";
 
-function NavBar({ page }: { page: PageName }) {
-  console.log({ page });
+type Props = {
+  page: PageName;
+  handleMenuClick: (param: Param) => void;
+};
 
+function NavBar({ page, handleMenuClick }: Props) {
   return (
-    <HStack mt={2} mb={4} alignItems="center" justifyContent={"space-between"}>
+    <HStack py={2} mb={4} alignItems="center" justifyContent={"space-between"}>
       <SwiftMini />
 
-      <HStack border="1px solid redy">
-        {/* Desktop only */}
-        <HStack
-          pr={2}
-          display={{ base: "none", xmd: "flex" }}
-          alignItems="center"
-          fontWeight={600}
-          textTransform="capitalize">
-          <Text opacity={0.7}>{page}</Text>
+      {/* Desktop only */}
+      <HStack
+        pr={2}
+        mt={1}
+        display={{ base: "none", xmd: "flex" }}
+        alignItems="center"
+        fontWeight={600}
+        textTransform="capitalize">
+        <Text fontSize={18} opacity={0.7}>
+          {page}
+        </Text>
 
-          {page === "Swift AI" && (
-            <Icon color="red.600">
-              <AIIcon />
-            </Icon>
-          )}
-        </HStack>
+        {page === "Swift AI" && <AIIcon color="red.600" />}
+      </HStack>
 
-        {/* Mobile only */}
-        <HStack display={{ base: "flex", xmd: "none" }}>Mobile only</HStack>
+      {/* Mobile only */}
+      <HStack gap={3} display={{ base: "flex", xmd: "none" }}>
+        <button
+          aria-label="open search"
+          onClick={() => handleMenuClick("search")}>
+          <Icon size="lg">
+            <SearchIcon />
+          </Icon>
+        </button>
+
+        <NavMenu handleMenuClick={handleMenuClick} />
       </HStack>
     </HStack>
   );

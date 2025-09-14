@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 
-function CallIcon({ className, style, color = "currentColor" }: IconProp) {
+function CallsIcon({ className, style, color = "currentColor" }: IconProp) {
   return (
     <Box color={color}>
       <svg
@@ -39,4 +39,4 @@ function CallIcon({ className, style, color = "currentColor" }: IconProp) {
   );
 }
 
-export default CallIcon;
+export default CallsIcon;
