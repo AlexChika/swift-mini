@@ -9,7 +9,7 @@ import {
   GroupChatIcon
 } from "@/lib/icons";
 import React from "react";
-import { toRems } from "@/lib/helpers";
+import { toRems, truthy } from "@/lib/helpers";
 import { Box, Icon, Text, VStack, Button, Separator } from "@chakra-ui/react";
 
 type Props = {
@@ -63,6 +63,9 @@ const footerButtons: {
 ];
 
 function SideBar({ param, handleMenuClick }: Props) {
+  const color = (p: Param) =>
+    truthy(param, p, "red.600", "{colors.primaryText}");
+
   return (
     <VStack
       py={4}
@@ -77,6 +80,7 @@ function SideBar({ param, handleMenuClick }: Props) {
         <Button
           h="auto"
           variant="plain"
+          title="Profile"
           onClick={() => handleMenuClick("profile")}>
           <Icon size="lg" color="gray">
             <ProfileIcon />
@@ -108,10 +112,7 @@ function SideBar({ param, handleMenuClick }: Props) {
                   mb={2}
                   variant="plain"
                   aria-label={btn.aria}>
-                  <Box
-                    color={
-                      param === btn.param ? "red.600" : "{colors.primaryText}"
-                    }>
+                  <Box color={color(btn.param)}>
                     <Icon size="md">{btn.icon}</Icon>
                     <Text opacity={0.7} fontSize={12}>
                       {btn.label}
@@ -147,9 +148,7 @@ function SideBar({ param, handleMenuClick }: Props) {
           onClick={() => handleMenuClick("settings")}
           variant="plain"
           aria-label="settings">
-          <Icon
-            color={param === "settings" ? "red.600" : "{colors.primaryText}"}
-            size="lg">
+          <Icon color={color("settings")} size="lg">
             <GearIcon />
           </Icon>
         </Button>

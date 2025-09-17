@@ -1,11 +1,16 @@
 import { HStack, Icon, Menu, Portal, Text } from "@chakra-ui/react";
 import { DotsVerticalIcon, GearIcon, ProfileIcon } from "@/lib/icons";
+import { truthy } from "@/lib/helpers";
 
 type Props = {
   handleMenuClick: (param: Param) => void;
+  pageName: PageName;
 };
 
-function NavMenu({ handleMenuClick }: Props) {
+function NavMenu({ handleMenuClick, pageName }: Props) {
+  const color = (p: PageName) =>
+    truthy(pageName, p, "red.600", "{colors.primaryText}");
+
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
@@ -21,7 +26,7 @@ function NavMenu({ handleMenuClick }: Props) {
           <Menu.Content>
             <Menu.Item asChild value="profile">
               <button onClick={() => handleMenuClick("profile")}>
-                <HStack justifyContent="space-between">
+                <HStack color={color("Profile")} justifyContent="space-between">
                   <Icon size="md">
                     <ProfileIcon />
                   </Icon>
@@ -34,7 +39,9 @@ function NavMenu({ handleMenuClick }: Props) {
 
             <Menu.Item value="settings">
               <button onClick={() => handleMenuClick("settings")}>
-                <HStack justifyContent="space-between">
+                <HStack
+                  color={color("Settings")}
+                  justifyContent="space-between">
                   <Icon size="md">
                     <GearIcon />
                   </Icon>

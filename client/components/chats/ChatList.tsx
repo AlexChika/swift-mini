@@ -1,9 +1,9 @@
 import ChatItem from "./ChatItem";
 import { Session } from "next-auth";
-import { useEffect, useRef } from "react";
-import { useQuery } from "@apollo/client";
-import { hideScrollbar } from "@/chakra/theme";
 import { getParam } from "@/lib/helpers";
+import { useEffect, useRef } from "react";
+import { hideScrollbar } from "@/chakra/theme";
+import { useQuery } from "@apollo/client/react";
 import chatOps from "@/graphql/operations/chat.ops";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,15 +26,13 @@ function ChatList({ session }: Props) {
     subscribeToMore({
       document: chatOps.Subscriptions.chatCreated,
       updateQuery: (prev, update: ChatUpdate) => {
-        if (!update.subscriptionData.data) return prev;
-
-        console.log({ update, prev });
+        if (!update.subscriptionData.data) return prev as chatsData;
 
         const newChat = update.subscriptionData.data.chatCreated;
 
         return Object.assign({}, prev, {
-          getChats: [...prev.getChats, newChat]
-        });
+          getChats: [...(prev.getChats as ChatLean[]), newChat]
+        }) as chatsData;
       }
     });
   }

@@ -1,8 +1,13 @@
-import { ApolloClient, HttpLink, InMemoryCache, split } from "@apollo/client";
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { getMainDefinition } from "@apollo/client/utilities";
+import {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+  ApolloLink
+} from "@apollo/client";
 import { createClient } from "graphql-ws";
+import { OperationTypeNode } from "graphql";
 import { getSession } from "next-auth/react";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 
 const uri =
   process.env.NODE_ENV === "development"
@@ -22,34 +27,52 @@ const httpLink = new HttpLink({
   credentials: "include"
 });
 
+// temporary code - remove this ⬇
+let cachedSession: any = null;
+export async function getCachedSession() {
+  if (!cachedSession) {
+    cachedSession = await getSession();
+  }
+  return cachedSession;
+}
+
+export function clearCachedSession() {
+  cachedSession = null;
+}
+
+// drop ws subscription for socket.io
 const wsLink = () => {
   return new GraphQLWsLink(
     createClient({
       url: wsUrl,
       connectionParams: async () => {
-        return { session: await getSession() };
+        return { session: await getCachedSession() };
       }
     })
   );
 };
+// temporary code - remove this ⬆
 
 const link = () => {
-  return split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-
-      return (
-        definition.kind === "OperationDefinition" &&
-        definition.operation === "subscription"
-      );
+  return ApolloLink.split(
+    ({ operationType }) => {
+      return operationType === OperationTypeNode.SUBSCRIPTION;
     },
     wsLink(),
     httpLink
   );
 };
-
 const client = new ApolloClient({
   link: typeof window !== "undefined" ? link() : httpLink,
+
+  defaultOptions: {
+    // query: {
+    //   fetchPolicy: "network-only"
+    // },
+    // watchQuery: {
+    //   notifyOnNetworkStatusChange: false
+    // }
+  }, // uncomment later
   cache: new InMemoryCache()
 });
 

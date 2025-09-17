@@ -66,7 +66,6 @@ function toEms(...px: number[]) {
   return px.map((val) => `${val / 16}em`).join(" ");
 }
 
-// Debounce
 function debounce<T extends (...args: unknown[]) => void>(
   fn: T,
   ms: number
@@ -80,7 +79,6 @@ function debounce<T extends (...args: unknown[]) => void>(
   };
 }
 
-// Throttle
 function throttle<T extends (...args: unknown[]) => void>(
   fn: T,
   ms = 50
@@ -95,7 +93,24 @@ function throttle<T extends (...args: unknown[]) => void>(
   };
 }
 
+function truthy<
+  T extends string | boolean | number | Symbol,
+  A extends unknown,
+  B extends unknown
+>(statefulValue: T, value: T, truthyVal: A, falsyVal: B) {
+  return value === statefulValue ? truthyVal : falsyVal;
+}
+
 export * as Cookies from "./clientcookie";
 export * as ColorMode from "./color-mode";
 export { reloadSession } from "./reloadSession";
-export { syncClock, getPageName, getParam, toRems, toEms, debounce, throttle };
+export {
+  syncClock,
+  getPageName,
+  getParam,
+  toRems,
+  toEms,
+  debounce,
+  throttle,
+  truthy
+};

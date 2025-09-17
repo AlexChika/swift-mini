@@ -65,10 +65,14 @@ html.dark::before {
 
 html.dark {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/geometry2.png");
+  --swftLight: #000;
+  --swftReverseLight: #fff;
 }
 
 html.light {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/binding_dark.png");
+  --swftLight: #fff;
+  --swftReverseLight: #000;
 }
 
 /* html.dark {

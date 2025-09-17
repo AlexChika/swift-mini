@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { clearCachedSession } from "@/graphql/apollo";
 
 function useNetworkChangeNotifier() {
   const { update } = useSession();
@@ -16,6 +17,9 @@ function useNetworkChangeNotifier() {
           primary: "red"
         }
       });
+
+      // temporal code - remove this
+      clearCachedSession();
     };
 
     const onlineHandler = async () => {

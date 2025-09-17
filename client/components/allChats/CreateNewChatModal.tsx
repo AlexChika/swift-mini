@@ -11,8 +11,8 @@ import {
   CloseButton
 } from "@chakra-ui/react";
 import React from "react";
-import { Session } from "next-auth";
 import toast from "react-hot-toast";
+import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import userOps from "@/graphql/operations/user.ops";
@@ -98,12 +98,15 @@ function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
   return (
     <Dialog.Root
       role="alertdialog"
+      placement="center"
       open={isOpen}
       onOpenChange={(e) => setIsOpen(e.open)}>
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content
+            height="95vh"
+            maxW="25rem"
             mx={2}
             pb={4}
             bg="{colors.secondaryBg}"

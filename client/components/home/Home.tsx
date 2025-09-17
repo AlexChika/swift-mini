@@ -1,17 +1,18 @@
-import NavBar from "./NavBar";
-import Footer from "./Footer";
-import SideBar from "./SideBar";
-import { Session } from "next-auth";
-import Chats from "@/components/chats/Chats";
-import { useCallback, useEffect } from "react";
-import { Box, HStack, Text, VStack } from "@chakra-ui/react";
-import { getPageName, getParam, toEms, toRems } from "@/lib/helpers";
 import {
   useParams,
   usePathname,
   useRouter,
   useSearchParams
 } from "next/navigation";
+import NavBar from "./NavBar";
+import Footer from "./Footer";
+import SideBar from "./SideBar";
+import { Session } from "next-auth";
+import Chats from "@/components/chats/Chats";
+import { useCallback, useEffect } from "react";
+import AllChats from "@/components/allChats/AllChats";
+import { Box, HStack, Text, VStack } from "@chakra-ui/react";
+import { getPageName, getParam, toEms, toRems } from "@/lib/helpers";
 
 type Props = {
   session: Session;
@@ -47,20 +48,19 @@ function Home({ session }: Props) {
       border="4px solid {colors.appBorder}"
       borderRightWidth={{ base: "4px", xmd: "1px" }}
       display={{ base: id ? "none" : "flex", xmd: "flex" }}
-      maxW={{ xmd: toRems(380), "2xmd": toRems(440), xl: toRems(460) }}
       css={{
         margin: { base: "0px", xmd: toEms(5, 0, 5, 5) },
         borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" }
-      }}>
+      }}
+      maxW={{ xmd: toRems(380), "2xmd": toRems(440), xl: toRems(460) }}>
       <SideBar handleMenuClick={handleMenuClick} param={param || "home"} />
-
       {/* Home content */}
       <VStack w="100%" h="100%" gap={0}>
         <Box px={2.5} w="100%" h="100%">
-          <NavBar handleMenuClick={handleMenuClick} page={pageName} />
+          <NavBar handleMenuClick={handleMenuClick} pageName={pageName} />
 
-          {param === "home" && <Chats session={session} />}
-          {param === "duo" && <Text>Duo</Text>}
+          {param === "home" && <AllChats session={session} />}
+          {param === "duo" && <Chats session={session} />}
           {param === "swiftAi" && <Text>AI</Text>}
           {param === "group" && <Text>Group</Text>}
           {param === "calls" && <Text>Calls</Text>}

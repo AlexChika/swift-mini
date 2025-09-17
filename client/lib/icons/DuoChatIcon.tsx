@@ -1,8 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import { useThemeValue } from "../helpers/color-mode";
 
 function DuoChatIcon({ className, style, color = "currentColor" }: IconProp) {
-  const fill = useThemeValue("white", "black");
+  const fill = "var(--swftLight)";
   return (
     <Box color={color}>
       <svg

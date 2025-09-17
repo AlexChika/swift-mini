@@ -11,13 +11,13 @@ import {
   CloseButton
 } from "@chakra-ui/react";
 import React from "react";
-import chatOps from "@/graphql/operations/chat.ops";
-import userOps from "@/graphql/operations/user.ops";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+import CloseIcon from "@/lib/icons/CloseIcon";
+import chatOps from "@/graphql/operations/chat.ops";
+import userOps from "@/graphql/operations/user.ops";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 
 type Props = {
   isOpen: boolean;

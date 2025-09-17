@@ -119,28 +119,6 @@ type ChatMember = {
   member: User;
 };
 
-// narrow down types to returned graphql schema
-type Messages = {
-  id: string;
-  chatId: string;
-  senderId: string;
-  body: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deleted: boolean;
-  sender: User;
-};
-
-type CreateConversationData = {
-  createConversation: {
-    conversationId: string;
-  };
-};
-
-type CreateConversationVariable = {
-  participantIds: string[];
-};
-
 type chatsData = {
   getChats: ChatsLean[];
 };
@@ -186,12 +164,7 @@ type sendMessageVariable = {
 };
 
 type MessageUpdate = {
-  subscriptionData: { data?: { messageSent: Message } };
-};
-
-// types is incomplete, but this is the expected structure
-type MessageUpdate = {
-  subscriptionData: { data?: { messageSent: Message } };
+  subscriptionData: { data: { messageSent: Message } };
 };
 
 type Message = {
@@ -199,10 +172,22 @@ type Message = {
   body: string;
   createdAt: number;
   clientSentAt: string;
+  eddited: boolean;
+  deleted: boolean;
   sender: {
     id: string;
     username: string;
     image: string;
+  };
+  meta: {
+    readStatus: {
+      hasRead: boolean;
+      readAt: number;
+    };
+    deliveredStatus: {
+      hasDelivered: boolean;
+      deliveredAt: number;
+    };
   };
 };
 

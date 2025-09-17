@@ -2,7 +2,7 @@ import React from "react";
 import { Session } from "next-auth";
 import { toRems } from "@/lib/helpers";
 import { Box, Text } from "@chakra-ui/react";
-import CreateDuoChatModal from "./CreateDuoChatModal";
+import CreateDuoChatModal from "./CreateNewChatModal";
 
 type Props = {
   session: Session;

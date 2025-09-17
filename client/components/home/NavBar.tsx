@@ -1,14 +1,14 @@
-import SwiftMini from "./SwiftMini";
-import { HStack, Icon, Text } from "@chakra-ui/react";
-import { AIIcon, SearchIcon, DotsVerticalIcon } from "@/lib/icons";
 import NavMenu from "./NavMenu";
+import SwiftMini from "./SwiftMini";
+import { AIIcon, SearchIcon } from "@/lib/icons";
+import { HStack, Icon, Text } from "@chakra-ui/react";
 
 type Props = {
-  page: PageName;
+  pageName: PageName;
   handleMenuClick: (param: Param) => void;
 };
 
-function NavBar({ page, handleMenuClick }: Props) {
+function NavBar({ pageName, handleMenuClick }: Props) {
   return (
     <HStack py={2} mb={4} alignItems="center" justifyContent={"space-between"}>
       <SwiftMini />
@@ -19,13 +19,12 @@ function NavBar({ page, handleMenuClick }: Props) {
         mt={1}
         display={{ base: "none", xmd: "flex" }}
         alignItems="center"
-        fontWeight={600}
         textTransform="capitalize">
-        <Text fontSize={18} opacity={0.7}>
-          {page}
+        <Text fontWeight={600} fontSize={16} opacity={0.7}>
+          {pageName}
         </Text>
 
-        {page === "Swift AI" && <AIIcon color="red.600" />}
+        {pageName === "Swift AI" && <AIIcon color="red.600" />}
       </HStack>
 
       {/* Mobile only */}
@@ -33,12 +32,14 @@ function NavBar({ page, handleMenuClick }: Props) {
         <button
           aria-label="open search"
           onClick={() => handleMenuClick("search")}>
-          <Icon size="lg">
+          <Icon
+            color={pageName === "Search" ? "red.600" : "{colors.primaryText}"}
+            size="lg">
             <SearchIcon />
           </Icon>
         </button>
 
-        <NavMenu handleMenuClick={handleMenuClick} />
+        <NavMenu pageName={pageName} handleMenuClick={handleMenuClick} />
       </HStack>
     </HStack>
   );

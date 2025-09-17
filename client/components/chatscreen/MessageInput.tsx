@@ -2,7 +2,8 @@ import { useRef } from "react";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
-import { ApolloError, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
+import handleError from "@/lib/helpers/handleError";
 import { Flex, IconButton, Box } from "@chakra-ui/react";
 import messageOps from "@/graphql/operations/message.ops";
 
@@ -57,9 +58,10 @@ function MessageInput(props: Props) {
 
       if (error) toast.error("Could not send");
     } catch (error) {
-      const err = error as ApolloError;
-      toast.error("Could not send");
-      console.log("onMessageError", err);
+      handleError(error, (err) => {
+        console.log("onMessageError", err);
+        toast.error("Could not send");
+      });
     }
   }
 
