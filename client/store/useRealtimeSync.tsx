@@ -3,6 +3,8 @@ import { throttle } from "@/lib/helpers";
 import { useEffect, useRef } from "react";
 // import { Socket } from "socket.io-client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 type Options = {
   socket: any;
   //   socket: Socket;

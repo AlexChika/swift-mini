@@ -1,14 +1,20 @@
-import React from "react";
-import chatReducer, { type ChatAction } from "./chatReducer";
+import React, { useEffect } from "react";
+import swiftReducer from "./swiftReducer";
+import InitSwiftMini from "./InitSwiftMini";
 
-type SwiftStore = {
-  allChats: ChatLean[];
-  dispatch: React.Dispatch<ChatAction>;
+const initialReducerState: Swift.SwiftReducer = {
+  allChats: [],
+  initSwiftMini: {
+    data: null,
+    status: "loading",
+    error: null
+  }
 };
 
-const Context = React.createContext<SwiftStore>({
-  allChats: [],
-  dispatch: () => {}
+const Context = React.createContext<Swift.SwiftStore>({
+  dispatch: () => {},
+  init: () => {},
+  ...initialReducerState
 });
 
 type SwiftProvider = {
@@ -16,14 +22,24 @@ type SwiftProvider = {
 };
 function SwiftProvider(props: SwiftProvider) {
   const { children } = props;
-  const [allChats, dispatch] = React.useReducer(chatReducer, []);
+  const [state, dispatch] = React.useReducer(swiftReducer, initialReducerState);
+
+  function init() {
+    InitSwiftMini(dispatch);
+  }
+
+  useEffect(() => {
+    console.log("first render");
+    InitSwiftMini(dispatch);
+  }, []);
 
   const val = React.useMemo(
     () => ({
-      allChats,
-      dispatch
+      ...state,
+      dispatch,
+      init
     }),
-    [allChats]
+    [state]
   );
 
   return <Context.Provider value={val}>{children}</Context.Provider>;

@@ -13,7 +13,6 @@ import {
 import React from "react";
 import { Session } from "next-auth";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import CloseIcon from "@/lib/icons/CloseIcon";
 import userOps from "@/graphql/operations/user.ops";
 import chatOps from "@/graphql/operations/chat.ops";
@@ -23,6 +22,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   session: Session;
+  openChat: (chatId: string) => void;
 };
 
 type CreateDuoChatVariable = {
@@ -35,8 +35,9 @@ type CreateDuoChatData = {
   };
 };
 
-function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
-  const router = useRouter();
+function CreateDuoChatModal(props: Props) {
+  const { isOpen, setIsOpen, openChat } = props;
+
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
 
@@ -86,7 +87,7 @@ function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
       setParticipants([]);
       setUsername("");
       setIsOpen(false);
-      router.push(`/${chatId}`);
+      openChat(chatId);
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {

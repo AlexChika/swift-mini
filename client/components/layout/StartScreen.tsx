@@ -1,17 +1,20 @@
-import useFetchChats from "@/lib/hooks/useFetchChats";
+import SwiftStore from "@/store/Store";
 import { Image } from "@chakra-ui/react";
-import { Center, Alert, Text } from "@chakra-ui/react";
 import Spinner from "../general/Spinner";
-import InitSwiftMini from "@/store/InitSwiftMini";
+import useFetchChats from "@/lib/hooks/useFetchChats";
+import { Center, Alert, Text } from "@chakra-ui/react";
 
 type Props = {
   Child: React.ReactNode;
 };
 
 function StartScreen({ Child }: Props) {
-  // initialize / fetch all queries for caching
-  const { data, error } = useFetchChats();
-  InitSwiftMini();
+  const { initSwiftMini } = SwiftStore();
+
+  // const { data, error } = useFetchChats();
+  let { data, error } = initSwiftMini;
+
+  console.log({ data, error });
 
   if (data) return Child;
 

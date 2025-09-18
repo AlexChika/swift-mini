@@ -1,20 +1,22 @@
 import ChatItem from "./ChatItem";
 import { Session } from "next-auth";
-import { getParam } from "@/lib/helpers";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { hideScrollbar } from "@/chakra/theme";
 import { useQuery } from "@apollo/client/react";
 import chatOps from "@/graphql/operations/chat.ops";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, Box, Center, Stack } from "@chakra-ui/react";
 import SkeletonLoader from "@/components/general/SkeletonLoader";
+import { useParams } from "next/navigation";
 
 type Props = {
   session: Session;
+  openChat: (chatId: string) => Promise<void>;
 };
 
-function ChatList({ session }: Props) {
+function ChatList({ session, openChat }: Props) {
+  const chatId = useParams().chatId;
+
   const {
     data,
     error: convError,
@@ -31,20 +33,12 @@ function ChatList({ session }: Props) {
         const newChat = update.subscriptionData.data.chatCreated;
 
         return Object.assign({}, prev, {
-          getChats: [...(prev.getChats as ChatLean[]), newChat]
+          getChats: [newChat, ...(prev.getChats as ChatLean[])]
         }) as chatsData;
       }
     });
   }
 
-  const sp = useSearchParams().get("swift");
-  const param = getParam(sp) || "home";
-  async function chatsOnClick(chatId: string) {
-    router.push(`/${chatId}?swift=${param}`);
-    // mark Convo as read
-  }
-
-  const router = useRouter();
   const runEffect = useRef(true);
   useEffect(() => {
     // effect is forced to run once rather than twice
@@ -68,8 +62,27 @@ function ChatList({ session }: Props) {
 
   return (
     <Box
+      css={{
+        "&[data-current-swft-chat] [data-swft-chat]": {
+          cursor: "pointer",
+          backgroundColor: "transparent",
+          transition: "background-color 0.2s ease",
+          border: "1px solid transparent",
+          borderBottom: "1px solid {colors.appBorder}"
+        },
+
+        [`&[data-current-swft-chat="${chatId}"] [data-swft-chat="${chatId}"]`]:
+          {
+            backgroundColor: "{colors.primaryBg}/30",
+            border: "1px solid {colors.appBorder}",
+            borderRadius: "4px"
+          },
+
+        ...hideScrollbar,
+        overflowY: "auto"
+      }}
+      data-current-swft-chat={chatId}
       ref={BoxRef}
-      css={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
       pb={2.5}>
       {/* loading */}
@@ -110,12 +123,12 @@ function ChatList({ session }: Props) {
       {/* data */}
       {data && (
         <Stack>
-          {[...data.getChats].reverse().map((c) => {
+          {[...data.getChats].map((c) => {
             return (
               <ChatItem
                 key={c.id}
                 {...{
-                  chatsOnClick,
+                  openChat,
                   chat: c,
                   session
                 }}

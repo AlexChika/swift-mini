@@ -28,7 +28,7 @@ const httpLink = new HttpLink({
 });
 
 // temporary code - remove this ⬇
-let cachedSession: any = null;
+let cachedSession: unknown = null;
 export async function getCachedSession() {
   if (!cachedSession) {
     cachedSession = await getSession();

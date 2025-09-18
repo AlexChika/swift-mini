@@ -72,7 +72,9 @@ const messageResolver = {
               updatedAt: 1,
               sender: 1,
               deleted: 1,
-              clientSentAt: 1
+              clientSentAt: 1,
+              editted: 1,
+              meta: 1
               // sender: {
               //   id: "$sender._id",
               //   username: "$sender.username",
@@ -122,6 +124,7 @@ const messageResolver = {
         throw new GraphQLError("Invalid sender ID");
       }
 
+      // debug only... remove this
       // validate clientSentAt is a valid date
       if (isNaN(new Date(clientSentAt).getTime())) {
         throw new GraphQLError("Invalid clientSentAt date");

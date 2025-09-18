@@ -93,12 +93,19 @@ function throttle<T extends (...args: unknown[]) => void>(
   };
 }
 
-function truthy<
-  T extends string | boolean | number | Symbol,
-  A extends unknown,
-  B extends unknown
->(statefulValue: T, value: T, truthyVal: A, falsyVal: B) {
+function truthy<T extends string | boolean | number | symbol, A, B>(
+  statefulValue: T,
+  value: T,
+  truthyVal: A,
+  falsyVal: B
+) {
   return value === statefulValue ? truthyVal : falsyVal;
+}
+
+function getSearchParam(search = "swift") {
+  const url = new URL(window.location.href);
+  const sp = url.searchParams;
+  return getParam(sp.get(search)) || "home";
 }
 
 export * as Cookies from "./clientcookie";
@@ -112,5 +119,6 @@ export {
   toEms,
   debounce,
   throttle,
-  truthy
+  truthy,
+  getSearchParam
 };

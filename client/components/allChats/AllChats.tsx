@@ -1,21 +1,31 @@
-import { memo } from "react";
-// import ChatList from "./ChatList";
+import ChatList from "./ChatList";
 import { Session } from "next-auth";
 import { Box } from "@chakra-ui/react";
+import SwiftStore from "@/store/Store";
+import { memo, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { getSearchParam } from "@/lib/helpers";
 import CreateNewChatBtn from "./CreateNewChatBtn";
 
 type Props = {
   session: Session;
 };
 
-function Chats({ session }: Props) {
+function AllChats({ session }: Props) {
+  const router = useRouter();
+  const { allChats } = SwiftStore();
+
+  const openChat = useCallback(async function (chatId: string) {
+    const param = getSearchParam("swift");
+    router.push(`/${chatId}?swift=${param}`);
+  }, []);
+
   return (
-    <Box border="1px solid yellow">
+    <Box>
       <CreateNewChatBtn session={session} />
-      <div>Hello All Chats</div>
-      {/* <ChatList session={session} /> */}
+      <ChatList session={session} chatList={allChats} openChat={openChat} />
     </Box>
   );
 }
 
-export default memo(Chats);
+export default memo(AllChats);

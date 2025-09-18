@@ -203,8 +203,6 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
-  console.log({ data });
-
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack

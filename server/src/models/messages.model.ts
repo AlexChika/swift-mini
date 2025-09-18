@@ -28,10 +28,44 @@ const messageSchema = new mongoose.Schema<Message<Types.ObjectId>>(
     clientSentAt: {
       type: String,
       required: [true, "MongoDB error: clientSentAt is required"]
+    },
+    type: {
+      type: String,
+      enum: ["text", "image", "video", "audio", "file", "location"],
+      default: "text"
+    },
+    meta: {
+      readStatus: {
+        hasRead: {
+          type: Boolean,
+          default: false
+        },
+        readAt: {
+          type: Date,
+          default: null
+        }
+      },
+      deliveredStatus: {
+        hasDelivered: {
+          type: Boolean,
+          default: false
+        },
+        deliveredAt: {
+          type: Date,
+          default: null
+        }
+      }
+    },
+    editted: {
+      type: Boolean,
+      default: false
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
     }
   },
   {
-    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }

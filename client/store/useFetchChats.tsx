@@ -2,108 +2,98 @@ import { useEffect, useState } from "react";
 import client from "@/graphql/apollo";
 import chatOps from "@/graphql/operations/chat.ops";
 import handleError from "@/lib/helpers/handleError";
-
-// step1 connect to socket
-
-// step2 subscribe to socket
-
-// step3 fetch all chats
-
-// step4 set allChats
-
-// step5 set app initialized to true
+import { ErrorLike } from "@apollo/client";
 
 type GetChats = {
   getChats: ChatLean[] | null;
-  loading: boolean;
-  error: any;
 };
 
+type State = GetChats & {
+  loading: boolean;
+  error: unknown | undefined;
+};
+
+type FetchChats =
+  | {
+      getChats: ChatLean[];
+      error: undefined;
+    }
+  | {
+      getChats: null | undefined;
+      error: ErrorLike | Error;
+    };
+
+async function fetchChats(): Promise<FetchChats> {
+  try {
+    const { data, error } = await client.query<GetChats>({
+      query: chatOps.Queries.getChats,
+      fetchPolicy: "no-cache",
+      errorPolicy: "all"
+    });
+
+    if (!data?.getChats || error) {
+      return {
+        getChats: null,
+        error: error || new Error("Error fetching chats")
+      };
+    }
+
+    return {
+      getChats: data.getChats,
+      error
+    };
+  } catch (err) {
+    return {
+      getChats: null,
+      error: (err || new Error("Error fetching chats")) as Error
+    };
+  }
+}
+
 function useFetchChats() {
-  const [error, data] = useState<GetChats>({
+  const [state, setState] = useState<State>({
     loading: true,
-    error: null,
+    error: undefined,
     getChats: null
   });
 
   useEffect(() => {
     async function fetchChats() {
       try {
-        const { data, error } = await client.query<ChatLean[]>({
+        const { data, error } = await client.query<GetChats>({
           query: chatOps.Queries.getChats,
           fetchPolicy: "no-cache",
           errorPolicy: "all"
         });
 
-        console.log({ data, error });
+        if (!data?.getChats || error) {
+          return setState({
+            loading: false,
+            getChats: null,
+            error: error || new Error("Error fetching chats")
+          });
+        }
 
-        // if (error) {
-        //   throw error;
-        // }
+        setState({
+          loading: false,
+          getChats: data.getChats,
+          error
+        });
       } catch (err) {
-        console.log("clicked");
         handleError(err);
+        setState({
+          loading: false,
+          getChats: null,
+          error: err || new Error("Error fetching chats")
+        });
       }
     }
 
     fetchChats();
-    // client
-    //   .query<ChatLean[]>({
-    //     query: chatOps.Queries.getChats,
-    //     fetchPolicy: "no-cache"
-    //   })
-    //   .then(({ data, error }) => {
-    //     console.log({ data, error });
-    //   })
-    //   .catch((err) => console.log(err));
   }, []);
 
-  return { error, data };
+  return state;
 }
 
+export { fetchChats };
 export default useFetchChats;
-
-/**
- * [ User Online + Socket Connected ]
-          │
-          ▼
-   [ Socket emits event ]
-          │
-          │ (⚠️ DO NOT patch yet)
-          ▼
- [ Trigger Apollo refetch ]
-          │
-          ▼
- [ Receive fresh server data ]
-          │
-          ▼
- [ Fire "dataReady" event → resolvers run ]
-          │
-          ▼
- [ Resolvers patch socket updates into UI state ]
-          │
-          ▼
- [ UI reflects consistent + real-time state ]
-
- [ Network drops ]
-      │
-      ▼
-[ Socket disconnects ]
-      │
-      ▼
-   (App waits…)
-      │
-      ▼
-[ Network returns ]
-      │
-      ▼
-[ Socket reconnects ]   ◀─── (✅ single listener here)
-      │
-      ▼
-[ Apollo refetch → fresh baseline ]
-      │
-      ▼
-[ Resume socket event handling + resolvers ]
-
-
- */

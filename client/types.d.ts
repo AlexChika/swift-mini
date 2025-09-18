@@ -218,3 +218,28 @@ type IconProp = {
   style?: any;
   color?: string;
 };
+
+namespace Swift {
+  export type SwiftStore = {
+    dispatch: React.Dispatch<ChatAction>;
+    init: () => void;
+  } & SwiftReducer;
+
+  export type SwiftReducer = {
+    allChats: ChatLean[];
+    initSwiftMini: Swift.InitSwiftMiniPayload;
+  };
+
+  export type InitSwiftMiniPayload = {
+    status: "success" | "loading" | "failed";
+    data: ChatLean[] | null;
+    error: Error | ErrorLike | null;
+  };
+
+  export type ChatAction =
+    | { type: "SET_ALL_CHATS"; payload: ChatLean[] }
+    | { type: "ADD_CHAT"; payload: ChatLean }
+    | { type: "UPDATE_CHAT"; payload: ChatLean }
+    | { type: "REMOVE_CHAT"; payload: string }
+    | { type: "INIT_SWIFT"; payload: InitSwiftMiniPayload };
+}

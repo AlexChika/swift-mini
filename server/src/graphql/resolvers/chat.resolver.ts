@@ -29,7 +29,6 @@ const chatResolver = {
 
       const { id } = session.user;
       const userId = new mongoose.Types.ObjectId(id);
-      const uid = new mongoose.Types.ObjectId(userId); // ensure type matches your schema
 
       try {
         const chats = await chatModel.aggregate([
@@ -47,7 +46,7 @@ const chatResolver = {
                     $expr: {
                       $and: [
                         { $eq: ["$chatId", "$$cid"] },
-                        { $eq: ["$memberId", uid] } // <-- your user
+                        { $eq: ["$memberId", userId] } // <-- your user
                       ]
                     }
                   }
@@ -462,15 +461,15 @@ const chatResolver = {
       const { session, pubsub } = ctx;
       const { otherUserId } = args;
 
-      // is user authenticated
+      /* ------------ // is user authenticated ----------- */
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
-      // validate otherUserId
+      /* ------------ // validate otherUserId ------------ */
       if (!otherUserId || !mongoose.isValidObjectId(otherUserId)) {
         throw new GraphQLError(`The provided userId ${otherUserId} is invalid`);
       }
 
-      // checks to see if user exists
+      /* -------- // checks to see if user exists -------- */
       const otherUser = await userModel.findById(otherUserId);
 
       if (!otherUser)
@@ -478,20 +477,20 @@ const chatResolver = {
           `Unable to create chat. User with id ${otherUserId} does not exist`
         );
 
-      // check if duo chat already exists with the other user
-      const existingChat = await chatMemberModel.findOne({
-        memberId: session.user.id,
-        chatType: "duo",
-        chatId: {
-          $in: await chatMemberModel
-            .find({ memberId: otherUserId, chatType: "duo" })
-            .distinct("chatId")
-        }
-      });
+      /* --- check if duo chat already exists btw users -- */
+      // const existingChat = await chatMemberModel.findOne({
+      //   memberId: session.user.id,
+      //   chatType: "duo",
+      //   chatId: {
+      //     $in: await chatMemberModel
+      //       .find({ memberId: otherUserId, chatType: "duo" })
+      //       .distinct("chatId")
+      //   }
+      // });
 
-      if (existingChat) {
-        return { chatId: existingChat.chatId.toString() };
-      }
+      // if (existingChat) {
+      //   return { chatId: existingChat.chatId.toString() };
+      // }
 
       const msession = await mongoose.startSession();
       msession.startTransaction();

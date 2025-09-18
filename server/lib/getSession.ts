@@ -24,3 +24,35 @@ async function getSession(req: Request, url: string): Promise<Session | null> {
 }
 
 export { getSession };
+
+/**
+
+import Redis from "ioredis";
+import { getSession } from "next-auth/react"; // use this in Express
+import cookieParser from "cookie-parser";
+
+const redis = new Redis(process.env.REDIS_URL);
+
+export async function getCachedSession(req, sessionUrl) {
+  const cookie =
+    req.cookies["next-auth.session-token"] ||
+    req.cookies["__Secure-next-auth.session-token"];
+  if (!cookie) return null;
+
+  const cacheKey = `session:${cookie}`;
+
+  // 1. Try Redis
+  const cached = await redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
+
+  // 2. Fallback: call NextAuth (Mongo lookup under the hood)
+  const session = await getSession({ req, sessionUrl });
+  if (!session) return null;
+
+  // 3. Cache it
+  await redis.set(cacheKey, JSON.stringify(session), "EX", 60); // TTL = 60s
+
+  return session;
+}
+
+*/

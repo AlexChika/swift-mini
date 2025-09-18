@@ -6,9 +6,10 @@ import CreateDuoChatModal from "./CreateDuoChatModal";
 
 type Props = {
   session: Session;
+  openChat: (chatId: string) => void;
 };
 
-function CreateDuoChatBtn({ session }: Props) {
+function CreateDuoChatBtn({ session, openChat }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -30,6 +31,7 @@ function CreateDuoChatBtn({ session }: Props) {
       <CreateDuoChatModal
         session={session}
         isOpen={isOpen}
+        openChat={openChat}
         setIsOpen={setIsOpen}
       />
     </Box>
