@@ -5,7 +5,7 @@ import handleError from "@/lib/helpers/handleError";
 import { ErrorLike } from "@apollo/client";
 
 type GetChats = {
-  getChats: ChatLean[] | null;
+  getChats: GetChatsResponse | null;
 };
 
 type State = GetChats & {
@@ -15,7 +15,7 @@ type State = GetChats & {
 
 type FetchChats =
   | {
-      getChats: ChatLean[];
+      getChats: GetChatsResponse;
       error: undefined;
     }
   | {

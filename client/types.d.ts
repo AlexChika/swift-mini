@@ -5,37 +5,10 @@ type ApiReturn<T, Name extends string> =
     }
   | ({
       success: true;
-      msg: string;
+      msg: "success";
     } & { [P in Name]: T });
 
 /* --------------------- users --------------------- */
-
-type CreateUsernameData = {
-  createUsername: {
-    username: string;
-    success: boolen;
-    error: string;
-  };
-};
-type CreateUsernameVariable = {
-  username: string;
-  userHasImage: boolean;
-};
-
-type SearchedUser = {
-  id: string;
-  username: string;
-};
-
-type SearchUsersData = {
-  searchUsers: SearchedUser[];
-};
-type SearchUsersVariable = {
-  username: string;
-};
-
-/* ----------------- Chats ----------------- */
-// narrow down types to returned graphql schema
 type User = {
   _id: string; // MongoDB ObjectId
   id: string;
@@ -49,6 +22,35 @@ type User = {
   userImageUrl?: string | null; // set/upload by User
   permanentImageUrl?: string | null;
 };
+
+type CreateUsernameData = {
+  createUsername: {
+    username: string;
+    success: boolen;
+    error: string;
+  };
+};
+
+type CreateUsernameVariable = {
+  username: string;
+  userHasImage: boolean;
+};
+
+type SearchedUser = {
+  id: string;
+  username: string;
+};
+
+type SearchUsersData = {
+  searchUsers: SearchedUser[];
+};
+
+type SearchUsersVariable = {
+  username: string;
+};
+
+/* ----------------- Chats ----------------- */
+// narrow down types to returned graphql schema
 
 // narrow down types to returned graphql schema
 type ChatLean = {
@@ -147,6 +149,9 @@ type Conversation = {
   latestMessage: Message | null;
 };
 
+type GetChatsResponse = ApiReturn<ChatLean[], "chats">;
+type GetChatResponse = ApiReturn<ChatPopulated, "chat">;
+
 /* -------------------- Messages ------------------- */
 type MessagesResponse = ApiReturn<Message[], "messages">;
 
@@ -231,9 +236,10 @@ namespace Swift {
   };
 
   export type InitSwiftMiniPayload = {
-    status: "success" | "loading" | "failed";
+    status: "success" | "loading" | "failed" | "error";
     data: ChatLean[] | null;
     error: Error | ErrorLike | null;
+    msg: string;
   };
 
   export type ChatAction =

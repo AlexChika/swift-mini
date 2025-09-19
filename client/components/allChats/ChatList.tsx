@@ -34,9 +34,7 @@ function ChatList({ session, chatList, openChat }: Props) {
         "&[data-current-swft-chat] [data-swft-chat]": {
           cursor: "pointer",
           backgroundColor: "transparent",
-          transition: "background-color 0.2s ease",
-          border: "1px solid transparent",
-          borderBottom: "1px solid {colors.appBorder}"
+          transition: "background-color 0.2s ease"
         },
 
         [`&[data-current-swft-chat="${chatId}"] [data-swft-chat="${chatId}"]`]:

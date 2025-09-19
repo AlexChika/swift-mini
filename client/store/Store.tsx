@@ -7,7 +7,8 @@ const initialReducerState: Swift.SwiftReducer = {
   initSwiftMini: {
     data: null,
     status: "loading",
-    error: null
+    error: null,
+    msg: "Initializing SwiftMini"
   }
 };
 
@@ -29,6 +30,7 @@ function SwiftProvider(props: SwiftProvider) {
   }
 
   useEffect(() => {
+    if (state.initSwiftMini.status === "success") return;
     console.log("first render");
     InitSwiftMini(dispatch);
   }, []);

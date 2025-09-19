@@ -1,8 +1,7 @@
 import React from "react";
 import * as SwiftTypes from "./SwiftTypes";
-import useFetchChats, { fetchChats } from "./useFetchChats";
+import { fetchChats } from "./useFetchChats";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // step1 connect to socket
 
 // step2 subscribe to socket
@@ -14,6 +13,11 @@ import useFetchChats, { fetchChats } from "./useFetchChats";
 // step5 set app initialized to true
 
 async function InitSwiftMini(dispatch?: React.Dispatch<Swift.ChatAction>) {
+  let status = "loading";
+  let data = null;
+  let _error = null;
+  let msg = "Initializing SwiftMini";
+
   // step1 connect to socket
 
   // step2 subscribe to socket
@@ -21,29 +25,28 @@ async function InitSwiftMini(dispatch?: React.Dispatch<Swift.ChatAction>) {
   // step3 fetch all chats
   const { error, getChats } = await fetchChats();
 
-  // step4 set app initialized to true
   if (getChats && !error) {
-    const payload: Swift.InitSwiftMiniPayload = {
-      status: "success",
-      data: getChats,
-      error: null
-    };
-
-    dispatch?.({
-      type: SwiftTypes.INIT_SWIFT,
-      payload: payload
-    });
-
-    return payload;
+    // step4 apollo did not throw error or return partial data
+    if (getChats.success) {
+      status = "success";
+      data = getChats.chats;
+    } else {
+      status = "failed";
+      _error = error || new Error("Error fetching chats");
+    }
+  } else {
+    // apollo either threw error or returned partial data
+    msg = error.message;
+    status = "error";
+    _error = error || new Error("Error fetching chats");
   }
 
-  // step5 on fetch error set app initialized to false
-  const err = error || new Error("Error fetching chats");
-  const payload: Swift.InitSwiftMiniPayload = {
-    status: "failed",
-    data: null,
-    error: err
-  };
+  const payload = {
+    status: status,
+    data: data,
+    msg: getChats?.msg || msg,
+    error: _error
+  } as Swift.InitSwiftMiniPayload;
 
   dispatch?.({
     type: SwiftTypes.INIT_SWIFT,

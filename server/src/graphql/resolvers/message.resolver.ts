@@ -88,7 +88,7 @@ const messageResolver = {
         return {
           success: true,
           messages,
-          msg: "Success"
+          msg: "success"
         };
       } catch (error) {
         const err = error as unknown as { message: string };

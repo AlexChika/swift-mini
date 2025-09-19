@@ -12,6 +12,15 @@ type User {
   lastSeen: Date
 }
 
+
+# a lean user for use in message population
+type Sender {
+  id: String!
+  username: String!
+  image: String!
+  permanentImageUrl:String
+}
+
   type SearchedUser {
     id: String!
     username: String!

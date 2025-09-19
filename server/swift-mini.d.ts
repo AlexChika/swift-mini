@@ -85,7 +85,7 @@ type ApiReturn<T, Name extends string> =
     }
   | ({
       success: true;
-      msg: string;
+      msg: "success";
     } & { [P in Name]: T });
 
 type ChatMemberPopulated = ChatMember<string> & {

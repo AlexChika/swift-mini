@@ -1,8 +1,7 @@
 import SwiftStore from "@/store/Store";
-import { Image } from "@chakra-ui/react";
-import Spinner from "../general/Spinner";
-import useFetchChats from "@/lib/hooks/useFetchChats";
-import { Center, Alert, Text } from "@chakra-ui/react";
+import { Center, Text } from "@chakra-ui/react";
+import ErrorUI from "@/components/general/Error";
+import SwiftLoading from "@/components/general/SwiftLoading";
 
 type Props = {
   Child: React.ReactNode;
@@ -11,56 +10,25 @@ type Props = {
 function StartScreen({ Child }: Props) {
   const { initSwiftMini } = SwiftStore();
 
-  // const { data, error } = useFetchChats();
-  let { data, error } = initSwiftMini;
-
-  console.log({ data, error });
+  const { data, status, msg } = initSwiftMini;
 
   if (data) return Child;
 
-  if (error)
-    return (
-      <Center h="100vh">
-        <Alert.Root
-          bg="{colors.secondaryBg}"
-          color="{colors.primaryText}"
-          status="error"
-          textAlign="center"
-          borderRadius="lg"
-          border="1px solid"
-          borderColor="#ff4343"
-          p={8}
-          maxW="md"
-          boxShadow="xl">
-          <Alert.Indicator color="red.600" boxSize="3rem" mr={0} mb={4} />
-          <Alert.Content>
-            <Alert.Title fontSize="lg" fontWeight="semibold">
-              Something Went Wrong!
-            </Alert.Title>
-            <Alert.Description opacity={0.8} fontSize="md" maxWidth="sm" mt={3}>
-              Please refresh the browser and try again
-            </Alert.Description>
-          </Alert.Content>
-        </Alert.Root>
-      </Center>
-    );
+  if (status === "failed") return <ErrorUI error={msg} />;
+
+  if (status === "error")
+    return <ErrorUI error="Please refresh the browser and try again." />;
 
   // loading....
   return (
     <Center flexDirection="column" h="100vh">
-      {/* swift logo */}
-      <Image maxW="200px" alt="Logo Image" src="/icon.png" />
-
-      {/* loading spinner */}
-      <Spinner absolute secondaryColor={"black"} />
+      <SwiftLoading />
 
       <Text
-        top="58%"
-        pos="absolute"
-        letterSpacing="2px"
         textAlign="center"
         fontStyle="italic"
-        fontSize="13px"
+        fontSize="14px"
+        fontWeight={500}
         color="white"
         className="animate-pulse">
         Loading Please Wait...

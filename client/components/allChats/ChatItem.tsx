@@ -27,7 +27,9 @@ function ChatItem(props: Props) {
       title={usernames}
       color="primaryText"
       data-swft-chat={id}
-      onClick={() => openChat(id)}>
+      onClick={() => openChat(id)}
+      border="1px solid transparent"
+      borderBottom="1px solid {colors.appBorder}">
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
         <Flex truncate align="center" gap={2}>
