@@ -1,13 +1,13 @@
-import ChatItem from "./ChatItem";
 import { Session } from "next-auth";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
+import ChatItem from "../allChats/ChatItem";
 import { hideScrollbar } from "@/chakra/theme";
 import { useQuery } from "@apollo/client/react";
 import chatOps from "@/graphql/operations/chat.ops";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 import { Alert, Box, Center, Stack } from "@chakra-ui/react";
 import SkeletonLoader from "@/components/general/SkeletonLoader";
-import { useParams } from "next/navigation";
 
 type Props = {
   session: Session;

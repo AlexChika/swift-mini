@@ -8,17 +8,17 @@ type Props = {
   session: Session;
 };
 
-function CreateDuoChatBtn({ session }: Props) {
+function CreateNewChatBtn({ session }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <Box
       py={2}
       mb={4}
-      border="2px solid {colors.primaryBg}"
-      borderRadius={12}
       cursor="pointer"
-      onClick={() => setIsOpen(true)}>
+      borderRadius={12}
+      onClick={() => setIsOpen(true)}
+      border="2px solid {colors.primaryBg}">
       <Text
         textAlign="center"
         color="{colors.primaryText}"
@@ -36,4 +36,4 @@ function CreateDuoChatBtn({ session }: Props) {
   );
 }
 
-export default CreateDuoChatBtn;
+export default CreateNewChatBtn;

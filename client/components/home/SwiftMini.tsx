@@ -4,13 +4,14 @@ import { Link as ChakraLink } from "@chakra-ui/react";
 function SwiftMini() {
   return (
     <ChakraLink
+      outline="none"
       p={0}
       m={0}
       className="swftMini"
       fontSize="1.5rem"
       color="red.600"
       asChild>
-      <NextLink href="/">SwiftMini</NextLink>
+      <NextLink href="/?swift=home">SwiftMini</NextLink>
     </ChakraLink>
   );
 }

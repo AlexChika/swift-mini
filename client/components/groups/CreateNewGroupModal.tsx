@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import CloseIcon from "@/lib/icons/CloseIcon";
+import useNavigate from "@/lib/hooks/useNavigate";
 import chatOps from "@/graphql/operations/chat.ops";
 import userOps from "@/graphql/operations/user.ops";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
@@ -38,7 +39,7 @@ type CreateGroupChatData = {
   };
 };
 
-function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
+function CreateNewGroupModal({ isOpen, setIsOpen, session }: Props) {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
@@ -74,6 +75,7 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
     setParticipants((prev) => prev.filter((p) => p.id !== userId));
   }
 
+  const { openChat } = useNavigate();
   async function onCreateConversation() {
     const memberIds = participants.map((p) => p.id);
     try {
@@ -87,14 +89,13 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
       });
 
       const { chatId } = data?.createGroupChat || {};
-      console.log({ chatId });
 
       if (!chatId) throw new Error("Failed to create conversation");
 
       setParticipants([]);
       setUsername("");
       setIsOpen(false);
-      router.push(`/${chatId}`);
+      openChat(chatId);
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
@@ -270,4 +271,4 @@ function SelectedParticipants({
   );
 }
 
-export default CreateGroupChatModal;
+export default CreateNewGroupModal;

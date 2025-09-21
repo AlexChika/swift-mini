@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import CloseIcon from "@/lib/icons/CloseIcon";
+import useNavigate from "@/lib/hooks/useNavigate";
 import userOps from "@/graphql/operations/user.ops";
 import chatOps from "@/graphql/operations/chat.ops";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
@@ -35,7 +36,7 @@ type CreateDuoChatData = {
   };
 };
 
-function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
+function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
@@ -71,6 +72,7 @@ function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
     setParticipants((prev) => prev.filter((p) => p.id !== userId));
   }
 
+  const { openChat } = useNavigate();
   async function onCreateConversation() {
     const otherUserId = participants[0]?.id;
     try {
@@ -86,7 +88,7 @@ function CreateDuoChatModal({ isOpen, setIsOpen }: Props) {
       setParticipants([]);
       setUsername("");
       setIsOpen(false);
-      router.push(`/${chatId}`);
+      openChat(chatId);
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
@@ -265,4 +267,4 @@ function SelectedParticipants({
   );
 }
 
-export default CreateDuoChatModal;
+export default CreateNewChatModal;

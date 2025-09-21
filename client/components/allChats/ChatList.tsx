@@ -1,6 +1,6 @@
-import { useRef } from "react";
 import ChatItem from "./ChatItem";
 import { Session } from "next-auth";
+import { memo, useRef } from "react";
 import { useParams } from "next/navigation";
 import { Box, Stack } from "@chakra-ui/react";
 import { hideScrollbar } from "@/chakra/theme";
@@ -66,4 +66,4 @@ function ChatList({ session, chatList, openChat }: Props) {
   );
 }
 
-export default ChatList;
+export default memo(ChatList);

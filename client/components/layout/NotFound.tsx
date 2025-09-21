@@ -1,8 +1,5 @@
 "use client";
 
-import NextLink from "next/link";
-import { useRouter } from "next/navigation";
-import { useThemeValue } from "@/lib/helpers/color-mode";
 import {
   Box,
   Center,
@@ -10,9 +7,11 @@ import {
   VStack,
   Image,
   Text,
-  Button,
-  Link as ChakraLink
+  Button
 } from "@chakra-ui/react";
+import SwiftMini from "../home/SwiftMini";
+import { useRouter } from "next/navigation";
+import { useThemeValue } from "@/lib/helpers/color-mode";
 
 function NotFound() {
   const router = useRouter();
@@ -59,14 +58,7 @@ function NotFound() {
               </span>
 
               <br />
-              <ChakraLink
-                className="swftMini"
-                fontSize={24}
-                variant="underline"
-                color="red.600"
-                asChild>
-                <NextLink href="/">SwiftMini</NextLink>
-              </ChakraLink>
+              <SwiftMini />
             </Text>
 
             <Button

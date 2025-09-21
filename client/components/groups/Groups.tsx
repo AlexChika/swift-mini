@@ -4,19 +4,19 @@ import SwiftStore from "@/store/Store";
 import { useRouter } from "next/navigation";
 import { getSearchParam } from "@/lib/helpers";
 import { memo, useCallback, useMemo } from "react";
+import CreateNewGroupBtn from "./CreateNewGroupBtn";
 import ChatList from "@/components/allChats/ChatList";
-import CreateNewChatBtn from "@/components/allChats/CreateNewChatBtn";
 
 type Props = {
   session: Session;
 };
 
-function Chats({ session }: Props) {
+function Groups({ session }: Props) {
   const router = useRouter();
   const { allChats } = SwiftStore();
 
-  const duoChats = useMemo(
-    () => allChats.filter((chat) => chat.chatType === "duo"),
+  const groupChats = useMemo(
+    () => allChats.filter((chat) => chat.chatType === "group"),
     [allChats]
   );
 
@@ -27,10 +27,10 @@ function Chats({ session }: Props) {
 
   return (
     <Box>
-      <CreateNewChatBtn session={session} />
-      <ChatList chatList={duoChats} session={session} openChat={openChat} />
+      <CreateNewGroupBtn session={session} />
+      <ChatList chatList={groupChats} session={session} openChat={openChat} />
     </Box>
   );
 }
 
-export default memo(Chats);
+export default memo(Groups);
