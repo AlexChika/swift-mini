@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 export const getAuthConfig = (): NextAuthConfig => {
   const dev = process.env.NODE_ENV === "development";
   const domain = "globalstack.dev";
-  const cookiePrefix = "__Secure-SwiftMini";
+  const cookiePrefix = "__Secure-swift-next-auth";
 
   return {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
