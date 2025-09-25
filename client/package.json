@@ -28,6 +28,7 @@
     "@emotion/react": "^11.14.0",
     "@next/bundle-analyzer": "^15.5.2",
     "@prisma/client": "^6.15.0",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^6.16.2",
     "graphql": "^16.11.0",
     "graphql-ws": "^6.0.6",
     "next": "^15.5.3",
