@@ -1,4 +1,4 @@
-import { PrismaClient } from "@/prisma/swift";
+import { PrismaClient } from "@/prisma/swift/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
