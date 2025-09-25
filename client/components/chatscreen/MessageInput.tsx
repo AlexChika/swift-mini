@@ -72,10 +72,12 @@ function MessageInput(props: Props) {
     const textString = InputBox.current.textContent?.trim();
     if (!textString) return;
 
+    InputBox.current.focus();
     InputBox.current.innerHTML = "";
     sendMessage(textString);
   }
 
+  //TODO: use rems and ems
   return (
     <Box
       bg="{colors.secondaryBg}"
@@ -100,7 +102,7 @@ function MessageInput(props: Props) {
           bg="{colors.primaryBg/30}"
           color="{colors.primaryText}"
           maxH="200px"
-          minH="30px"
+          minH="33px"
           overflowY="auto"
           py={1}
           px={3}

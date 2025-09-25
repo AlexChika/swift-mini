@@ -107,7 +107,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content
-            height="95vh"
+            height="93dvh"
             maxW="25rem"
             mx={2}
             pb={4}

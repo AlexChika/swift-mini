@@ -49,6 +49,9 @@ const config = defineConfig({
       padding: 0,
       boxSizing: "border-box"
     },
+    button: {
+      outline: "none"
+    },
     body: {
       maxWidth: "70.75rem",
       // maxWidth: "93.75rem",

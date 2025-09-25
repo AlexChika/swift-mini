@@ -37,7 +37,7 @@ function NavMenu({ handleMenuClick, pageName }: Props) {
               </button>
             </Menu.Item>
 
-            <Menu.Item value="settings">
+            <Menu.Item mt={2} value="settings">
               <button onClick={() => handleMenuClick("settings")}>
                 <HStack
                   color={color("Settings")}

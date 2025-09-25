@@ -32,7 +32,7 @@ function ChatItem(props: Props) {
       transition="background-color 0.2s ease"
       onClick={() => openChat(id)}
       border="1px solid transparent"
-      borderBottom="1px solid {colors.appBorder}">
+      borderBottom="1px solid {colors.primaryBg/10}">
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
         <Flex truncate align="center" gap={2}>

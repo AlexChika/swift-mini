@@ -71,7 +71,7 @@ function SideBar({ param, handleMenuClick }: Props) {
       py={4}
       px={2.5}
       h="100%"
-      w={toRems(60)}
+      w={toRems(65)}
       justifyContent="space-between"
       display={{ base: "none", xmd: "flex" }}
       borderRight="1px solid {colors.appBorder}">
@@ -91,7 +91,7 @@ function SideBar({ param, handleMenuClick }: Props) {
           my={2}
           w={toRems(55)}
           colorPalette="{colors.appBorder}"
-          size="sm"
+          size="md"
         />
 
         <VStack alignItems="center">
@@ -101,7 +101,7 @@ function SideBar({ param, handleMenuClick }: Props) {
                 {btn.param.includes("swiftAi") && (
                   <Separator
                     my={2}
-                    size="sm"
+                    size="md"
                     w={toRems(55)}
                     colorPalette="{colors.appBorder}"
                   />
@@ -125,7 +125,7 @@ function SideBar({ param, handleMenuClick }: Props) {
                     my={2}
                     w={toRems(55)}
                     colorPalette="{colors.appBorder}"
-                    size="sm"
+                    size="md"
                   />
                 )}
               </React.Fragment>
@@ -140,7 +140,7 @@ function SideBar({ param, handleMenuClick }: Props) {
           my={2}
           w={toRems(55)}
           colorPalette="{colors.appBorder}"
-          size="sm"
+          size="md"
         />
 
         <Button

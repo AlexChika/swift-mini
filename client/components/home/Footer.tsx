@@ -58,8 +58,8 @@ function Footer({ param, handleMenuClick }: Props) {
       borderTop="1px solid {colors.appBorder}"
       display={{ base: "block", xmd: "none" }}
       alignSelf="flex-end"
-      minH={toRems(60)}
-      h={toRems(60)}>
+      minH={toRems(62)}
+      h={toRems(62)}>
       <HStack
         px={2.5}
         h="100%"
