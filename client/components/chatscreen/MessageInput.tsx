@@ -4,7 +4,7 @@ import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
 import { useMutation } from "@apollo/client/react";
 import handleError from "@/lib/helpers/handleError";
-import { Flex, IconButton, Box } from "@chakra-ui/react";
+import { Flex, IconButton, Box, Button, Icon, HStack } from "@chakra-ui/react";
 import messageOps from "@/graphql/operations/message.ops";
 
 type Props = {
@@ -100,9 +100,9 @@ function MessageInput(props: Props) {
           bg="{colors.primaryBg/30}"
           color="{colors.primaryText}"
           maxH="200px"
-          minH="40px"
+          minH="30px"
           overflowY="auto"
-          py={2}
+          py={1}
           px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
@@ -111,17 +111,36 @@ function MessageInput(props: Props) {
           borderRadius={14}
         />
 
-        <IconButton
-          onClick={handleOnSubmit}
-          minW={{ base: "50px", xmd: "100px" }}
-          alignSelf="flex-end"
-          bg="{colors.primaryBg/30}"
-          borderRadius={14}
-          transition="none"
-          variant={"plain"}
-          aria-label="Send Message Icon">
-          <SendIcon color="{colors.primaryText}" />
-        </IconButton>
+        <HStack>
+          <IconButton
+            h="30px"
+            onClick={handleOnSubmit}
+            minW={{ base: "50px", xmd: "100px" }}
+            alignSelf="flex-end"
+            bg="{colors.primaryBg/30}"
+            borderRadius={14}
+            transition="none"
+            variant={"plain"}
+            aria-label="Send Message Icon">
+            <Icon size="md">
+              <SendIcon color="{colors.primaryText}" />
+            </Icon>
+          </IconButton>
+          {/* <IconButton
+            h="30px"
+            onClick={handleOnSubmit}
+            minW={{ base: "50px", xmd: "100px" }}
+            alignSelf="flex-end"
+            bg="{colors.primaryBg/30}"
+            borderRadius={14}
+            transition="none"
+            variant={"plain"}
+            aria-label="Send Message Icon">
+            <Icon size="md">
+              <SendIcon color="{colors.primaryText}" />
+            </Icon>
+          </IconButton> */}
+        </HStack>
       </Flex>
     </Box>
   );

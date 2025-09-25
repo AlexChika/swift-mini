@@ -31,12 +31,6 @@ function ChatList({ session, chatList, openChat }: Props) {
       pb={2.5}
       ref={BoxRef}
       css={{
-        "&[data-current-swft-chat] [data-swft-chat]": {
-          cursor: "pointer",
-          backgroundColor: "transparent",
-          transition: "background-color 0.2s ease"
-        },
-
         [`&[data-current-swft-chat="${chatId}"] [data-swft-chat="${chatId}"]`]:
           {
             backgroundColor: "{colors.primaryBg}/30",

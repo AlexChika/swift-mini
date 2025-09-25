@@ -27,6 +27,9 @@ function ChatItem(props: Props) {
       title={usernames}
       color="primaryText"
       data-swft-chat={id}
+      cursor="pointer"
+      bg="transparent"
+      transition="background-color 0.2s ease"
       onClick={() => openChat(id)}
       border="1px solid transparent"
       borderBottom="1px solid {colors.appBorder}">
