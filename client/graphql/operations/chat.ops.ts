@@ -4,89 +4,93 @@ import { gql } from "@apollo/client";
 const getChat = gql`
   query GetChat($chatId: String!) {
     getChat(chatId: $chatId) {
-      id
-      description
-      superAdmin # not used in client
-      groupAdmins # not used in client
-      chatName
-      chatType
-      groupType # not used in client
-      inviteLink # not used in client
-      # {}
-
-      joinRequests {
-        # not used in client
-        createdAt
-        userId
-      }
-
-      latestMessageId # not used in client
-      createdAt # not used in client
-      updatedAt
-
-      # not used in client
-      chat_superAdmin {
+      success
+      msg
+      chat {
         id
-        username
-        image
-      }
-
-      chat_groupAdmins {
-        id
-        username
-        image
-      }
-
-      chat_joinRequests {
-        user {
-          id
-          username
-          image
-        }
-        createdAt
-        userId
-      }
-
-      chat_latestMessage {
-        body
-        createdAt
-        # id
-        # sender {
-        #   id
-        #   username
-        # }
-      }
-
-      chat_members {
-        id
-        chatId
+        description
+        superAdmin # not used in client
+        groupAdmins # not used in client
+        chatName
         chatType
-        memberId
-        role
-        showChat
-        joinedAt
+        groupType # not used in client
+        inviteLink # not used in client
+        # {}
 
-        member {
+        joinRequests {
+          # not used in client
+          createdAt
+          userId
+        }
+
+        latestMessageId # not used in client
+        createdAt # not used in client
+        updatedAt
+
+        # not used in client
+        chat_superAdmin {
           id
           username
           image
         }
 
-        lastRead {
-          time
-          messageId
+        chat_groupAdmins {
           id
+          username
+          image
         }
-        lastDelivered {
-          time
+
+        chat_joinRequests {
+          user {
+            id
+            username
+            image
+          }
+          createdAt
+          userId
+        }
+
+        chat_latestMessage {
+          body
+          createdAt
+          # id
+          # sender {
+          #   id
+          #   username
+          # }
+        }
+
+        chat_members {
           id
-        }
-        messageMeta {
-          key
-          value {
-            messageId
-            showMessage
+          chatId
+          chatType
+          memberId
+          role
+          showChat
+          joinedAt
+
+          member {
+            id
+            username
+            image
+          }
+
+          lastRead {
             time
+            messageId
+            id
+          }
+          lastDelivered {
+            time
+            id
+          }
+          messageMeta {
+            key
+            value {
+              messageId
+              showMessage
+              time
+            }
           }
         }
       }
@@ -97,87 +101,91 @@ const getChat = gql`
 const getChats = gql`
   query GetChats {
     getChats {
-      id
-      description
-      # superAdmin
-      # groupAdmins
-      chatName
-      chatType
-      # groupType
-      # inviteLink
-      # joinRequests {
-      #   createdAt
-      #   userId
-      # }
-      # latestMessageId
-      # createdAt
-      updatedAt
-      chat_latestMessage {
-        body
-        createdAt
+      success
+      msg
+      chats {
         id
-        sender {
-          id
-          username
-        }
-      }
-      duo_chat_members {
-        id
-        chatId
+        description
+        # superAdmin
+        # groupAdmins
+        chatName
         chatType
-        memberId
-        role
-        lastRead {
-          time
-          messageId
+        # groupType
+        # inviteLink
+        # joinRequests {
+        #   createdAt
+        #   userId
+        # }
+        # latestMessageId
+        # createdAt
+        updatedAt
+        chat_latestMessage {
+          body
+          createdAt
           id
-        }
-        lastDelivered {
-          time
-          id
-        }
-        messageMeta {
-          key
-          value {
-            messageId
-            showMessage
-            time
+          sender {
+            id
+            username
           }
         }
-        member {
+        duo_chat_members {
           id
-          username
-          image
-        }
-      }
-      self_member {
-        id
-        chatId
-        chatType
-        memberId
-        role
-        showChat
-        joinedAt
-        member {
-          id
-          username
-          image
-        }
-        lastRead {
-          time
-          messageId
-          id
-        }
-        lastDelivered {
-          time
-          id
-        }
-        messageMeta {
-          key
-          value {
-            messageId
-            showMessage
+          chatId
+          chatType
+          memberId
+          role
+          lastRead {
             time
+            messageId
+            id
+          }
+          lastDelivered {
+            time
+            id
+          }
+          messageMeta {
+            key
+            value {
+              messageId
+              showMessage
+              time
+            }
+          }
+          member {
+            id
+            username
+            image
+          }
+        }
+        self_member {
+          id
+          chatId
+          chatType
+          memberId
+          role
+          showChat
+          joinedAt
+          member {
+            id
+            username
+            image
+          }
+          lastRead {
+            time
+            messageId
+            id
+          }
+          lastDelivered {
+            time
+            id
+          }
+          messageMeta {
+            key
+            value {
+              messageId
+              showMessage
+              time
+            }
           }
         }
       }

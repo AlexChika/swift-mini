@@ -1,8 +1,8 @@
 import Message from "./Message";
 import { Session } from "next-auth";
 import MessageInput from "./MessageInput";
-import { useQuery } from "@apollo/client";
 import { hideScrollbar } from "@/chakra/theme";
+import { useQuery } from "@apollo/client/react";
 import messageOps from "@/graphql/operations/message.ops";
 import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
@@ -115,7 +115,8 @@ function Messages({ session, id }: Props) {
     MessagesData,
     { chatId: string }
   >(messageOps.Queries.messages, {
-    variables: { chatId: id }
+    variables: { chatId: id },
+    errorPolicy: "none"
   });
 
   // debug only
@@ -150,8 +151,7 @@ function Messages({ session, id }: Props) {
       variables: { chatId: id },
       document: messageOps.Subscriptions.messageSent,
       updateQuery: (prev, update: MessageUpdate) => {
-        if (!update.subscriptionData.data) return prev;
-
+        if (!update.subscriptionData.data) return prev as MessagesData;
         const newMessage = update.subscriptionData.data.messageSent;
         logLatency({
           source: "subMore",
@@ -159,17 +159,16 @@ function Messages({ session, id }: Props) {
           clientSentAt: newMessage.clientSentAt,
           createdAt: newMessage.createdAt
         });
-
         return Object.assign({}, prev, {
           getMessages: {
             ...prev.getMessages,
             messages: [
-              ...((prev.getMessages.success && prev.getMessages.messages) ||
+              ...((prev.getMessages?.success && prev.getMessages.messages) ||
                 []),
               newMessage
             ]
           }
-        });
+        }) as MessagesData;
       }
     });
   }
@@ -269,9 +268,10 @@ function Messages({ session, id }: Props) {
           })}
 
         <button
+          className="swftMini"
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
           style={{ color: "gray" }}>
-          {bgStrs[bg].name}
+          {bgStrs[bg].name} Swift Mini
         </button>
       </Stack>
 

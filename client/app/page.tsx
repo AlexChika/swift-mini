@@ -1,4 +1,4 @@
-import EmptyChatScreen from "@/components/home/EmptyChatScreen";
+import EmptyChatScreen from "@/components/chatscreen/EmptyChatScreen";
 
 async function Page() {
   return <EmptyChatScreen />;

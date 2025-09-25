@@ -57,13 +57,24 @@ type ChatMember<T> = {
 
 type Message<T> = {
   id: string;
+  body: string;
   chatId: T;
   senderId: T;
-  body: string;
   createdAt: Date;
-  updatedAt: Date;
   clientSentAt: string;
   deleted: boolean;
+  editted: boolean;
+  meta: {
+    readStatus: {
+      hasRead: boolean;
+      readAt: Date;
+    };
+    deliveredStatus: {
+      hasDelivered: boolean;
+      deliveredAt: Date;
+    };
+  };
+  type: "text" | "image" | "video" | "audio" | "file" | "location";
 };
 
 /* -------------- Api Types -------------- */
@@ -74,7 +85,7 @@ type ApiReturn<T, Name extends string> =
     }
   | ({
       success: true;
-      msg: string;
+      msg: "success";
     } & { [P in Name]: T });
 
 type ChatMemberPopulated = ChatMember<string> & {

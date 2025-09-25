@@ -5,6 +5,18 @@ const messageFields = `
         body
         createdAt
         clientSentAt
+        editted
+        deleted
+        meta {
+          readStatus {
+            hasRead
+            readAt
+          }
+          deliveredStatus {
+            hasDelivered
+            deliveredAt
+          }
+        }
       sender {
         id
         username

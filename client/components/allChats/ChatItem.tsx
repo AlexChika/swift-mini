@@ -1,41 +1,38 @@
-import { Avatar, Flex, Box, Text } from "@chakra-ui/react";
+import { memo } from "react";
 import { Session } from "next-auth";
-import { useParams } from "next/navigation";
 import { dateFormatter, formatUserNames2 } from "@/lib";
+import { Avatar, Flex, Box, Text } from "@chakra-ui/react";
 
 type Props = {
   session: Session;
   chat: ChatLean;
-  chatsOnClick: (chatId: string) => Promise<void>;
+  openChat: (chatId: string) => Promise<void>;
 };
 
 function ChatItem(props: Props) {
-  const { chat, chatsOnClick, session } = props;
+  const { chat, openChat, session } = props;
   const { id, chat_latestMessage, updatedAt } = chat;
 
-  const chatId = useParams().chatId;
-
-  // variable depends on stateful values,
-  const isSelected = id === chatId;
   const { getTimePassed } = dateFormatter(updatedAt);
 
   const { usernames, avatar, name } = formatUserNames2(chat, session.user.id);
 
   return (
     <Box
-      title={usernames}
-      cursor="pointer"
-      onClick={() => chatsOnClick(id)}
       px={2}
       py={2}
-      bg={isSelected ? "{colors.primaryBg}/40" : "transparent"}
       _hover={{
         opacity: 0.6
       }}
-      borderRadius={isSelected ? "4px" : undefined}
-      border={`1px solid ${isSelected ? "{colors.appBorder}" : "transparent"}`}
-      borderBottom="1px solid {colors.appBorder}"
-      color="primaryText">
+      title={usernames}
+      color="primaryText"
+      data-swft-chat={id}
+      cursor="pointer"
+      bg="transparent"
+      transition="background-color 0.2s ease"
+      onClick={() => openChat(id)}
+      border="1px solid transparent"
+      borderBottom="1px solid {colors.appBorder}">
       <Flex align="center" gap={2} justify="space-between">
         {/* avatar,  usernames, latest message */}
         <Flex truncate align="center" gap={2}>
@@ -77,6 +74,4 @@ function ChatItem(props: Props) {
   );
 }
 
-// .....
-
-export default ChatItem;
+export default memo(ChatItem);
