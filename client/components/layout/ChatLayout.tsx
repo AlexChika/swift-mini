@@ -15,9 +15,9 @@ type ChatProps = {
 
 function ChatLayout({ session, children }: ChatProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  useDynamicHeight({
-    ref: containerRef
-  });
+  // useDynamicHeight({
+  //   ref: containerRef
+  // });
 
   return (
     <>
@@ -26,7 +26,7 @@ function ChatLayout({ session, children }: ChatProps) {
 
       <Flex
         w={"100%"}
-        ref={containerRef}
+        h="100dvh"
         maxW={{ base: toRems(500), xmd: "100%" }}
         margin={0}
         gap={0}>
