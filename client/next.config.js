@@ -9,15 +9,15 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   }
 });
 
-const nextConfig = withBundleAnalyzer({
+const nextConfig = {
   typedRoutes: true,
   experimental: {
     globalNotFound: true
-  },
-  turbopack: {
-    root: path.join(__dirname),
-    outputFileTracingRoot: path.join(__dirname)
   }
-});
+  // turbopack: {
+  //   root: path.join(__dirname),
+  //   outputFileTracingRoot: path.join(__dirname)
+  // }
+};
 
 module.exports = nextConfig;
