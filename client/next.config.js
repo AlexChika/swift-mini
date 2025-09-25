@@ -15,7 +15,8 @@ const nextConfig = withBundleAnalyzer({
     globalNotFound: true
   },
   turbopack: {
-    root: path.join(__dirname)
+    root: path.join(__dirname),
+    outputFileTracingRoot: path.join(__dirname)
   }
 });
 
