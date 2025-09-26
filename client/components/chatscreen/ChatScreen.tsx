@@ -13,6 +13,7 @@ function ChatScreen({ session, id }: Props) {
     <Flex
       justifyContent="space-between"
       bg="{colors.secondaryBg}"
+      pb={3}
       border="4px solid {colors.appBorder}"
       borderLeft={{ xmd: "none" }}
       direction="column"
