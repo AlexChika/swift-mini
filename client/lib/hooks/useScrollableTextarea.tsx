@@ -29,7 +29,10 @@ export function useScrollableTextarea() {
     if (newScrollTop >= 0 && newScrollTop <= scrollHeight - clientHeight) {
       e.preventDefault();
       e.stopPropagation();
-      el.scrollTop = newScrollTop;
+      el.scrollTo({
+        top: newScrollTop,
+        behavior: "smooth"
+      });
     }
   }, []);
 
