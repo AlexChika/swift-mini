@@ -26,8 +26,7 @@ function MessageInput(props: Props) {
     // disable send on enter for mobile device
     if (window.innerWidth < 768) {
       // if (e.key === "Enter") {
-      const parent = document.querySelector("#swft-chat-screen");
-      parent?.scrollTo(0, parent.scrollHeight);
+      window.scrollTo(0, window.innerHeight);
       return;
       // }
     }
@@ -90,7 +89,6 @@ function MessageInput(props: Props) {
       px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
-      border="1px solid yellow"
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
       <Flex

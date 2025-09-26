@@ -12,7 +12,6 @@ type Props = {
 function ChatScreen({ session, id }: Props) {
   return (
     <Flex
-      id="swft-chat-screen"
       justifyContent="space-between"
       bg="{colors.secondaryBg}"
       border="4px solid {colors.appBorder}"

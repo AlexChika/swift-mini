@@ -208,10 +208,8 @@ function Messages({ session, id }: Props) {
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
       gap="0"
-      border="2px solid skyblue"
       justifyContent="flex-end"
       h="calc(100% - 60px)"
-      // overflowY="auto"
       position="relative"
       zIndex={6}
       bgPos="center"
@@ -223,7 +221,6 @@ function Messages({ session, id }: Props) {
       }}
       borderBottomRadius="inherit">
       <Stack
-        border="1px solid red"
         gap="3px"
         ref={BoxRef}
         py="10px"
@@ -270,13 +267,13 @@ function Messages({ session, id }: Props) {
               </React.Fragment>
             );
           })}
-        {/*
+
         <button
           className="swftMini"
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
           style={{ color: "gray" }}>
           {bgStrs[bg].name} Swift Mini
-        </button> */}
+        </button>
       </Stack>
 
       <MessageInput {...{ session, id }} />
