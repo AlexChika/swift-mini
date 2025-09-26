@@ -84,8 +84,6 @@ function MessageInput(props: Props) {
       px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
-      maxH="200px"
-      overflowY="auto"
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
       <Flex
@@ -103,9 +101,9 @@ function MessageInput(props: Props) {
           }}
           bg="{colors.primaryBg/30}"
           color="{colors.primaryText}"
-          // maxH="200px"
+          maxH="200px"
           minH="33px"
-          // overflowY="auto"
+          overflowY="auto"
           py={1}
           px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
