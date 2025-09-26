@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/client/react";
 import handleError from "@/lib/helpers/handleError";
 import { Flex, IconButton, Box, Button, Icon, HStack } from "@chakra-ui/react";
 import messageOps from "@/graphql/operations/message.ops";
+import { useScrollableTextarea } from "@/lib/hooks/useScrollableTextarea";
 
 type Props = {
   session: Session;
@@ -14,13 +15,14 @@ type Props = {
 
 function MessageInput(props: Props) {
   const { id, session } = props;
+  const scrollable = useScrollableTextarea();
 
   const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
     messageOps.Mutations.sendMessage
   );
 
   // ref
-  const InputBox = useRef<null | HTMLDivElement>(null);
+  const InputBox = scrollable.ref;
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -92,7 +94,7 @@ function MessageInput(props: Props) {
         w="100%"
         gap={{ base: 2, xmd: 3 }}>
         <Box
-          ref={InputBox}
+          {...scrollable}
           onKeyDown={onKeyDownHandler}
           css={{
             wordBreak: "break-word",
