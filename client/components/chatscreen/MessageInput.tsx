@@ -24,7 +24,13 @@ function MessageInput(props: Props) {
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
-    if (window.innerWidth < 768) return;
+    if (window.innerWidth < 768) {
+      // if (e.key === "Enter") {
+      const parent = document.querySelector("#swft-chat-screen");
+      parent?.scrollTo(0, parent.scrollHeight);
+      return;
+      // }
+    }
 
     const el = e.currentTarget as HTMLDivElement;
 

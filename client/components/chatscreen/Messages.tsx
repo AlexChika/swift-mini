@@ -8,7 +8,6 @@ import React, { useEffect, useRef, useState } from "react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
 import { ColorMode, syncClock } from "@/lib/helpers";
 import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
-import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 
 type Props = {
   session: Session;
@@ -204,21 +203,14 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  useDynamicHeight({
-    ref: containerRef,
-    sub: 78 // 60px messageHeader + 10px margin top & bottom + 8px border top & bottom
-  });
-
+  // TODO: use rems and ems
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
-      ref={containerRef}
       gap="0"
       border="2px solid skyblue"
       justifyContent="flex-end"
-      // h="calc(100% - 60px)"
+      h="calc(100% - 60px)"
       // overflowY="auto"
       position="relative"
       zIndex={6}
