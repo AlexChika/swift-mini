@@ -82,7 +82,7 @@ function MessageInput(props: Props) {
     <Box
       bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 6 }}
-      pt={3}
+      py={3}
       w="100%"
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
@@ -106,7 +106,6 @@ function MessageInput(props: Props) {
           overflowY="auto"
           py={1}
           px={3}
-          mb={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
           fontSize={16}
@@ -114,7 +113,7 @@ function MessageInput(props: Props) {
           borderRadius={14}
         />
 
-        <HStack mb={3}>
+        <HStack>
           <IconButton
             h="30px"
             onClick={handleOnSubmit}

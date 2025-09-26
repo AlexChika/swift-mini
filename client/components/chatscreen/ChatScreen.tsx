@@ -12,6 +12,8 @@ type Props = {
 function ChatScreen({ session, id }: Props) {
   return (
     <Flex
+      pos={{ base: "fixed", xmd: "static" }}
+      inset="0"
       justifyContent="space-between"
       bg="{colors.secondaryBg}"
       border="4px solid {colors.appBorder}"
