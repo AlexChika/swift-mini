@@ -4,8 +4,8 @@ import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
 import { useMutation } from "@apollo/client/react";
 import handleError from "@/lib/helpers/handleError";
-import { Flex, IconButton, Box, Button, Icon, HStack } from "@chakra-ui/react";
 import messageOps from "@/graphql/operations/message.ops";
+import { Flex, IconButton, Box, Icon, HStack } from "@chakra-ui/react";
 import { useScrollableTextarea } from "@/lib/hooks/useScrollableTextarea";
 
 type Props = {
@@ -22,8 +22,8 @@ function MessageInput(props: Props) {
   );
 
   // ref
-  // const InputBox = useRef<HTMLDivElement>(null);
-  const InputBox = scrollable.ref;
+  const InputBox = useRef<HTMLDivElement>(null);
+  // const InputBox = scrollable.ref;
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -90,13 +90,13 @@ function MessageInput(props: Props) {
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
       <Flex
-        justifyContent="space-between"
-        maxW="100%"
         w="100%"
-        gap={{ base: 2, xmd: 3 }}>
+        maxW="100%"
+        gap={{ base: 2, xmd: 3 }}
+        justifyContent="space-between">
         <Box
-          {...scrollable}
-          // ref={InputBox}
+          // {...scrollable}
+          ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
             wordBreak: "break-word",
@@ -108,7 +108,7 @@ function MessageInput(props: Props) {
           color="{colors.primaryText}"
           maxH="200px"
           minH="33px"
-          overflowY="auto"
+          overflow="scroll"
           py={1}
           px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
