@@ -22,7 +22,8 @@ function MessageInput(props: Props) {
   );
 
   // ref
-  const InputBox = scrollable.ref;
+  const InputBox = useRef<HTMLDivElement>(null);
+  // const InputBox = scrollable.ref;
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -94,13 +95,15 @@ function MessageInput(props: Props) {
         w="100%"
         gap={{ base: 2, xmd: 3 }}>
         <Box
-          {...scrollable}
+          // {...scrollable}
+          ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word"
           }}
+          overscrollBehavior="contain"
           bg="{colors.primaryBg/30}"
           color="{colors.primaryText}"
           maxH="200px"
