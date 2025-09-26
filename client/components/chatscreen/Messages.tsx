@@ -197,7 +197,7 @@ function Messages({ session, id }: Props) {
     if (BoxRef.current) {
       BoxRef.current.scrollTo(0, Number(BoxRef.current.scrollHeight));
     }
-  }, [data]);
+  }, []);
 
   const renderObj = renderObjectForDateDemacator(
     (data?.getMessages.success && data?.getMessages.messages) || []
@@ -206,9 +206,11 @@ function Messages({ session, id }: Props) {
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
+      gap="0"
+      border="1px solid skyblue"
       justifyContent="flex-end"
       h="calc(100% - 60px)"
-      overflowY="auto"
+      // overflowY="auto"
       position="relative"
       zIndex={6}
       bgPos="center"
@@ -220,6 +222,7 @@ function Messages({ session, id }: Props) {
       }}
       borderBottomRadius="inherit">
       <Stack
+        border="1px solid red"
         gap="3px"
         ref={BoxRef}
         py="10px"
@@ -266,13 +269,13 @@ function Messages({ session, id }: Props) {
               </React.Fragment>
             );
           })}
-
+        {/*
         <button
           className="swftMini"
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
           style={{ color: "gray" }}>
           {bgStrs[bg].name} Swift Mini
-        </button>
+        </button> */}
       </Stack>
 
       <MessageInput {...{ session, id }} />

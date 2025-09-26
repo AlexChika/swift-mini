@@ -84,6 +84,7 @@ function MessageInput(props: Props) {
       px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
+      border="1px solid yellow"
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
       <Flex

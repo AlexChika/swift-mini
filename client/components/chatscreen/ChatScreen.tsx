@@ -1,10 +1,8 @@
-import { useRef } from "react";
 import Messages from "./Messages";
 import { Session } from "next-auth";
 import { toEms } from "@/lib/helpers";
 import { Flex } from "@chakra-ui/react";
 import MessagesHeader from "./MessagesHeader";
-import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 
 type Props = {
   session: Session;
@@ -12,16 +10,9 @@ type Props = {
 };
 
 function ChatScreen({ session, id }: Props) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  useDynamicHeight({
-    ref: containerRef,
-    useRems: true,
-    sub: () => (window.matchMedia("(min-width:48rem)").matches ? 10 : 0) // to accomodate margin in this component on larger screens
-  });
-
   return (
     <Flex
-      ref={containerRef}
+      id="swft-chat-screen"
       justifyContent="space-between"
       bg="{colors.secondaryBg}"
       border="4px solid {colors.appBorder}"
