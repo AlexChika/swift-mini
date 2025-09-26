@@ -82,7 +82,7 @@ function MessageInput(props: Props) {
     <Box
       bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 6 }}
-      pt={3}
+      py={3}
       w="100%"
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">

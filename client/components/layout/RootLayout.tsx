@@ -26,7 +26,11 @@ function RootLayout({ children }: Props) {
   // return <Auth session={session} reloadSession={reloadSession} />;
 
   return (
-    <Box h="100dvh" display="flex" justifyContent="center">
+    <Box
+      border="1px solid green"
+      h="100dvh"
+      display="flex"
+      justifyContent="center">
       {/* <ColorMode.ThemeButton /> */} {/* For Debugging */}
       {session?.user.username ? (
         <StartScreen

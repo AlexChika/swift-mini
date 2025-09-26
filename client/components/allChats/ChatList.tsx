@@ -27,7 +27,6 @@ function ChatList({ session, chatList, openChat }: Props) {
 
   return (
     <Box
-      border="1px solid red"
       w="100%"
       pb={2.5}
       ref={BoxRef}
