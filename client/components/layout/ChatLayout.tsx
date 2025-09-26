@@ -15,9 +15,9 @@ type ChatProps = {
 
 function ChatLayout({ session, children }: ChatProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  // useDynamicHeight({
-  //   ref: containerRef
-  // });
+  useDynamicHeight({
+    ref: containerRef
+  });
 
   return (
     <>

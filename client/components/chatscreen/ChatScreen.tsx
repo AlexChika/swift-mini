@@ -16,7 +16,6 @@ function ChatScreen({ session, id }: Props) {
       border="4px solid {colors.appBorder}"
       borderLeft={{ xmd: "none" }}
       direction="column"
-      h="100dvh"
       w="100%"
       css={{
         margin: { base: "0px", xmd: "5px 5px 5px 0px" },

@@ -20,13 +20,14 @@ function ChatList({ session, chatList, openChat }: Props) {
     ref: BoxRef,
     sub: () => {
       // 80 for nav, 60 for creatChat btn, 60 for footer (small screen only)
-      return window.matchMedia("(min-width: 48rem)").matches ? 140 : 200;
+      return window.matchMedia("(min-width: 48rem)").matches ? 145 : 200;
     },
     useRems: true
   });
 
   return (
     <Box
+      border="1px solid red"
       w="100%"
       pb={2.5}
       ref={BoxRef}

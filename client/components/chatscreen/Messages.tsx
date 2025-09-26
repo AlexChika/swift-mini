@@ -206,6 +206,7 @@ function Messages({ session, id }: Props) {
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
+      mb={2}
       justifyContent="flex-end"
       h="calc(100% - 60px)"
       overflowY="auto"
