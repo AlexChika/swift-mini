@@ -24,12 +24,7 @@ function MessageInput(props: Props) {
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
-    if (window.innerWidth < 768) {
-      // if (e.key === "Enter") {
-      window.scrollTo(0, window.innerHeight);
-      return;
-      // }
-    }
+    if (window.innerWidth < 768) return;
 
     const el = e.currentTarget as HTMLDivElement;
 
@@ -87,7 +82,7 @@ function MessageInput(props: Props) {
     <Box
       bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 6 }}
-      py={3}
+      pt={3}
       w="100%"
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
@@ -111,6 +106,7 @@ function MessageInput(props: Props) {
           overflowY="auto"
           py={1}
           px={3}
+          mb={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
           fontSize={16}
@@ -118,7 +114,7 @@ function MessageInput(props: Props) {
           borderRadius={14}
         />
 
-        <HStack>
+        <HStack mb={3}>
           <IconButton
             h="30px"
             onClick={handleOnSubmit}
