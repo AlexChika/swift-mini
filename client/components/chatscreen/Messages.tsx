@@ -221,6 +221,7 @@ function Messages({ session, id }: Props) {
       }}
       borderBottomRadius="inherit">
       <Stack
+        id="swft-message-container"
         gap="3px"
         ref={BoxRef}
         py="10px"

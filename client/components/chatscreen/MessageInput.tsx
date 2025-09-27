@@ -8,6 +8,7 @@ import { useMutation } from "@apollo/client/react";
 import handleError from "@/lib/helpers/handleError";
 import messageOps from "@/graphql/operations/message.ops";
 import { Flex, IconButton, Box, Icon, HStack } from "@chakra-ui/react";
+import useMobileInputScrollFix from "@/lib/hooks/useMobileScrollFix";
 
 type Props = {
   session: Session;
@@ -23,6 +24,9 @@ function MessageInput(props: Props) {
 
   // ref
   const InputBox = useRef<HTMLDivElement>(null);
+
+  // the below also did not work
+  // useMobileInputScrollFix(InputBox);
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -79,59 +83,62 @@ function MessageInput(props: Props) {
     sendMessage(textString);
   }
 
-  useEffect(() => {
-    if (!InputBox.current) return;
-    const input = InputBox.current;
+  // this solution is buggy. both input and page scroll same time, if page is short and input content is long, scroll gets very stuck
 
-    function onTouchStart(e: TouchEvent) {
-      if (!InputBox.current) return;
+  /* --------------------- failed -------------------- */
+  // useEffect(() => {
+  //   if (!InputBox.current) return;
+  //   const input = InputBox.current;
 
-      const input = InputBox.current;
-      const { scrollTop } = input;
+  //   function onTouchStart(e: TouchEvent) {
+  //     if (!InputBox.current) return;
 
-      // Store initial touch position
-      const startY = e.touches[0].clientY;
-      (input as any)._startY = startY;
-      (input as any)._startScrollTop = scrollTop;
-    }
+  //     const input = InputBox.current;
+  //     const { scrollTop } = input;
 
-    function onTouchMove(e: TouchEvent) {
-      if (!InputBox.current) return;
+  //     // Store initial touch position
+  //     const startY = e.touches[0].clientY;
+  //     (input as any)._startY = startY;
+  //     (input as any)._startScrollTop = scrollTop;
+  //   }
 
-      const input = InputBox.current;
-      const { scrollHeight, clientHeight } = input;
-      const currentY = e.touches[0].clientY;
-      const startY = (input as any)._startY;
-      const deltaY = startY - currentY;
+  //   function onTouchMove(e: TouchEvent) {
+  //     if (!InputBox.current) return;
 
-      // Check if input is scrollable
-      const isScrollable = scrollHeight > clientHeight;
+  //     const input = InputBox.current;
+  //     const { scrollHeight, clientHeight } = input;
+  //     const currentY = e.touches[0].clientY;
+  //     const startY = (input as any)._startY;
+  //     const deltaY = startY - currentY;
 
-      if (isScrollable) {
-        const newScrollTop = (input as any)._startScrollTop + deltaY;
+  //     // Check if input is scrollable
+  //     const isScrollable = scrollHeight > clientHeight;
 
-        // If we're trying to scroll within the input bounds
-        if (newScrollTop >= 0 && newScrollTop <= scrollHeight - clientHeight) {
-          e.preventDefault();
-          e.stopPropagation();
+  //     if (isScrollable) {
+  //       const newScrollTop = (input as any)._startScrollTop + deltaY;
 
-          // Smooth scroll using scrollTo
-          input.scrollTo({
-            top: newScrollTop,
-            behavior: "smooth"
-          });
-        }
-      }
-    }
+  //       // If we're trying to scroll within the input bounds
+  //       if (newScrollTop >= 0 && newScrollTop <= scrollHeight - clientHeight) {
+  //         e.preventDefault();
+  //         e.stopPropagation();
 
-    input.addEventListener("touchstart", onTouchStart);
-    input.addEventListener("touchmove", onTouchMove);
+  //         // Smooth scroll using scrollTo
+  //         input.scrollTo({
+  //           top: newScrollTop,
+  //           behavior: "smooth"
+  //         });
+  //       }
+  //     }
+  //   }
 
-    return () => {
-      input.removeEventListener("touchstart", onTouchStart);
-      input.removeEventListener("touchmove", onTouchMove);
-    };
-  }, [InputBox]);
+  //   input.addEventListener("touchstart", onTouchStart);
+  //   input.addEventListener("touchmove", onTouchMove);
+
+  //   return () => {
+  //     input.removeEventListener("touchstart", onTouchStart);
+  //     input.removeEventListener("touchmove", onTouchMove);
+  //   };
+  // }, [InputBox]);
 
   //TODO: use rems and ems
   return (
