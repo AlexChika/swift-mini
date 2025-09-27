@@ -1,4 +1,6 @@
-import { useRef } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import React, { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
@@ -77,6 +79,60 @@ function MessageInput(props: Props) {
     sendMessage(textString);
   }
 
+  useEffect(() => {
+    if (!InputBox.current) return;
+    const input = InputBox.current;
+
+    function onTouchStart(e: TouchEvent) {
+      if (!InputBox.current) return;
+
+      const input = InputBox.current;
+      const { scrollTop } = input;
+
+      // Store initial touch position
+      const startY = e.touches[0].clientY;
+      (input as any)._startY = startY;
+      (input as any)._startScrollTop = scrollTop;
+    }
+
+    function onTouchMove(e: TouchEvent) {
+      if (!InputBox.current) return;
+
+      const input = InputBox.current;
+      const { scrollHeight, clientHeight } = input;
+      const currentY = e.touches[0].clientY;
+      const startY = (input as any)._startY;
+      const deltaY = startY - currentY;
+
+      // Check if input is scrollable
+      const isScrollable = scrollHeight > clientHeight;
+
+      if (isScrollable) {
+        const newScrollTop = (input as any)._startScrollTop + deltaY;
+
+        // If we're trying to scroll within the input bounds
+        if (newScrollTop >= 0 && newScrollTop <= scrollHeight - clientHeight) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Smooth scroll using scrollTo
+          input.scrollTo({
+            top: newScrollTop,
+            behavior: "smooth"
+          });
+        }
+      }
+    }
+
+    input.addEventListener("touchstart", onTouchStart);
+    input.addEventListener("touchmove", onTouchMove);
+
+    return () => {
+      input.removeEventListener("touchstart", onTouchStart);
+      input.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [InputBox]);
+
   //TODO: use rems and ems
   return (
     <Box
@@ -90,9 +146,6 @@ function MessageInput(props: Props) {
         w="100%"
         maxW="100%"
         gap={{ base: 2, xmd: 3 }}
-        touchAction="pan-y"
-        pos="relative"
-        zIndex="10"
         justifyContent="space-between">
         <Box
           pos="relative"
@@ -101,22 +154,23 @@ function MessageInput(props: Props) {
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
+            overflowY: "auto",
             touchAction: "pan-y",
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
-            overflowWrap: "break-word"
+            overflowWrap: "break-word",
+            overscrollBehavior: "contain",
+            WebkitOverflowScrolling: "touch"
           }}
-          overscrollBehavior="contain"
           bg="{colors.primaryBg/30}"
           color="{colors.primaryText}"
           maxH="200px"
           minH="33px"
-          overflowY="auto"
           py={1}
           px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
-          fontSize={16}
+          fontSize={20}
           contentEditable="plaintext-only"
           borderRadius={14}
         />
