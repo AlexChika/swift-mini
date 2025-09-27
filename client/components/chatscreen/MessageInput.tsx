@@ -26,7 +26,10 @@ function MessageInput(props: Props) {
   const InputBox = useRef<HTMLDivElement>(null);
 
   // the below also did not work
-  // useMobileInputScrollFix(InputBox);
+  useMobileInputScrollFix(InputBox, undefined, {
+    enableBodyFix: false,
+    useVisualViewport: false
+  });
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device

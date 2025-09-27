@@ -207,6 +207,7 @@ function Messages({ session, id }: Props) {
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
+      id="swft-message-container"
       gap="0"
       justifyContent="flex-end"
       h="calc(100% - 60px)"
@@ -221,7 +222,6 @@ function Messages({ session, id }: Props) {
       }}
       borderBottomRadius="inherit">
       <Stack
-        id="swft-message-container"
         gap="3px"
         ref={BoxRef}
         py="10px"
