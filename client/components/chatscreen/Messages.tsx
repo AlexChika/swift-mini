@@ -203,6 +203,33 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
+  useEffect(() => {
+    if (!BoxRef.current) return;
+    const el = BoxRef.current;
+
+    function onTouchMove(e: TouchEvent) {
+      if (!el) return;
+
+      console.log(e.target, "target-mesages.tsx");
+
+      if (
+        document.querySelector("#swft-message-box")?.contains(e.target as Node)
+      ) {
+        console.log("ran message Box messages.tsx");
+        e.preventDefault();
+        return;
+      }
+
+      // otherwise block page scroll while input is focused
+      //  e.preventDefault();
+    }
+
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => {
+      el.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [BoxRef]);
+
   // TODO: use rems and ems
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader

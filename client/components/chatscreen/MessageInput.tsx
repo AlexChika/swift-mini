@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
@@ -23,13 +21,10 @@ function MessageInput(props: Props) {
   );
 
   // ref
-  const InputBox = useRef<HTMLDivElement>(null);
+  const InputBox = React.useRef<HTMLDivElement>(null);
 
   // the below also did not work
-  useMobileInputScrollFix(InputBox, undefined, {
-    enableBodyFix: false,
-    useVisualViewport: false
-  });
+  useMobileInputScrollFix(InputBox);
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -86,66 +81,10 @@ function MessageInput(props: Props) {
     sendMessage(textString);
   }
 
-  // this solution is buggy. both input and page scroll same time, if page is short and input content is long, scroll gets very stuck
-
-  /* --------------------- failed -------------------- */
-  // useEffect(() => {
-  //   if (!InputBox.current) return;
-  //   const input = InputBox.current;
-
-  //   function onTouchStart(e: TouchEvent) {
-  //     if (!InputBox.current) return;
-
-  //     const input = InputBox.current;
-  //     const { scrollTop } = input;
-
-  //     // Store initial touch position
-  //     const startY = e.touches[0].clientY;
-  //     (input as any)._startY = startY;
-  //     (input as any)._startScrollTop = scrollTop;
-  //   }
-
-  //   function onTouchMove(e: TouchEvent) {
-  //     if (!InputBox.current) return;
-
-  //     const input = InputBox.current;
-  //     const { scrollHeight, clientHeight } = input;
-  //     const currentY = e.touches[0].clientY;
-  //     const startY = (input as any)._startY;
-  //     const deltaY = startY - currentY;
-
-  //     // Check if input is scrollable
-  //     const isScrollable = scrollHeight > clientHeight;
-
-  //     if (isScrollable) {
-  //       const newScrollTop = (input as any)._startScrollTop + deltaY;
-
-  //       // If we're trying to scroll within the input bounds
-  //       if (newScrollTop >= 0 && newScrollTop <= scrollHeight - clientHeight) {
-  //         e.preventDefault();
-  //         e.stopPropagation();
-
-  //         // Smooth scroll using scrollTo
-  //         input.scrollTo({
-  //           top: newScrollTop,
-  //           behavior: "smooth"
-  //         });
-  //       }
-  //     }
-  //   }
-
-  //   input.addEventListener("touchstart", onTouchStart);
-  //   input.addEventListener("touchmove", onTouchMove);
-
-  //   return () => {
-  //     input.removeEventListener("touchstart", onTouchStart);
-  //     input.removeEventListener("touchmove", onTouchMove);
-  //   };
-  // }, [InputBox]);
-
   //TODO: use rems and ems
   return (
     <Box
+      id="swft-message-box"
       bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 6 }}
       py={3}
@@ -160,7 +99,6 @@ function MessageInput(props: Props) {
         <Box
           pos="relative"
           zIndex={9999}
-          id="swft-message-box"
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
