@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/server.ts",
   "scripts": {
-    "start": "tsx src/server.ts",
+    "start": "tsx --env-file=.env src/server.ts",
     "dev": "tsc --watch --noEmit --project tsconfig.json & tsx watch --env-file=.env src/server.ts",
     "deploy": "npm run start",
     "lint": "eslint .",

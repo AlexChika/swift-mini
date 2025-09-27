@@ -82,12 +82,12 @@ function Auth({ session, reloadSession }: AuthProps) {
         width="95%"
         maxWidth="19.2rem"
         bg="{colors.secondaryBg}"
-        p={30}
+        p={50}
         gap={5}
         align="center">
         <Image
           src={imageUrl}
-          width="70px"
+          width="7rem"
           alt="user image"
           rounded={session?.user?.image ? "100%" : ""}
         />
@@ -134,7 +134,11 @@ function Auth({ session, reloadSession }: AuthProps) {
         ) : (
           <>
             <Text opacity={0.8}>You are not signed in</Text>
-            <Button padding={2} fontSize={14} onClick={() => signIn("google")}>
+            <Button
+              py={2}
+              px={5}
+              fontSize={14}
+              onClick={() => signIn("google")}>
               <Image
                 src="/google.png"
                 alt="Google Logo"

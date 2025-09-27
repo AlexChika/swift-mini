@@ -6,7 +6,6 @@ import { useMutation } from "@apollo/client/react";
 import handleError from "@/lib/helpers/handleError";
 import messageOps from "@/graphql/operations/message.ops";
 import { Flex, IconButton, Box, Icon, HStack } from "@chakra-ui/react";
-import { useScrollableTextarea } from "@/lib/hooks/useScrollableTextarea";
 
 type Props = {
   session: Session;
@@ -15,7 +14,6 @@ type Props = {
 
 function MessageInput(props: Props) {
   const { id, session } = props;
-  const scrollable = useScrollableTextarea();
 
   const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
     messageOps.Mutations.sendMessage
@@ -23,7 +21,6 @@ function MessageInput(props: Props) {
 
   // ref
   const InputBox = useRef<HTMLDivElement>(null);
-  // const InputBox = scrollable.ref;
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -71,11 +68,11 @@ function MessageInput(props: Props) {
   // btn : submit handler
   function handleOnSubmit() {
     if (!InputBox.current) return;
+    InputBox.current.focus();
 
     const textString = InputBox.current.textContent?.trim();
     if (!textString) return;
 
-    InputBox.current.focus();
     InputBox.current.innerHTML = "";
     sendMessage(textString);
   }
@@ -93,12 +90,18 @@ function MessageInput(props: Props) {
         w="100%"
         maxW="100%"
         gap={{ base: 2, xmd: 3 }}
+        touchAction="pan-y"
+        pos="relative"
+        zIndex="10"
         justifyContent="space-between">
         <Box
-          // {...scrollable}
+          pos="relative"
+          zIndex={9999}
+          id="swft-message-box"
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
+            touchAction: "pan-y",
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
             overflowWrap: "break-word"
@@ -108,7 +111,7 @@ function MessageInput(props: Props) {
           color="{colors.primaryText}"
           maxH="200px"
           minH="33px"
-          overflow="scroll"
+          overflowY="auto"
           py={1}
           px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
@@ -133,20 +136,6 @@ function MessageInput(props: Props) {
               <SendIcon color="{colors.primaryText}" />
             </Icon>
           </IconButton>
-          {/* <IconButton
-            h="30px"
-            onClick={handleOnSubmit}
-            minW={{ base: "50px", xmd: "100px" }}
-            alignSelf="flex-end"
-            bg="{colors.primaryBg/30}"
-            borderRadius={14}
-            transition="none"
-            variant={"plain"}
-            aria-label="Send Message Icon">
-            <Icon size="md">
-              <SendIcon color="{colors.primaryText}" />
-            </Icon>
-          </IconButton> */}
         </HStack>
       </Flex>
     </Box>
