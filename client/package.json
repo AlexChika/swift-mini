@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "next start",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
+    "dev:win": "next dev",
     "build": "next build",
     "deploy": "npm run typegen && npm run prisma && next build",
     "_": "",
@@ -14,10 +15,10 @@
     "chakra:typegen": "chakra typegen ./chakra/theme.ts",
     "typegen": "npm run next:typegen && npm run chakra:typegen",
     "__": "",
-    "lint": "eslint .",
+    "lint:check": "eslint .",
     "types:check": "tsc --noEmit",
     "lint:fix": "eslint --fix",
-    "format": "prettier . --write",
+    "format:fix": "prettier . --write",
     "format:check": "prettier --check ."
   },
   "dependencies": {

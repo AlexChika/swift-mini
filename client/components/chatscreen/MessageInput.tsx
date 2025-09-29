@@ -22,9 +22,7 @@ function MessageInput(props: Props) {
 
   // ref
   const InputBox = React.useRef<HTMLDivElement>(null);
-
-  // the below also did not work
-  useMobileInputScrollFix(InputBox);
+  useMobileInputScrollFix(InputBox, "swft-message-container");
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -97,8 +95,6 @@ function MessageInput(props: Props) {
         gap={{ base: 2, xmd: 3 }}
         justifyContent="space-between">
         <Box
-          pos="relative"
-          zIndex={9999}
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{

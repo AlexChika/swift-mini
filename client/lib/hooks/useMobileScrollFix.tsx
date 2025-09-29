@@ -1,7 +1,8 @@
 import { RefObject, useEffect } from "react";
 
 export default function useMobileScrollFix(
-  inputRef: RefObject<HTMLElement | null>
+  inputRef: RefObject<HTMLElement | null>,
+  ...ids: string[]
 ) {
   useEffect(() => {
     const input = inputRef?.current;
@@ -14,86 +15,56 @@ export default function useMobileScrollFix(
     let touching = false;
 
     function onInputTouchStart(e: TouchEvent) {
-      console.log("touched start");
-      if (!e.touches?.length) return;
-      if (!input) return;
+      if (!input || !e.touches?.length) return;
       touching = true;
       startY = e.touches[0].clientY;
       startScrollTop = input.scrollTop;
     }
 
     function onInputTouchMove(e: TouchEvent) {
-      console.log("ran here");
-      if (!touching || !e.touches?.length) return;
-      if (!input) return;
+      if (!input || !touching || !e.touches?.length) return;
 
-      const curY = e.touches[0].clientY;
-      const dy = startY - curY; // positive = user swiped up => content should scroll down (scrollTop increases)
+      // Always block page scroll when touching input
+      e.preventDefault();
+
+      if (input.scrollHeight <= input.clientHeight + 1) return;
+
+      const dy = startY - e.touches[0].clientY;
       const maxScrollTop = Math.max(0, input.scrollHeight - input.clientHeight);
-      const newScrollTop = startScrollTop + dy;
 
-      const isScrollable = input.scrollHeight > input.clientHeight + 1;
-
-      if (!isScrollable) {
-        // If input isn't scrollable, trap the touch so the page doesn't move
-        e.preventDefault();
-        return;
-      }
-
-      // If newScrollTop is strictly inside bounds, we handle it and prevent page scroll
-      if (newScrollTop > 0 && newScrollTop < maxScrollTop) {
-        input.scrollTop = newScrollTop;
-        e.preventDefault();
-        return;
-      }
-
-      // If user tries to go past the top or bottom, clamp and prevent default so page doesn't steal it
-      if (newScrollTop <= 0) {
-        input.scrollTop = 0;
-        e.preventDefault();
-        return;
-      }
-
-      if (newScrollTop >= maxScrollTop) {
-        input.scrollTop = maxScrollTop;
-        e.preventDefault();
-        return;
-      }
+      input.scrollTop = Math.min(
+        Math.max(startScrollTop + dy, 0),
+        maxScrollTop
+      );
     }
 
     function onInputTouchEnd() {
       touching = false;
     }
 
-    // Document-wide touchmove to stop the page from scrolling while input is focused.
-    // We don't prevent if the target is inside the input — the input handler will manage it.
+    /** Document-wide handler: block page scroll unless in input or allowed IDs */
     function onDocumentTouchMove(e: TouchEvent) {
       if (!input) return;
 
-      console.log(e.target, "target");
-      if (input.contains(e.target as Node)) {
-        console.log("ran input");
-        // let the input handler decide (it will call preventDefault when it handles movement)
-        return;
-      }
+      // If event is inside input → let input handlers manage
+      if (input.contains(e.target as Node)) return;
 
+      // If event is inside any allowed container → let native scroll work
       if (
-        document
-          .querySelector("#swft-message-container")
-          ?.contains(e.target as Node)
-      ) {
-        console.log("ran messages");
+        ids.some((id) =>
+          document.getElementById(id)?.contains(e.target as Node)
+        )
+      )
         return;
-      }
 
-      // otherwise block page scroll while input is focused
+      // Otherwise block page scroll
       e.preventDefault();
     }
 
+    /** Focus/Blur listeners attach/detach */
     function onFocus() {
       if (!input) return;
 
-      // add document handler to stop page scroll (passive:false so preventDefault works)
       document.addEventListener("touchmove", onDocumentTouchMove, evOpts);
 
       input.addEventListener("touchstart", onInputTouchStart, evOpts);
@@ -106,20 +77,22 @@ export default function useMobileScrollFix(
       if (!input) return;
 
       document.removeEventListener("touchmove", onDocumentTouchMove, evOpts);
+
       input.removeEventListener("touchstart", onInputTouchStart, evOpts);
       input.removeEventListener("touchmove", onInputTouchMove, evOpts);
       input.removeEventListener("touchend", onInputTouchEnd, evOpts);
       input.removeEventListener("touchcancel", onInputTouchEnd, evOpts);
     }
 
+    // Attach focus/blur on mount
     input.addEventListener("focus", onFocus, true);
     input.addEventListener("blur", onBlur, true);
 
-    // cleanup
+    // Cleanup
     return () => {
       input.removeEventListener("focus", onFocus, true);
       input.removeEventListener("blur", onBlur, true);
-      onBlur(); // ensure all handlers removed
+      onBlur(); // ensure everything detached
     };
-  }, [inputRef]);
+  }, [inputRef, ids]);
 }
