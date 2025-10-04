@@ -4,9 +4,9 @@
   "main": "",
   "scripts": {
     "prepare": "husky",
-    "lint": "npm --prefix server run lint:fix && npm --prefix client run lint:fix",
-    "format": "npm --prefix server run format && npm --prefix client run format",
-    "lint:check": "npm --prefix server run lint && npm --prefix client run lint",
+    "lint:fix": "npm --prefix server run lint:fix && npm --prefix client run lint:fix",
+    "format:fix": "npm --prefix server run format:fix && npm --prefix client run format:fix",
+    "lint:check": "npm --prefix server run lint:check && npm --prefix client run lint:check",
     "format:check": "npm --prefix server run format:check && npm --prefix client run format:check",
     "types:check": "npm --prefix server run types:check && npm --prefix client run types:check"
   },

@@ -14,7 +14,7 @@ echo "🎨 Step 2: Checking Prettier formatting..."
 npm run format:check || {
     echo ""
     echo "👷 Oooops 🤢🤮 - Your formatting needs work."
-    echo "💡 Run: npm run format"
+    echo "💡 Run: npm run format:fix"
     echo "📌 Then: git add . && commit again."
     exit 1
 }
@@ -26,7 +26,7 @@ echo "🧹 Step 3: Running ESLint..."
 npm run lint:check || {
     echo ""
     echo "👷 Ah! You failed to follow our linting standards 😤🏀👋"
-    echo "💡 Run: npm run lint"
+    echo "💡 Run: npm run lint:fix"
     echo "📌 Then: git add . && commit again."
     exit 1
 }

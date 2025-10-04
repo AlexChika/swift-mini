@@ -5,17 +5,18 @@ type Message {
     senderId:String!
     body:String!
     createdAt:Date!
-    updatedAt:Date!
     clientSentAt:String!
     deleted:Boolean!
+    editted:Boolean!
+    meta: MessageMeta!
 
     # below fields are not part of message model, they are reference fields returned from db lookup queries
 
-    sender:User!
+    sender:Sender!
 }
 
 type Query {
-    getMessages(chatId:String!): getMessageResponse
+    getMessages(chatId:String!): GetMessagesResponse
 }
 
 type Mutation {
@@ -26,10 +27,25 @@ type Subscription {
     messageSent(chatId:String):Message
 }
 
-type getMessageResponse {
+type GetMessagesResponse {
     success:Boolean!
     msg:String!
     messages:[Message!]
+}
+
+type MessageMeta {
+  readStatus: ReadStatus
+  deliveredStatus: DeliveredStatus
+}
+
+type ReadStatus {
+  hasRead: Boolean
+  readAt: Date
+}
+
+type DeliveredStatus {
+  hasDelivered: Boolean
+  deliveredAt: Date
 }
 
 `;

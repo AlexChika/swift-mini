@@ -5,7 +5,7 @@ import ChatLayout from "./ChatLayout";
 import { Box } from "@chakra-ui/react";
 import StartScreen from "./StartScreen";
 import { useSession } from "next-auth/react";
-import { reloadSession } from "@/lib/helpers";
+// import { reloadSession } from "@/lib/helpers";
 import useNetworkChangeNotifier from "@/lib/hooks/useNetworkChangeNotifier";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
@@ -14,7 +14,7 @@ type Props = {
 };
 
 function RootLayout({ children }: Props) {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   useNetworkChangeNotifier();
 
   if (process.env.NODE_ENV !== "production") {
@@ -26,14 +26,14 @@ function RootLayout({ children }: Props) {
   // return <Auth session={session} reloadSession={reloadSession} />;
 
   return (
-    <Box>
+    <Box h="100dvh" display="flex" justifyContent="center">
       {/* <ColorMode.ThemeButton /> */} {/* For Debugging */}
       {session?.user.username ? (
         <StartScreen
           Child={<ChatLayout session={session}>{children}</ChatLayout>}
         />
       ) : (
-        <Auth session={session} reloadSession={reloadSession} />
+        <Auth session={session} reloadSession={update} />
       )}
     </Box>
   );

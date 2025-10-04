@@ -1,36 +1,34 @@
-import { memo } from "react";
-import ChatList from "./ChatList";
 import { Session } from "next-auth";
 import { Box } from "@chakra-ui/react";
-import { useParams } from "next/navigation";
-import CreateDuoChatBtn from "./CreateDuoChatBtn";
-// import CreateGroupChatBtn from "./CreateGroupChatBtn";
+import SwiftStore from "@/store/Store";
+import { useRouter } from "next/navigation";
+import { getSearchParam } from "@/lib/helpers";
+import { memo, useCallback, useMemo } from "react";
+import ChatList from "@/components/allChats/ChatList";
+import CreateNewChatBtn from "@/components/allChats/CreateNewChatBtn";
 
 type Props = {
   session: Session;
 };
 
 function Chats({ session }: Props) {
-  const { chatId: id } = useParams<{ chatId: string }>();
+  const router = useRouter();
+  const { allChats } = SwiftStore();
+
+  const duoChats = useMemo(
+    () => allChats.filter((chat) => chat.chatType === "duo"),
+    [allChats]
+  );
+
+  const openChat = useCallback(async function (chatId: string) {
+    const param = getSearchParam("swift");
+    router.push(`/${chatId}?swift=${param}`);
+  }, []);
 
   return (
-    <Box
-      bg="{colors.secondaryBg}"
-      border="4px solid {colors.appBorder}"
-      borderRight="1px solid {colors.appBorder}"
-      css={{
-        margin: { base: "0px", xmd: "5px 0px 5px 5px" },
-        borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" }
-      }}
-      display={{ base: id ? "none" : "block", xmd: "block" }}
-      w="100%"
-      maxW={{ xmd: "300px", lg: "380px", xl: "400px" }}
-      py={3}
-      px={3}>
-      <CreateDuoChatBtn session={session} />
-      {/* create group chat */}
-      {/* <CreateGroupChatBtn session={session} /> */}
-      <ChatList session={session} />
+    <Box>
+      <CreateNewChatBtn session={session} />
+      <ChatList chatList={duoChats} session={session} openChat={openChat} />
     </Box>
   );
 }

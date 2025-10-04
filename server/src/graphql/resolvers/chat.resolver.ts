@@ -1,11 +1,17 @@
+import {
+  ApiReturn,
+  ChatLean,
+  ChatPopulated,
+  GraphqlContext,
+  User
+} from "swift-mini";
 import mongoose from "mongoose";
 import { GraphQLError } from "graphql";
 import { inviteLinkEncoder } from "@lib/utils";
 import chatModel from "@src/models/chat.model";
 import userModel from "@src/models/user.model";
-import chatMemberModel from "@src/models/chatMember.model";
 import { withFilter } from "graphql-subscriptions";
-import { ChatLean, ChatPopulated, GraphqlContext, User } from "swift-mini";
+import chatMemberModel from "@src/models/chatMember.model";
 
 type createGroupChatArgs = {
   description: string;
@@ -18,21 +24,29 @@ type createDuoChatArgs = {
   otherUserId: string;
 };
 
+type ReturnedChatLean = ApiReturn<ChatLean[], "chats">;
+
 const chatResolver = {
   Query: {
-    getChats: async (_: unknown, __: unknown, ctx: GraphqlContext) => {
+    getChats: async (
+      _: unknown,
+      __: unknown,
+      ctx: GraphqlContext
+    ): Promise<ReturnedChatLean> => {
       const { session } = ctx;
 
       if (!session?.user.username) {
-        throw new GraphQLError("User is not authenticated");
+        return {
+          success: false,
+          msg: "User authentication failed."
+        };
       }
 
       const { id } = session.user;
       const userId = new mongoose.Types.ObjectId(id);
-      const uid = new mongoose.Types.ObjectId(userId); // ensure type matches your schema
 
       try {
-        const chats = await chatModel.aggregate([
+        const chats = await chatModel.aggregate<ChatLean>([
           // 1) Sort early on Chat.updatedAt (add index { updatedAt: -1 } on Chat)
           { $sort: { updatedAt: -1 } },
 
@@ -47,7 +61,7 @@ const chatResolver = {
                     $expr: {
                       $and: [
                         { $eq: ["$chatId", "$$cid"] },
-                        { $eq: ["$memberId", uid] } // <-- your user
+                        { $eq: ["$memberId", userId] } // <-- your user
                       ]
                     }
                   }
@@ -201,14 +215,15 @@ const chatResolver = {
           }
         ]);
 
-        // console.log(JSON.stringify(chats, null, 2));
-        // console.log(chats);
-
-        return chats;
+        return {
+          chats,
+          success: true,
+          msg: "success"
+        };
       } catch (error) {
-        const err = error as unknown as { message: string };
         console.log("Query.getChats error", error);
-        throw new GraphQLError(err.message);
+        const err = error as unknown as { message: string };
+        throw new GraphQLError(err?.message || "Something went wrong");
       }
     },
     getChat: async (
@@ -462,15 +477,15 @@ const chatResolver = {
       const { session, pubsub } = ctx;
       const { otherUserId } = args;
 
-      // is user authenticated
+      /* ------------ // is user authenticated ----------- */
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
-      // validate otherUserId
+      /* ------------ // validate otherUserId ------------ */
       if (!otherUserId || !mongoose.isValidObjectId(otherUserId)) {
         throw new GraphQLError(`The provided userId ${otherUserId} is invalid`);
       }
 
-      // checks to see if user exists
+      /* -------- // checks to see if user exists -------- */
       const otherUser = await userModel.findById(otherUserId);
 
       if (!otherUser)
@@ -478,7 +493,7 @@ const chatResolver = {
           `Unable to create chat. User with id ${otherUserId} does not exist`
         );
 
-      // check if duo chat already exists with the other user
+      /* --- check if duo chat already exists btw users -- */
       const existingChat = await chatMemberModel.findOne({
         memberId: session.user.id,
         chatType: "duo",

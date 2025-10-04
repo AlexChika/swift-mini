@@ -1,32 +1,33 @@
 import React from "react";
-import { Box, Text } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import CreateGroupChatModal from "./CreateGroupChatModal";
+import { toRems } from "@/lib/helpers";
+import { Box, Text } from "@chakra-ui/react";
+import CreateDuoChatModal from "./CreateNewChatModal";
 
 type Props = {
   session: Session;
 };
 
-function StartConversationBtn3({ session }: Props) {
+function CreateNewChatBtn({ session }: Props) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <Box
       py={2}
       mb={4}
-      bg="{colors.primaryBg}"
-      borderRadius={4}
       cursor="pointer"
-      onClick={() => setIsOpen(true)}>
+      borderRadius={12}
+      onClick={() => setIsOpen(true)}
+      border="2px solid {colors.primaryBg}">
       <Text
         textAlign="center"
         color="{colors.primaryText}"
-        fontSize={{ base: "14px", md: "15px" }}
+        fontSize={{ base: toRems(14), md: toRems(15) }}
         fontWeight={500}>
-        Create Group Chat tester
+        Find or Create a New Chat
       </Text>
 
-      <CreateGroupChatModal
+      <CreateDuoChatModal
         session={session}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -35,4 +36,4 @@ function StartConversationBtn3({ session }: Props) {
   );
 }
 
-export default StartConversationBtn3;
+export default CreateNewChatBtn;

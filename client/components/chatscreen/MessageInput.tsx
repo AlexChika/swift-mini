@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import React from "react";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
-import { ApolloError, useMutation } from "@apollo/client";
-import { Flex, IconButton, Box } from "@chakra-ui/react";
+import { useMutation } from "@apollo/client/react";
+import handleError from "@/lib/helpers/handleError";
 import messageOps from "@/graphql/operations/message.ops";
+import { Flex, IconButton, Box, Icon, HStack } from "@chakra-ui/react";
+import useMobileInputScrollFix from "@/lib/hooks/useMobileScrollFix";
 
 type Props = {
   session: Session;
@@ -19,7 +21,8 @@ function MessageInput(props: Props) {
   );
 
   // ref
-  const InputBox = useRef<null | HTMLDivElement>(null);
+  const InputBox = React.useRef<HTMLDivElement>(null);
+  useMobileInputScrollFix(InputBox, "swft-message-container");
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
     // disable send on enter for mobile device
@@ -57,15 +60,17 @@ function MessageInput(props: Props) {
 
       if (error) toast.error("Could not send");
     } catch (error) {
-      const err = error as ApolloError;
-      toast.error("Could not send");
-      console.log("onMessageError", err);
+      handleError(error, (err) => {
+        console.log("onMessageError", err);
+        toast.error("Could not send");
+      });
     }
   }
 
   // btn : submit handler
   function handleOnSubmit() {
     if (!InputBox.current) return;
+    InputBox.current.focus();
 
     const textString = InputBox.current.textContent?.trim();
     if (!textString) return;
@@ -74,8 +79,10 @@ function MessageInput(props: Props) {
     sendMessage(textString);
   }
 
+  //TODO: use rems and ems
   return (
     <Box
+      id="swft-message-box"
       bg="{colors.secondaryBg}"
       px={{ base: 3, xmd: 6 }}
       py={3}
@@ -83,43 +90,51 @@ function MessageInput(props: Props) {
       borderTop="1px solid {colors.appBorder}"
       borderBottomRadius="inherit">
       <Flex
-        justifyContent="space-between"
-        maxW="100%"
         w="100%"
-        gap={{ base: 2, xmd: 3 }}>
+        maxW="100%"
+        gap={{ base: 2, xmd: 3 }}
+        justifyContent="space-between">
         <Box
           ref={InputBox}
           onKeyDown={onKeyDownHandler}
           css={{
+            overflowY: "auto",
+            touchAction: "pan-y",
             wordBreak: "break-word",
             whiteSpace: "pre-wrap",
-            overflowWrap: "break-word"
+            overflowWrap: "break-word",
+            overscrollBehavior: "contain",
+            WebkitOverflowScrolling: "touch"
           }}
-          bg="{colors.primaryBg}"
+          bg="{colors.primaryBg/30}"
           color="{colors.primaryText}"
           maxH="200px"
-          minH="40px"
-          overflowY="auto"
-          py={2}
+          minH="33px"
+          py={1}
           px={3}
           maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
-          fontSize={16}
+          fontSize={20}
           contentEditable="plaintext-only"
           borderRadius={14}
         />
 
-        <IconButton
-          onClick={handleOnSubmit}
-          minW={{ base: "50px", xmd: "100px" }}
-          alignSelf="flex-end"
-          bg="{colors.primaryBg}"
-          borderRadius={14}
-          transition="none"
-          variant={"plain"}
-          aria-label="Send Message Icon">
-          <SendIcon color="{colors.primaryText}" />
-        </IconButton>
+        <HStack>
+          <IconButton
+            h="30px"
+            onClick={handleOnSubmit}
+            minW={{ base: "50px", xmd: "100px" }}
+            alignSelf="flex-end"
+            bg="{colors.primaryBg/30}"
+            borderRadius={14}
+            transition="none"
+            variant={"plain"}
+            aria-label="Send Message Icon">
+            <Icon size="md">
+              <SendIcon color="{colors.primaryText}" />
+            </Icon>
+          </IconButton>
+        </HStack>
       </Flex>
     </Box>
   );

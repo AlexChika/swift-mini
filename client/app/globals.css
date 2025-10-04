@@ -1,6 +1,7 @@
-/*  debuggers */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+/* agbalumo */
+@import url("https://fonts.googleapis.com/css2?family=Agbalumo");
 
+/*  debuggers */
 .red {
   border: 2px solid red;
 }
@@ -18,7 +19,13 @@
 *,
 *::before,
 *::after {
-  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.swftMini {
+  font-family: "Agbalumo", system-ui !important;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -58,10 +65,14 @@ html.dark::before {
 
 html.dark {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/geometry2.png");
+  --swftLight: #000;
+  --swftReverseLight: #fff;
 }
 
 html.light {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/binding_dark.png");
+  --swftLight: #fff;
+  --swftReverseLight: #000;
 }
 
 /* html.dark {

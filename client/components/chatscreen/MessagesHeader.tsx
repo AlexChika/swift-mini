@@ -61,7 +61,7 @@ function MessagesHeader({ userId }: Props) {
         <IconButton
           display={{ base: "flex", xmd: "none" }}
           variant="plain"
-          onClick={() => router.replace("/")}
+          onClick={() => router.back()}
           minW="unset">
           <LeftArrowIcon color="{colors.primaryText}" />
         </IconButton>

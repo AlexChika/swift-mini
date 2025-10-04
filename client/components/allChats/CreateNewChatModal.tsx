@@ -11,13 +11,14 @@ import {
   CloseButton
 } from "@chakra-ui/react";
 import React from "react";
-import chatOps from "@/graphql/operations/chat.ops";
-import userOps from "@/graphql/operations/user.ops";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import CloseIcon from "@/lib/icons/CloseIcon";
 import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
+import CloseIcon from "@/lib/icons/CloseIcon";
+import useNavigate from "@/lib/hooks/useNavigate";
+import userOps from "@/graphql/operations/user.ops";
+import chatOps from "@/graphql/operations/chat.ops";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 
 type Props = {
   isOpen: boolean;
@@ -25,20 +26,17 @@ type Props = {
   session: Session;
 };
 
-type CreateGroupChatVariable = {
-  description: string;
-  chatName: string;
-  groupType: "private" | "public";
-  memberIds: string[];
+type CreateDuoChatVariable = {
+  otherUserId: string;
 };
 
-type CreateGroupChatData = {
-  createGroupChat: {
+type CreateDuoChatData = {
+  createDuoChat: {
     chatId: string;
   };
 };
 
-function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
+function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
   const router = useRouter();
   const [username, setUsername] = React.useState("");
   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
@@ -48,10 +46,10 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
     SearchUsersVariable
   >(userOps.Queries.searchUsers);
 
-  const [createGroupChat, { loading: createConversationLoading }] = useMutation<
-    CreateGroupChatData,
-    CreateGroupChatVariable
-  >(chatOps.Mutations.createGroupChat);
+  const [createDuoChat, { loading: createConversationLoading }] = useMutation<
+    CreateDuoChatData,
+    CreateDuoChatVariable
+  >(chatOps.Mutations.createDuoChat);
 
   // functions
   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
@@ -74,19 +72,15 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
     setParticipants((prev) => prev.filter((p) => p.id !== userId));
   }
 
+  const { openChat } = useNavigate();
   async function onCreateConversation() {
-    const memberIds = participants.map((p) => p.id);
+    const otherUserId = participants[0]?.id;
     try {
-      const { data } = await createGroupChat({
-        variables: {
-          memberIds,
-          chatName: `${session.user.username}'s group chat`,
-          description: "You are welcome to the group chat",
-          groupType: "public"
-        }
+      const { data } = await createDuoChat({
+        variables: { otherUserId }
       });
 
-      const { chatId } = data?.createGroupChat || {};
+      const { chatId } = data?.createDuoChat || {};
       console.log({ chatId });
 
       if (!chatId) throw new Error("Failed to create conversation");
@@ -94,7 +88,7 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
       setParticipants([]);
       setUsername("");
       setIsOpen(false);
-      router.push(`/${chatId}`);
+      openChat(chatId);
     } catch (error) {
       const e = error as unknown as { message: string };
       toast.error(e?.message, {
@@ -106,17 +100,20 @@ function CreateGroupChatModal({ isOpen, setIsOpen, session }: Props) {
   return (
     <Dialog.Root
       role="alertdialog"
+      placement="center"
       open={isOpen}
       onOpenChange={(e) => setIsOpen(e.open)}>
       <Portal>
         <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content
+            height="95dvh"
+            maxW="25rem"
             mx={2}
-            border={"1px solid {colors.primaryBg}"}
-            color="{colors.primaryText}"
+            pb={4}
             bg="{colors.secondaryBg}"
-            pb={4}>
+            color="{colors.primaryText}"
+            border={"1px solid {colors.primaryBg}"}>
             <Dialog.Header>
               <Dialog.Title>Create a conversation</Dialog.Title>
             </Dialog.Header>
@@ -270,4 +267,4 @@ function SelectedParticipants({
   );
 }
 
-export default CreateGroupChatModal;
+export default CreateNewChatModal;

@@ -15,8 +15,22 @@ type createChatResponse {
 # --------------- Query ----------------
 
 type Query {
-    getChats: [ChatLean!]
-    getChat(chatId: String!): ChatPopulated
+    getChats: GetChatsResponse
+    getChat(chatId: String!): GetChatResponse
+}
+
+
+type GetChatsResponse {
+    success:Boolean!
+    msg:String!
+    chats:[ChatLean!]
+}
+
+
+type GetChatResponse {
+    success:Boolean!
+    msg:String!
+    chat:ChatPopulated
 }
 
 

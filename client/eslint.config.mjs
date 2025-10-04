@@ -1,26 +1,44 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import js from "@eslint/js";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import nexLint from "@next/eslint-plugin-next";
+import reactLint from "eslint-plugin-react";
+import reactHooksLint from "eslint-plugin-react-hooks";
+import { defineConfig, globalIgnores } from "eslint/config";
 
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-  recommendedConfig: js.configs.recommended
-});
+export default defineConfig(
+  globalIgnores([
+    "node_modules",
+    "app/sample",
+    ".next/",
+    "prisma/",
+    "next-env.d.ts",
+    "next.config.js",
+    "eslint.config.mjs"
+  ]),
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
+  [nexLint.flatConfig.recommended],
+  [nexLint.flatConfig.coreWebVitals],
+  [reactLint.configs.flat.recommended],
+  [reactLint.configs.flat["jsx-runtime"]],
+  [reactHooksLint.configs["recommended-latest"]],
 
-const eslintConfig = [
-  ...compat.config({
-    extends: [
-      "eslint:recommended",
-      "next",
-      "next/core-web-vitals",
-      "next/typescript"
-    ],
-    rules: {
-      "react/no-unescaped-entities": "off",
-      "@next/next/no-page-custom-font": "off"
-    },
-    ignorePatterns: ["node_modules", "app/sample", "next-env.d.ts"]
-  })
-];
+  [
+    {
+      files: ["**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}"],
 
-export default eslintConfig;
+      rules: {
+        "react/no-unescaped-entities": "off",
+        "@next/next/no-page-custom-font": "off",
+        "@typescript-eslint/no-unused-vars": "warn"
+      },
+
+      settings: {
+        react: {
+          version: "detect",
+          defaultVersion: "19.1.1"
+        }
+      }
+    }
+  ]
+);

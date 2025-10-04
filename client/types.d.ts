@@ -5,37 +5,10 @@ type ApiReturn<T, Name extends string> =
     }
   | ({
       success: true;
-      msg: string;
+      msg: "success";
     } & { [P in Name]: T });
 
 /* --------------------- users --------------------- */
-
-type CreateUsernameData = {
-  createUsername: {
-    username: string;
-    success: boolen;
-    error: string;
-  };
-};
-type CreateUsernameVariable = {
-  username: string;
-  userHasImage: boolean;
-};
-
-type SearchedUser = {
-  id: string;
-  username: string;
-};
-
-type SearchUsersData = {
-  searchUsers: SearchedUser[];
-};
-type SearchUsersVariable = {
-  username: string;
-};
-
-/* ----------------- Chats ----------------- */
-// narrow down types to returned graphql schema
 type User = {
   _id: string; // MongoDB ObjectId
   id: string;
@@ -49,6 +22,35 @@ type User = {
   userImageUrl?: string | null; // set/upload by User
   permanentImageUrl?: string | null;
 };
+
+type CreateUsernameData = {
+  createUsername: {
+    username: string;
+    success: boolen;
+    error: string;
+  };
+};
+
+type CreateUsernameVariable = {
+  username: string;
+  userHasImage: boolean;
+};
+
+type SearchedUser = {
+  id: string;
+  username: string;
+};
+
+type SearchUsersData = {
+  searchUsers: SearchedUser[];
+};
+
+type SearchUsersVariable = {
+  username: string;
+};
+
+/* ----------------- Chats ----------------- */
+// narrow down types to returned graphql schema
 
 // narrow down types to returned graphql schema
 type ChatLean = {
@@ -119,45 +121,11 @@ type ChatMember = {
   member: User;
 };
 
-// narrow down types to returned graphql schema
-type Messages = {
-  id: string;
-  chatId: string;
-  senderId: string;
-  body: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deleted: boolean;
-  sender: User;
-};
-
-type CreateConversationData = {
-  createConversation: {
-    conversationId: string;
-  };
-};
-
-type CreateConversationVariable = {
-  participantIds: string[];
-};
-
-// old implementation
-type conversationsData = {
-  conversations: Conversation[];
-};
-
-// new implementation
 type chatsData = {
   getChats: ChatsLean[];
 };
 
-// The update query subscription data for create conversations
-// old implementation
-type ConversationUpdate = {
-  subscriptionData: { data?: { conversationCreated: Conversation } };
-};
-
-// new implementation
+// The update query subscription data for create chats
 type ChatUpdate = {
   subscriptionData: { data?: { chatCreated: ChatsLean } };
 };
@@ -181,6 +149,9 @@ type Conversation = {
   latestMessage: Message | null;
 };
 
+type GetChatsResponse = ApiReturn<ChatLean[], "chats">;
+type GetChatResponse = ApiReturn<ChatPopulated, "chat">;
+
 /* -------------------- Messages ------------------- */
 type MessagesResponse = ApiReturn<Message[], "messages">;
 
@@ -198,12 +169,7 @@ type sendMessageVariable = {
 };
 
 type MessageUpdate = {
-  subscriptionData: { data?: { messageSent: Message } };
-};
-
-// types is incomplete, but this is the expected structure
-type MessageUpdate = {
-  subscriptionData: { data?: { messageSent: Message } };
+  subscriptionData: { data: { messageSent: Message } };
 };
 
 type Message = {
@@ -211,12 +177,45 @@ type Message = {
   body: string;
   createdAt: number;
   clientSentAt: string;
+  eddited: boolean;
+  deleted: boolean;
   sender: {
     id: string;
     username: string;
     image: string;
   };
+  meta: {
+    readStatus: {
+      hasRead: boolean;
+      readAt: number;
+    };
+    deliveredStatus: {
+      hasDelivered: boolean;
+      deliveredAt: number;
+    };
+  };
 };
+
+/* ------------------- Utilities ------------------- */
+type Param =
+  | "home"
+  | "duo"
+  | "group"
+  | "swiftAi"
+  | "settings"
+  | "profile"
+  | "calls"
+  | "search";
+
+type PageName =
+  | "All Chats"
+  | "Chats"
+  | "Group Chats"
+  | "Swift AI"
+  | "Settings"
+  | "Profile"
+  | "Call History"
+  | "Search";
 
 type IconProp = {
   className?: string;
@@ -224,3 +223,29 @@ type IconProp = {
   style?: any;
   color?: string;
 };
+
+namespace Swift {
+  export type SwiftStore = {
+    dispatch: React.Dispatch<ChatAction>;
+    init: () => void;
+  } & SwiftReducer;
+
+  export type SwiftReducer = {
+    allChats: ChatLean[];
+    initSwiftMini: Swift.InitSwiftMiniPayload;
+  };
+
+  export type InitSwiftMiniPayload = {
+    status: "success" | "loading" | "failed" | "error";
+    data: ChatLean[] | null;
+    error: Error | ErrorLike | null;
+    msg: string;
+  };
+
+  export type ChatAction =
+    | { type: "SET_ALL_CHATS"; payload: ChatLean[] }
+    | { type: "ADD_CHAT"; payload: ChatLean }
+    | { type: "UPDATE_CHAT"; payload: ChatLean }
+    | { type: "REMOVE_CHAT"; payload: string }
+    | { type: "INIT_SWIFT"; payload: InitSwiftMiniPayload };
+}

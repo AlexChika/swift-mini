@@ -1,19 +1,22 @@
-import { hideScrollbar } from "@/chakra/theme";
-import { Alert, Box, Center, Stack } from "@chakra-ui/react";
 import { Session } from "next-auth";
-import chatOps from "@/graphql/operations/chat.ops";
-import { useQuery } from "@apollo/client";
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import SkeletonLoader from "@/components/general/SkeletonLoader";
+import { useParams } from "next/navigation";
+import ChatItem from "../allChats/ChatItem";
+import { hideScrollbar } from "@/chakra/theme";
+import { useQuery } from "@apollo/client/react";
+import chatOps from "@/graphql/operations/chat.ops";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
-import ChatItem from "./ChatItem";
+import { Alert, Box, Center, Stack } from "@chakra-ui/react";
+import SkeletonLoader from "@/components/general/SkeletonLoader";
 
 type Props = {
   session: Session;
+  openChat: (chatId: string) => Promise<void>;
 };
 
-function ChatList({ session }: Props) {
+function ChatList({ session, openChat }: Props) {
+  const chatId = useParams().chatId;
+
   const {
     data,
     error: convError,
@@ -25,26 +28,17 @@ function ChatList({ session }: Props) {
     subscribeToMore({
       document: chatOps.Subscriptions.chatCreated,
       updateQuery: (prev, update: ChatUpdate) => {
-        if (!update.subscriptionData.data) return prev;
-
-        console.log({ update, prev });
+        if (!update.subscriptionData.data) return prev as chatsData;
 
         const newChat = update.subscriptionData.data.chatCreated;
 
         return Object.assign({}, prev, {
-          getChats: [...prev.getChats, newChat]
-        });
+          getChats: [newChat, ...(prev.getChats as ChatLean[])]
+        }) as chatsData;
       }
     });
   }
 
-  async function chatsOnClick(chatId: string) {
-    // router.replace(`/?chatId=${conversationId}`);
-    router.push(chatId);
-    // mark Convo as read
-  }
-
-  const router = useRouter();
   const runEffect = useRef(true);
   useEffect(() => {
     // effect is forced to run once rather than twice
@@ -57,17 +51,43 @@ function ChatList({ session }: Props) {
   }, []);
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
-  useDynamicHeight(BoxRef, 80);
+  useDynamicHeight({
+    ref: BoxRef,
+    sub: () => {
+      // 80 for nav, 60 for creatChat btn, 60 for footer (small screen only)
+      return window.matchMedia("(min-width: 48rem)").matches ? 140 : 200;
+    },
+    useRems: true
+  });
 
   return (
     <Box
+      css={{
+        "&[data-current-swft-chat] [data-swft-chat]": {
+          cursor: "pointer",
+          backgroundColor: "transparent",
+          transition: "background-color 0.2s ease",
+          border: "1px solid transparent",
+          borderBottom: "1px solid {colors.appBorder}"
+        },
+
+        [`&[data-current-swft-chat="${chatId}"] [data-swft-chat="${chatId}"]`]:
+          {
+            backgroundColor: "{colors.primaryBg}/30",
+            border: "1px solid {colors.appBorder}",
+            borderRadius: "4px"
+          },
+
+        ...hideScrollbar,
+        overflowY: "auto"
+      }}
+      data-current-swft-chat={chatId}
       ref={BoxRef}
-      css={{ ...hideScrollbar, overflowY: "auto" }}
       w="100%"
-      pb="10px">
+      pb={2.5}>
       {/* loading */}
       {convLoading && (
-        <Stack h="100%" gap={3}>
+        <Stack h="100%" gap="12px">
           <SkeletonLoader duration={1} no={14} height="calc(100% / 14)" />
         </Stack>
         // <Center h="100%">
@@ -103,12 +123,12 @@ function ChatList({ session }: Props) {
       {/* data */}
       {data && (
         <Stack>
-          {[...data.getChats].reverse().map((c) => {
+          {[...data.getChats].map((c) => {
             return (
               <ChatItem
                 key={c.id}
                 {...{
-                  chatsOnClick,
+                  openChat,
                   chat: c,
                   session
                 }}

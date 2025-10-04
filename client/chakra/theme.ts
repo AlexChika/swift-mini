@@ -49,8 +49,11 @@ const config = defineConfig({
       padding: 0,
       boxSizing: "border-box"
     },
+    button: {
+      outline: "none"
+    },
     body: {
-      maxWidth: "63.75rem",
+      maxWidth: "70.75rem",
       // maxWidth: "93.75rem",
       margin: "0 auto !important"
     },
@@ -75,6 +78,7 @@ const config = defineConfig({
       sm: "25rem",
       md: "35rem",
       xmd: "48rem",
+      "2xmd": "55rem",
       lg: "60rem",
       xl: "75rem",
       "2xl": "96rem"
@@ -138,6 +142,13 @@ const config = defineConfig({
             _dark: "#ffffff"
           }
         }, // default text color
+
+        reversePrimaryText: {
+          value: {
+            base: "#ffffff",
+            _dark: "#000000"
+          }
+        }, // revrsed default text color
 
         usernameColor: {
           value: {
