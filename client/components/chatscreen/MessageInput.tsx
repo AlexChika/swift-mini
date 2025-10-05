@@ -77,7 +77,7 @@ function MessageInput(props: Props) {
 
   // ref
   const InputBox = React.useRef<HTMLDivElement>(null);
-  // useMobileInputScrollFix(InputBox, "swft-message-container");
+  useMobileInputScrollFix(InputBox, "swft-message-container");
 
   //TODO: use rems and ems
   return (

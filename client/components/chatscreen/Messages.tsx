@@ -204,38 +204,30 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
-  // const containerRef = useRef<HTMLDivElement>(null);
-  // useDynamicHeight({
-  //   ref: containerRef,
-  //   useRems: true,
-  //   sub: () => (window.matchMedia("(min-width: 48rem)").matches ? 60 + 18 : 70)
-  // });
-
   // TODO: use rems and ems
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
-      id="swft-message-container"
-      justifyContent="flex-end"
-      // border="2px solid red"
-      // ref={containerRef}
-      h="calc(100% - 60px)"
-      position="relative"
-      zIndex={6}
-      bgPos="center"
-      bgImage={theme === "light" ? whiteBgStrs[bg].url : bgStrs[bg].url}
       css={{
         "& *": {
           zIndex: 2
         }
       }}
-      borderBottomRadius="inherit">
+      zIndex={6}
+      bgPos="center"
+      position="relative"
+      h="calc(100%)"
+      justifyContent="flex-end"
+      id="swft-message-container"
+      borderBottomRadius="inherit"
+      bgImage={theme === "light" ? whiteBgStrs[bg].url : bgStrs[bg].url}>
       <Stack
         gap="3px"
+        pb="10px"
+        pt="30px"
         ref={BoxRef}
-        py="10px"
-        css={{ ...hideScrollbar }}
-        overflowY="auto">
+        overflowY="auto"
+        css={{ ...hideScrollbar }}>
         {/* loading */}
         {loading && (
           <Center h="100%">
