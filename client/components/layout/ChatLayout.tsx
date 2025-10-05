@@ -21,6 +21,7 @@ function ChatLayout({ session, children }: ChatProps) {
         w={"100%"}
         margin={0}
         inset="0"
+        h={{ base: "", xmd: "100%" }}
         pos={{ base: "fixed", xmd: "static" }}>
         <Home session={session} />
         {children}

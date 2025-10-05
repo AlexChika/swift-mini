@@ -216,15 +216,14 @@ function Messages({ session, id }: Props) {
       zIndex={6}
       bgPos="center"
       position="relative"
-      h="calc(100%)"
+      h="calc(100% - 60px)"
       justifyContent="flex-end"
       id="swft-message-container"
       borderBottomRadius="inherit"
       bgImage={theme === "light" ? whiteBgStrs[bg].url : bgStrs[bg].url}>
       <Stack
         gap="3px"
-        pb="10px"
-        pt="30px"
+        py="10px"
         ref={BoxRef}
         overflowY="auto"
         css={{ ...hideScrollbar }}>
