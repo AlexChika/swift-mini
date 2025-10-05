@@ -47,6 +47,7 @@ const config = defineConfig({
     html: {
       margin: 0,
       padding: 0,
+      minHeight: "100vh",
       boxSizing: "border-box"
     },
     button: {

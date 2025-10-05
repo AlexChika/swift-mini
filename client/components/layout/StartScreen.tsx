@@ -21,15 +21,15 @@ function StartScreen({ Child }: Props) {
 
   // loading....
   return (
-    <Center flexDirection="column" h="100vh">
+    <Center flexDirection="column" h="100%">
       <SwiftLoading />
 
       <Text
-        textAlign="center"
-        fontStyle="italic"
+        color="white"
         fontSize="14px"
         fontWeight={500}
-        color="white"
+        textAlign="center"
+        fontStyle="italic"
         className="animate-pulse">
         Loading Please Wait...
       </Text>
