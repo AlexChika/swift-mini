@@ -77,7 +77,7 @@ function MessageInput(props: Props) {
 
   // ref
   const InputBox = React.useRef<HTMLDivElement>(null);
-  useMobileInputScrollFix(InputBox, "swft-message-container");
+  // useMobileInputScrollFix(InputBox, "swft-message-container");
 
   //TODO: use rems and ems
   return (
@@ -100,7 +100,7 @@ function MessageInput(props: Props) {
           w="100%"
           maxH="200px"
           minH="33px"
-          fontSize={20}
+          fontSize={16}
           ref={InputBox}
           overflowY="auto"
           borderRadius={14}

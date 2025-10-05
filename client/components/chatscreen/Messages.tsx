@@ -204,23 +204,22 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  useDynamicHeight({
-    ref: containerRef,
-    useRems: true,
-    sub: () => (window.matchMedia("(min-width: 48rem)").matches ? 60 + 18 : 70)
-  });
+  // const containerRef = useRef<HTMLDivElement>(null);
+  // useDynamicHeight({
+  //   ref: containerRef,
+  //   useRems: true,
+  //   sub: () => (window.matchMedia("(min-width: 48rem)").matches ? 60 + 18 : 70)
+  // });
 
   // TODO: use rems and ems
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
     <Stack
       id="swft-message-container"
-      gap="0"
       justifyContent="flex-end"
       // border="2px solid red"
-      ref={containerRef}
-      // h="calc(100% - 60px)"
+      // ref={containerRef}
+      h="calc(100% - 60px)"
       position="relative"
       zIndex={6}
       bgPos="center"

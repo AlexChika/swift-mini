@@ -13,13 +13,13 @@ function ChatScreen({ session, id }: Props) {
   return (
     <Flex
       w="100%"
-      inset="0"
+      // inset="0"
       direction="column"
       bg="{colors.secondaryBg}"
       borderLeft={{ xmd: "none" }}
       justifyContent="space-between"
       border="4px solid {colors.appBorder}"
-      pos={{ base: "fixed", xmd: "static" }}
+      // pos={{ base: "fixed", xmd: "static" }}
       css={{
         margin: { base: "0px", xmd: toEms(5, 5, 5, 0) },
         borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" }
