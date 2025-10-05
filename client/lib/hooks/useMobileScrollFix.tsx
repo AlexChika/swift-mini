@@ -23,7 +23,6 @@ export default function useMobileScrollFix(
 
     function onInputTouchMove(e: TouchEvent) {
       if (!input || !touching || !e.touches?.length) return;
-
       // Always block page scroll when touching input
       e.preventDefault();
 
@@ -94,5 +93,6 @@ export default function useMobileScrollFix(
       input.removeEventListener("blur", onBlur, true);
       onBlur(); // ensure everything detached
     };
-  }, [inputRef, ids]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputRef, ...ids]);
 }
