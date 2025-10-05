@@ -21,7 +21,7 @@ function StartScreen({ Child }: Props) {
 
   // loading....
   return (
-    <Center flexDirection="column" h="100dvh">
+    <Center flexDirection="column" h="100vh">
       <SwiftLoading />
 
       <Text
