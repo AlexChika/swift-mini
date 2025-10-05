@@ -20,26 +20,16 @@ function MessageInput(props: Props) {
     messageOps.Mutations.sendMessage
   );
 
-  // ref
-  const InputBox = React.useRef<HTMLDivElement>(null);
-  useMobileInputScrollFix(InputBox, "swft-message-container");
+  // btn : submit handler
+  function handleOnSubmit() {
+    if (!InputBox.current) return;
+    InputBox.current.focus();
 
-  function onKeyDownHandler(e: React.KeyboardEvent) {
-    // disable send on enter for mobile device
-    if (window.innerWidth < 768) return;
-
-    const el = e.currentTarget as HTMLDivElement;
-
-    const textString = el.textContent?.trim();
+    const textString = InputBox.current.textContent?.trim();
     if (!textString) return;
 
-    if (e.key === "Enter") {
-      if (e.shiftKey) return; // shiftKey is active: go to newline
-
-      sendMessage(textString); // send the message : enter key alone was pressed
-      e.preventDefault(); // Don't go to newline
-      el.innerHTML = ""; // clear inputBox
-    }
+    InputBox.current.innerHTML = "";
+    sendMessage(textString);
   }
 
   // called by the submit and enter btn:sends message
@@ -67,69 +57,74 @@ function MessageInput(props: Props) {
     }
   }
 
-  // btn : submit handler
-  function handleOnSubmit() {
-    if (!InputBox.current) return;
-    InputBox.current.focus();
+  function onKeyDownHandler(e: React.KeyboardEvent) {
+    // disable send on enter for mobile device
+    if (window.innerWidth < 768) return;
 
-    const textString = InputBox.current.textContent?.trim();
+    const el = e.currentTarget as HTMLDivElement;
+
+    const textString = el.textContent?.trim();
     if (!textString) return;
 
-    InputBox.current.innerHTML = "";
-    sendMessage(textString);
+    if (e.key === "Enter") {
+      if (e.shiftKey) return; // shiftKey is active: go to newline
+
+      sendMessage(textString); // send the message : enter key alone was pressed
+      e.preventDefault(); // Don't go to newline
+      el.innerHTML = ""; // clear inputBox
+    }
   }
+
+  // ref
+  const InputBox = React.useRef<HTMLDivElement>(null);
+  useMobileInputScrollFix(InputBox, "swft-message-container");
 
   //TODO: use rems and ems
   return (
     <Box
-      id="swft-message-box"
-      bg="{colors.secondaryBg}"
-      px={{ base: 3, xmd: 6 }}
       py={3}
       w="100%"
-      borderTop="1px solid {colors.appBorder}"
-      borderBottomRadius="inherit">
+      id="swft-message-box"
+      px={{ base: 3, xmd: 6 }}
+      bg="{colors.secondaryBg}"
+      borderBottomRadius="inherit"
+      borderTop="1px solid {colors.appBorder}">
       <Flex
         w="100%"
         maxW="100%"
         gap={{ base: 2, xmd: 3 }}
         justifyContent="space-between">
         <Box
-          ref={InputBox}
-          onKeyDown={onKeyDownHandler}
-          css={{
-            overflowY: "auto",
-            touchAction: "pan-y",
-            wordBreak: "break-word",
-            whiteSpace: "pre-wrap",
-            overflowWrap: "break-word",
-            overscrollBehavior: "contain",
-            WebkitOverflowScrolling: "touch"
-          }}
-          bg="{colors.primaryBg/30}"
-          color="{colors.primaryText}"
-          maxH="200px"
-          minH="33px"
           py={1}
           px={3}
-          maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
           w="100%"
+          maxH="200px"
+          minH="33px"
           fontSize={20}
-          contentEditable="plaintext-only"
+          ref={InputBox}
+          overflowY="auto"
           borderRadius={14}
+          whiteSpace="pre-wrap"
+          wordBreak="break-word"
+          overflowWrap="break-word"
+          bg="{colors.primaryBg/30}"
+          color="{colors.primaryText}"
+          onKeyDown={onKeyDownHandler}
+          contentEditable="plaintext-only"
+          maxW={{ base: "calc(100% - 50px)", xmd: "calc(100% - 100px)" }}
         />
 
         <HStack>
           <IconButton
             h="30px"
-            onClick={handleOnSubmit}
-            minW={{ base: "50px", xmd: "100px" }}
-            alignSelf="flex-end"
-            bg="{colors.primaryBg/30}"
-            borderRadius={14}
             transition="none"
             variant={"plain"}
-            aria-label="Send Message Icon">
+            borderRadius={14}
+            alignSelf="flex-end"
+            onClick={handleOnSubmit}
+            bg="{colors.primaryBg/30}"
+            aria-label="Send Message Icon"
+            minW={{ base: "50px", xmd: "100px" }}>
             <Icon size="md">
               <SendIcon color="{colors.primaryText}" />
             </Icon>
