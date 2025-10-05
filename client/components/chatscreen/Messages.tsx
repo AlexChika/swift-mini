@@ -5,6 +5,7 @@ import { hideScrollbar } from "@/chakra/theme";
 import { useQuery } from "@apollo/client/react";
 import messageOps from "@/graphql/operations/message.ops";
 import React, { useEffect, useRef, useState } from "react";
+import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
 import { ColorMode, syncClock } from "@/lib/helpers";
 import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
@@ -203,6 +204,13 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  useDynamicHeight({
+    ref: containerRef,
+    useRems: true,
+    sub: () => (window.matchMedia("(min-width: 48rem)").matches ? 60 + 18 : 70)
+  });
+
   // TODO: use rems and ems
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
@@ -210,7 +218,9 @@ function Messages({ session, id }: Props) {
       id="swft-message-container"
       gap="0"
       justifyContent="flex-end"
-      h="calc(100% - 60px)"
+      // border="2px solid red"
+      ref={containerRef}
+      // h="calc(100% - 60px)"
       position="relative"
       zIndex={6}
       bgPos="center"
