@@ -14,4 +14,5 @@ export { default as AllChatIcon } from "./AllChatIcon";
 export { default as GroupChatIcon } from "./GroupChatIcon";
 export { default as LeftArrowIcon } from "./LeftArrowIcon";
 export { default as InfoCircleIcon } from "./InfoCircleIcon";
+export { default as UserSearchIcon } from "./UserSearchIcon";
 export { default as DotsVerticalIcon } from "./DotsVerticalIcon";

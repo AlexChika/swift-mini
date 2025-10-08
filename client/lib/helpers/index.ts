@@ -79,17 +79,21 @@ function debounce<T extends (...args: unknown[]) => void>(
   };
 }
 
-function throttle<T extends (...args: unknown[]) => void>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function throttle<T extends (...args: any[]) => any>(
   fn: T,
   ms = 50
-): (...args: Parameters<T>) => void {
+): (...args: Parameters<T>) => ReturnType<T> | undefined {
   let lastCall = 0;
+
   return (...args: Parameters<T>) => {
     const now = Date.now();
-    if (now - lastCall > ms) {
-      fn(...args);
+
+    if (now - lastCall >= ms) {
       lastCall = now;
+      return fn(...args);
     }
+    // no return → implicitly undefined if throttled
   };
 }
 
