@@ -5,8 +5,8 @@ import { useSession } from "next-auth/react";
 import { debounce, toRems } from "@/lib/helpers";
 import useNavigate from "@/lib/hooks/useNavigate";
 import CategorizedUsers from "./CategorizedUsers";
+import { useCallback, useMemo, useState } from "react";
 import { Box, Text, Input, Center, HStack } from "@chakra-ui/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const sampleUsers: User[] = [
   { id: "1231", username: "ochkika", _id: "lol" },
@@ -130,16 +130,9 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
     }
   }, [searchedUser, type, handleClick]);
 
-  const InputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!InputRef.current) return;
-    InputRef.current.focus();
-  }, []);
-
   return (
     <Box h="calc(100% - 3.75rem)">
       <Input
-        ref={InputRef}
         value={username}
         borderRadius={6}
         autoComplete="off"

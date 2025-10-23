@@ -4,8 +4,8 @@ import { debounce } from "@/lib/helpers";
 import SelectedUsers from "./SelectedUsers";
 import { useSession } from "next-auth/react";
 import useNavigate from "@/lib/hooks/useNavigate";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Box, Text, Input, HStack, Button, Icon } from "@chakra-ui/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import UsersList from "@/components/allChats/CreateNewChatModal/UsersList";
 import CategorizedUsers from "@/components/allChats/CreateNewChatModal/SearchUsersPane/CategorizedUsers";
 import { extractUniqueMembers } from "@/components/allChats/CreateNewChatModal/SearchUsersPane/SearchUsersContactsPane";
@@ -151,12 +151,6 @@ function CreateGroupPane(props: Props) {
     };
   }, [searchedUser, callHandleSelect]);
 
-  const InputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!InputRef.current) return;
-    InputRef.current.focus();
-  }, []);
-
   return (
     <Box h="calc(100% - 3.75rem)">
       <Text
@@ -168,7 +162,6 @@ function CreateGroupPane(props: Props) {
       </Text>
 
       <Input
-        ref={InputRef}
         value={username}
         borderRadius={6}
         autoComplete="off"

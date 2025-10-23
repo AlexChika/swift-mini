@@ -33,7 +33,7 @@ function RootLayout({ children }: Props) {
   });
 
   return (
-    <Box ref={containerRef}>
+    <Box>
       {/* <ColorMode.ThemeButton /> */} {/* For Debugging */}
       {session?.user.username ? (
         <StartScreen
