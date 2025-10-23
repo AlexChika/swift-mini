@@ -73,12 +73,12 @@ const useDynamicHeight = (options: Options) => {
       if (_height === window.innerHeight) return;
       _height = window.innerHeight;
       set(_height);
-    });
+    }, 50);
 
-    const handleResizeEvent = throttle(function () {
+    function handleResizeEvent() {
       _height = window.innerHeight;
       set(_height);
-    });
+    }
 
     refElement.addEventListener("scroll", handleScrollEvent);
     window.addEventListener("resize", handleResizeEvent);
