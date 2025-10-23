@@ -3,10 +3,11 @@ import { Button } from "@chakra-ui/react";
 
 type Props = {
   type: "chat" | "group";
+  onClick?: () => void;
 };
 
-function SearchBtn(prop: Props) {
-  const { type } = prop;
+function ModalBtn(prop: Props) {
+  const { type, onClick } = prop;
 
   function dummy() {
     console.log("hit hard on SearchBtn");
@@ -18,7 +19,7 @@ function SearchBtn(prop: Props) {
       mb={4}
       w="100%"
       opacity={0.7}
-      onClick={dummy}
+      onClick={onClick || dummy}
       cursor="pointer"
       pos="relative"
       overflow="hidden"
@@ -45,4 +46,4 @@ function SearchBtn(prop: Props) {
   );
 }
 
-export default SearchBtn;
+export default ModalBtn;

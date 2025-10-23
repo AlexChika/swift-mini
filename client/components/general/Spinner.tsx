@@ -1,37 +1,27 @@
-import { Box, ConditionalValue } from "@chakra-ui/react";
-import { Property } from "csstype";
+import { Spinner as ChakraSpinner, SpinnerProps } from "@chakra-ui/react";
 
-type Position = ConditionalValue<Property.Top<string | number>>;
-
-type Props = {
-  primaryColor?: ConditionalValue<Property.BorderLeftColor>;
-  secondaryColor?: ConditionalValue<Property.BorderBottomColor>;
-} & {
-  absolute: boolean;
-  top?: Position;
-  right?: Position;
+type Props = SpinnerProps & {
+  trackColor?: SpinnerProps["borderBottomColor"];
 };
 
-function Spinner({
-  primaryColor = "red",
-  secondaryColor = "#404040",
-  top = "calc(50% + 18px)",
-  right = "calc(50% + 5px)",
-  absolute
-}: Props) {
+function Spinner(props: Props) {
+  const {
+    size = "md",
+    borderWidth = 3,
+    trackColor = "red.600",
+    color = "var(--swftReverseLight)",
+    ...rest
+  } = props;
   return (
-    <Box
-      top={top}
-      right={right}
-      pos={absolute ? "absolute" : undefined}
-      className="animate-spin"
-      boxSize="32px"
-      borderWidth="5px"
-      borderLeftColor={primaryColor}
-      borderRightColor={primaryColor}
-      borderTopColor={secondaryColor}
-      borderBottomColor={secondaryColor}
-      borderRadius="full"
+    <ChakraSpinner
+      {...rest}
+      size={size}
+      color={"transparent"}
+      borderTopColor={color}
+      borderBottomColor={color}
+      borderWidth={borderWidth}
+      borderLeftColor={trackColor}
+      borderRightColor={trackColor}
     />
   );
 }

@@ -1,4 +1,3 @@
-import { ColorMode } from "@/lib/helpers";
 import { LeftArrowIcon } from "@/lib/icons";
 import {
   Text,
@@ -22,18 +21,16 @@ function ModalHeader(prop: Props) {
 
   return (
     <HStack py={2} mb={2} justifyContent="space-between">
-      <ColorMode.ThemeButton />
-
       {showBackBtn && (
         <IconButton onClick={onClick} variant="plain" size="sm">
           <LeftArrowIcon />
         </IconButton>
       )}
 
-      {!showBackBtn && <span></span>}
+      {!showBackBtn && <span>&nbsp;</span>}
 
       <Text fontWeight={500} textAlign="center">
-        Create New Chat
+        Find or Create New Chat
       </Text>
 
       <Dialog.CloseTrigger pos="static" asChild>

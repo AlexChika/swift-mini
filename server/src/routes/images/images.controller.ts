@@ -30,7 +30,7 @@ const getImageController: RequestHandler = async function (req, res) {
       return res.redirect(cachedUrl);
     }
 
-    const user = await userModel.findById(userId).select("image").lean();
+    const user = await userModel.findById(userId).lean();
 
     const userImage = user?.userImageUrl || user?.image;
 

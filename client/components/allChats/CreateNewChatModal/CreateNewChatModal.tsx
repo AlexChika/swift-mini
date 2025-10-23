@@ -1,10 +1,6 @@
 import {
-  Stack,
   Button,
   Text,
-  Avatar,
-  Flex,
-  IconButton,
   Dialog,
   Portal,
   Box,
@@ -22,13 +18,14 @@ import useNavigate from "@/lib/hooks/useNavigate";
 import userOps from "@/graphql/operations/user.ops";
 import chatOps from "@/graphql/operations/chat.ops";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import ModalHeader from "./ModalHeader";
+import ModalBtn from "./ModalBtn";
 import UsersList from "./UsersList";
-import { useThemeValue } from "@/lib/helpers/color-mode";
+import ModalHeader from "./ModalHeader";
 import { LeftArrowIcon } from "@/lib/icons";
-import SearchUsersBtn from "./SearchUsersBtn";
+import { useThemeValue } from "@/lib/helpers/color-mode";
 import SearchSwiftUsersPane from "./SearchUsersPane/SearchSwiftUsersPane";
 import SearchUsersContactsPane from "./SearchUsersPane/SearchUsersContactsPane";
+import CreateGroupPane from "@/components/groups/CreateNewGroupModal/CreateGroupPane";
 
 type Props = {
   isOpen: boolean;
@@ -47,57 +44,45 @@ type CreateDuoChatData = {
 };
 
 function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
-  const [username, setUsername] = React.useState("");
-  const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
+  // const [username, setUsername] = React.useState("");
+  // const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
 
-  const [searchUsers, { loading, data }] = useLazyQuery<
-    SearchUsersData,
-    SearchUsersVariable
-  >(userOps.Queries.searchUsers);
+  // const [searchUsers, { loading, data }] = useLazyQuery<
+  //   SearchUsersData,
+  //   SearchUsersVariable
+  // >(userOps.Queries.searchUsers);
 
-  const [createDuoChat, { loading: createConversationLoading }] = useMutation<
-    CreateDuoChatData,
-    CreateDuoChatVariable
-  >(chatOps.Mutations.createDuoChat);
+  // const [createDuoChat, { loading: createConversationLoading }] = useMutation<
+  //   CreateDuoChatData,
+  //   CreateDuoChatVariable
+  // >(chatOps.Mutations.createDuoChat);
 
-  function addParticipant(user: SearchedUser) {
-    const userExist = participants.find((p) => p.id === user.id);
-    if (userExist) return;
+  // const { openChat } = useNavigate();
+  // async function onCreateConversation() {
+  //   const otherUserId = participants[0]?.id;
+  //   try {
+  //     const { data } = await createDuoChat({
+  //       variables: { otherUserId }
+  //     });
 
-    setUsername("");
-    setParticipants((prev) => [...prev, user]);
-  }
+  //     const { chatId } = data?.createDuoChat || {};
+  //     console.log({ chatId });
 
-  function removeParticipant(userId: string) {
-    setParticipants((prev) => prev.filter((p) => p.id !== userId));
-  }
+  //     if (!chatId) throw new Error("Failed to create conversation");
 
-  const { openChat } = useNavigate();
-  async function onCreateConversation() {
-    const otherUserId = participants[0]?.id;
-    try {
-      const { data } = await createDuoChat({
-        variables: { otherUserId }
-      });
+  //     setParticipants([]);
+  //     setUsername("");
+  //     setIsOpen(false);
+  //     openChat(chatId);
+  //   } catch (error) {
+  //     const e = error as unknown as { message: string };
+  //     toast.error(e?.message, {
+  //       id: "create conversation"
+  //     });
+  //   }
+  // }
 
-      const { chatId } = data?.createDuoChat || {};
-      console.log({ chatId });
-
-      if (!chatId) throw new Error("Failed to create conversation");
-
-      setParticipants([]);
-      setUsername("");
-      setIsOpen(false);
-      openChat(chatId);
-    } catch (error) {
-      const e = error as unknown as { message: string };
-      toast.error(e?.message, {
-        id: "create conversation"
-      });
-    }
-  }
-
-  type UI_STATE = "default" | "swiftUsers" | "usersContact";
+  type UI_STATE = "default" | "swiftUsers" | "usersContact" | "createGroup";
   const [UIState, setUIState] = useState<UI_STATE>("default");
   const redColor = useThemeValue("red.600", "red.500");
 
@@ -131,11 +116,14 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
             {/* search user buttons */}
             {UIState == "default" && (
               <>
-                <SearchUsersBtn
+                <ModalBtn
                   onClick={() => handleSetUIState("swiftUsers")}
                   type="chat"
                 />
-                <SearchUsersBtn type="group" />
+                <ModalBtn
+                  onClick={() => handleSetUIState("createGroup")}
+                  type="group"
+                />
               </>
             )}
 
@@ -183,134 +171,24 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
                       color={redColor}
                     />
                   </HStack>
-                  <UsersList maxH="27dvh" />
+                  <UsersList
+                    customProps={{ type: "user", userList: [] }}
+                    maxH="27dvh"
+                  />
                 </Box>
               </Box>
             )}
 
             {/* Search pane state Body of modal  */}
+            {UIState == "createGroup" && <CreateGroupPane />}
             {UIState == "swiftUsers" && <SearchSwiftUsersPane />}
-            {UIState == "usersContact" && <SearchUsersContactsPane />}
-
-            {/*
-           *
-           *
-           Search Result List */}
-            {data?.searchUsers && (
-              <UserSearchList
-                users={data?.searchUsers}
-                addParticipant={addParticipant}
-              />
-            )}
-
-            {/*
-           *
-           *
-           Selected users {participants}*/}
-            {participants.length > 0 && (
-              <>
-                <SelectedParticipants
-                  removeParticipant={removeParticipant}
-                  participants={participants}
-                />
-                <Button
-                  loading={createConversationLoading}
-                  onClick={() => onCreateConversation()}
-                  w="100%"
-                  mt={6}
-                  colorScheme="blue">
-                  Create Conversation
-                </Button>
-              </>
+            {UIState == "usersContact" && (
+              <SearchUsersContactsPane type="user" />
             )}
           </Dialog.Content>
         </Dialog.Positioner>
       </Portal>
     </Dialog.Root>
-  );
-}
-
-/*
- *
- */
-type ListProp = {
-  users: SearchedUser[];
-  addParticipant: (user: SearchedUser) => void;
-};
-function UserSearchList({ users, addParticipant }: ListProp) {
-  if (users.length < 1)
-    return (
-      <Text mt={5} textAlign="center" fontSize="14px" color="whiteAlpha.500">
-        No user found
-      </Text>
-    );
-
-  return (
-    <Stack mt={3}>
-      {users.map((user) => {
-        return (
-          <Stack
-            key={user.id}
-            direction="row"
-            align="center"
-            gap={4}
-            py={2}
-            px={2}
-            borderRadius={4}
-            _hover={{ bg: "whiteAlpha.200" }}>
-            <Avatar.Root size={"sm"} variant="solid">
-              <Avatar.Fallback name={user.username} />
-            </Avatar.Root>
-            <Flex align="center" justify="space-between" w="100%">
-              <Text>{user.username}</Text>
-              <Button
-                size="sm"
-                onClick={() => addParticipant(user)}
-                colorScheme="blue"
-                variant="outline">
-                Select
-              </Button>
-            </Flex>
-          </Stack>
-        );
-      })}
-    </Stack>
-  );
-}
-
-/*
- *
- */
-type ParticipantsProps = {
-  participants: SearchedUser[];
-  removeParticipant: (id: string) => void;
-};
-function SelectedParticipants({
-  participants,
-  removeParticipant
-}: ParticipantsProps) {
-  return (
-    <Flex mt={8} gap="10px" flexWrap="wrap">
-      {participants.map((p) => {
-        return (
-          <Stack
-            bg="whiteAlpha.200"
-            borderRadius={4}
-            p={2}
-            align="center"
-            key={p.id}
-            direction="row">
-            <Text>{p.username}</Text>
-            <IconButton
-              onClick={() => removeParticipant(p.id)}
-              variant="plain"
-              aria-label="delete selected user button">
-              <CloseIcon color="white" />
-            </IconButton>
-          </Stack>
-        );
-      })}
-    </Flex>
   );
 }
 
@@ -322,7 +200,7 @@ type SeeMoreBtnProp = {
   onClick: () => void;
 };
 
-function SeeMoreBtn(props: SeeMoreBtnProp) {
+export function SeeMoreBtn(props: SeeMoreBtnProp) {
   const { color, text, onClick } = props;
 
   return (

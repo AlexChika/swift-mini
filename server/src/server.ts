@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
+import cookieParser from "cookie-parser";
 import { ApolloServer } from "@apollo/server";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -12,8 +13,8 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import typeDefs from "@src/graphql/typeDefs";
 import { PubSub } from "graphql-subscriptions";
 import resolvers from "@src/graphql/resolvers";
-import { connectDB, restartJob, getSession } from "lib";
 import imagesRouter from "src/routes/images/images.route";
+import { connectDB, restartJob, getCachedSession } from "lib";
 import { GraphqlContext, SubscriptionContext } from "swift-mini";
 
 // configs
@@ -75,22 +76,21 @@ const server = new ApolloServer<GraphqlContext>({
 
 await server.start();
 
+app.use("/images", imagesRouter);
+app.use(cors<cors.CorsRequest>(corsOpts));
+app.use("/graphql", cookieParser());
+
 app.use(
   "/graphql",
-  cors<cors.CorsRequest>(corsOpts),
   express.json(),
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const sessionUrl = req.headers["x-session-url"] as string;
-      const session = await getSession(req, sessionUrl);
+      const session = await getCachedSession(req, sessionUrl, "localMem");
       return { session, pubsub };
     }
   })
 );
-
-app.use(cors<cors.CorsRequest>(corsOpts));
-
-app.use("/images", imagesRouter);
 
 app.get("/time", (_, res) => {
   res.json({ serverNow: Date.now() });

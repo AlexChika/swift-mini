@@ -1,3 +1,3 @@
 export { default as restartJob } from "./cron";
-export { getSession } from "./getSession";
+export { getSession, getCachedSession } from "./getSession";
 export { connectDB } from "./db";

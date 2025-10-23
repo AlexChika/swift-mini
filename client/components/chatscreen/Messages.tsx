@@ -3,12 +3,12 @@ import { Session } from "next-auth";
 import MessageInput from "./MessageInput";
 import { hideScrollbar } from "@/chakra/theme";
 import { useQuery } from "@apollo/client/react";
+import Spinner from "@/components/general/Spinner";
+import { ColorMode, syncClock } from "@/lib/helpers";
 import messageOps from "@/graphql/operations/message.ops";
 import React, { useEffect, useRef, useState } from "react";
-import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
+import { Alert, Box, Center, Stack } from "@chakra-ui/react";
 import DateDemacator, { renderObjectForDateDemacator } from "./DateDemacator";
-import { ColorMode, syncClock } from "@/lib/helpers";
-import { Alert, Box, Center, Spinner, Stack } from "@chakra-ui/react";
 
 type Props = {
   session: Session;

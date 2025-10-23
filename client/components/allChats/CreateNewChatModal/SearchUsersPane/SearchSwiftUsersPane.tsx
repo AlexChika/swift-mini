@@ -1,9 +1,23 @@
-import UsersList from "../UsersList";
 import { throttle, toRems } from "@/lib/helpers";
-import { useLazyQuery } from "@apollo/client/react";
+import Spinner from "@/components/general/Spinner";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import userOps from "@/graphql/operations/user.ops";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Box, HStack, Input, Spinner, Text, VStack } from "@chakra-ui/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Box, Center, HStack, Input, Text, VStack } from "@chakra-ui/react";
+import useNavigate from "@/lib/hooks/useNavigate";
+import chatOps from "@/graphql/operations/chat.ops";
+import toast from "react-hot-toast";
+import UsersList from "../UsersList";
+
+type CreateDuoChatVariable = {
+  otherUserId: string;
+};
+
+type CreateDuoChatData = {
+  createDuoChat: {
+    chatId: string;
+  };
+};
 
 function SearchSwiftUsersPane() {
   const [username, setUsername] = useState("");
@@ -13,7 +27,7 @@ function SearchSwiftUsersPane() {
     SearchUsersVariable
   >(userOps.Queries.searchUsers, { fetchPolicy: "no-cache" });
 
-  const [users, setUsers] = useState<SearchUsersData["searchUsers"]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   const searchUsers = useMemo(() => {
     return throttle(search, 350);
@@ -29,6 +43,35 @@ function SearchSwiftUsersPane() {
     searchUsers({ variables: { username } });
   }
 
+  const { openChat } = useNavigate();
+
+  const [createDuoChat, { loading: createChatLoading }] = useMutation<
+    CreateDuoChatData,
+    CreateDuoChatVariable
+  >(chatOps.Mutations.createDuoChat);
+
+  const createNewChat = useCallback(
+    async function (otherUserId: string) {
+      try {
+        const { data } = await createDuoChat({
+          variables: { otherUserId }
+        });
+
+        const { chatId } = data?.createDuoChat || {};
+
+        if (!chatId) throw new Error("Failed to create conversation");
+
+        openChat(chatId);
+      } catch (error) {
+        const e = error as unknown as { message: string };
+        toast.error(e?.message, {
+          id: "create new chat"
+        });
+      }
+    },
+    [createDuoChat, openChat]
+  );
+
   const InputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (!InputRef.current) return;
@@ -41,7 +84,7 @@ function SearchSwiftUsersPane() {
   }, [data]);
 
   return (
-    <Box h="85dvh" border="2px solid greeny">
+    <Box h="85dvh" pos="relative">
       <Input
         ref={InputRef}
         value={username}
@@ -50,15 +93,20 @@ function SearchSwiftUsersPane() {
         placeholder="Type a username to search"
       />
 
+      {createChatLoading && (
+        <Center
+          inset="0"
+          pos="absolute"
+          aria-busy="true"
+          userSelect="none"
+          cursor="not-allowed"
+          bg="{colors.secondaryBg/60}">
+          <Spinner />
+        </Center>
+      )}
+
       <VStack mt={5} alignItems="center">
-        {loading && (
-          <Spinner
-            size="md"
-            color="var(--swftReverseLight)"
-            borderWidth={3}
-            css={{ "--spinner-track-color": "red" }}
-          />
-        )}
+        {loading && <Spinner />}
 
         <HStack maxW="95%" wrap="nowrap" mb={2}>
           <Text whiteSpace="nowrap">
@@ -78,7 +126,14 @@ function SearchSwiftUsersPane() {
       <Box
         h={`calc(100% - ${loading ? toRems(125) : toRems(100)})`}
         border="2px solid redy">
-        <UsersList userList={users} bg="{colors.primaryBg/20}" />
+        <UsersList
+          customProps={{
+            type: "user",
+            userList: users,
+            onClick: createNewChat
+          }}
+          bg="{colors.primaryBg/20}"
+        />
       </Box>
     </Box>
   );

@@ -25,10 +25,10 @@ export function ThemeProvider({
   serverTheme: ServerTheme;
   defaultTheme: DefaultTheme;
 }) {
-  const isValidTheme = defaultTheme === "dark" || defaultTheme === "light";
-  const tempTheme = serverTheme || (isValidTheme ? defaultTheme : "light");
+  const isTheme = defaultTheme === "dark" || defaultTheme === "light";
+  const initTheme = serverTheme || (isTheme ? defaultTheme : "light");
 
-  const [theme, setTheme] = React.useState<Theme>(tempTheme);
+  const [theme, setTheme] = React.useState<Theme>(initTheme);
   const [__theme, __setTheme] = React.useState<ServerTheme>(serverTheme);
 
   // sets system theme

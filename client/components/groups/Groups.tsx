@@ -20,10 +20,13 @@ function Groups({ session }: Props) {
     [allChats]
   );
 
-  const openChat = useCallback(async function (chatId: string) {
-    const param = getSearchParam("swift");
-    router.push(`/${chatId}?swift=${param}`);
-  }, []);
+  const openChat = useCallback(
+    async function (chatId: string) {
+      const param = getSearchParam("swift");
+      router.push(`/${chatId}?swift=${param}`);
+    },
+    [router]
+  );
 
   return (
     <Box>

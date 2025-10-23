@@ -1,46 +1,81 @@
-import { UserSearchIcon } from "@/lib/icons";
-import { Box, Flex, Icon, Text, VStack, Avatar } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Icon,
+  Text,
+  VStack,
+  Avatar,
+  BoxProps
+} from "@chakra-ui/react";
 import { memo } from "react";
+import { UserSearchIcon } from "@/lib/icons";
 
-type CustomProp = {
-  userList?: unknown[];
-  emptyListText?: string;
+type Prop = BoxProps & {
+  customProps: {
+    emptyListText?: string;
+    onClick?: (id: string) => void;
+  } & (
+    | {
+        type: "user";
+        userList: User[];
+      }
+    | {
+        type: "group";
+        groupList: ChatLean[];
+      }
+  );
 };
-type Prop = React.ComponentProps<typeof Box> & CustomProp;
 
 function UsersList(prop: Prop) {
-  const {
-    p = 1,
-    userList,
-    h = "auto",
-    maxH = "100%",
-    emptyListText,
-    borderRadius = 6,
-    overflowY = "auto",
-    bg = "transparent",
-    scrollbarWidth = "none",
-    border = "1px solid {colors.primaryText/20}",
-    ...restProp
-  } = prop;
+  const { customProps, ...boxProps } = prop;
 
-  const list = userList || [];
-  const isListEmpty = !userList || userList.length == 0;
-  const text = emptyListText || "User you searched for was not found.";
+  const { type, onClick, emptyListText } = customProps;
+
+  const isListEmpty =
+    (type == "user" ? customProps.userList : customProps.groupList).length < 1;
+  const text =
+    emptyListText || type == "user"
+      ? "User you searched for was not found."
+      : "Group you searched for was not found.";
+
+  function dummy() {
+    console.log("fired a dummy @ UserList");
+  }
 
   return (
     <Box
-      p={p}
-      h={h}
-      bg={bg}
-      maxH={maxH}
-      overflowY={overflowY}
-      borderRadius={borderRadius}
-      scrollbarWidth={scrollbarWidth}
-      border={isListEmpty ? "" : border}
-      {...restProp}>
-      {list.map((list, i) => (
-        <User key={i} />
-      ))}
+      {...boxProps}
+      p={boxProps.p || 1}
+      h={boxProps.h || "auto"}
+      bg={boxProps.bg || "transparent"}
+      maxH={boxProps.maxH || "100%"}
+      overflowY={boxProps.overflowY || "auto"}
+      borderRadius={boxProps.borderRadius || 6}
+      scrollbarWidth={boxProps.scrollbarWidth || "none"}
+      border={
+        boxProps.border || isListEmpty
+          ? ""
+          : "1px solid {colors.primaryText/20}"
+      }>
+      {type == "user" &&
+        customProps.userList?.map((user) => (
+          <User
+            type="user"
+            onClick={onClick || dummy}
+            user={user}
+            key={user.id}
+          />
+        ))}
+
+      {type == "group" &&
+        customProps.groupList?.map((group) => (
+          <User
+            type="group"
+            onClick={onClick || dummy}
+            chat={group}
+            key={group.id}
+          />
+        ))}
 
       {isListEmpty && (
         <VStack
@@ -62,7 +97,67 @@ function UsersList(prop: Prop) {
 
 export default memo(UsersList);
 
-function User() {
+type UserProp = {
+  onClick: (id: string) => void;
+} & (
+  | {
+      type: "user";
+      user: User;
+    }
+  | {
+      type: "group";
+      chat: ChatLean;
+    }
+);
+
+function User(props: UserProp) {
+  const { onClick, type } = props;
+
+  let name: string;
+  let username: string;
+  let id: string;
+  let image: string | undefined;
+
+  if (type == "user") {
+    name = props.user.name || "";
+    username = props.user.username || "";
+
+    // chatId for existing user search, id - used to create new chat
+    // @ts-expect-error : Todo create a type for the return of this func and sync across all associated coponent
+    id = props.user.chatId || props.user.id;
+    image =
+      props.user.permanentImageUrl ??
+      props.user.userImageUrl ??
+      props.user.image ??
+      undefined;
+  }
+
+  if (type == "group") {
+    name = props.chat.description;
+    username = props.chat.chatName;
+    id = props.chat.id;
+    image = undefined;
+  }
+
+  const colorPalette = ["purple", "blue", "green", "pink", "red", "black"];
+
+  const pickPalette = (name: string) => {
+    const index =
+      name.split("").reduce((p, c) => p + c.charCodeAt(0), 0) %
+      colorPalette.length;
+    return colorPalette[index];
+  };
+
+  function clickHandler(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    if ((e.target as HTMLDivElement).dataset.scope === "avatar") {
+      // avatar was clicked, handle navigate to users profile
+      console.log("clicked avatar");
+    } else {
+      onClick(id);
+      // opene a newChat with the user
+    }
+  }
+
   return (
     <Box
       px={2}
@@ -75,45 +170,40 @@ function User() {
       cursor="pointer"
       bg="transparent"
       transition="background-color 0.2s ease"
-      onClick={() => console.log("fired a user")}
+      onClick={clickHandler}
       border="1px solid transparent"
       borderBottom="1px solid {colors.primaryBg/15}">
       <Flex align="center" gap={2} justify="space-between">
-        {/* avatar,  usernames, latest message */}
         <Flex truncate align="center" gap={2}>
           {/* user profile pic */}
-          <Avatar.Root size="sm">
-            <Avatar.Fallback name={"name"} />
-            <Avatar.Image background="Highlight" src={undefined} />
+          <Avatar.Root
+            shape={type == "user" ? "full" : "rounded"}
+            colorPalette={pickPalette(username!)}
+            size="md">
+            <Avatar.Fallback
+              opacity={0.7}
+              name={type == "group" ? username! : name! || username!}
+            />
+            <Avatar.Image background="Highlight" src={image} />
           </Avatar.Root>
 
           {/* user names & latest message */}
           <Flex flexDir="column">
             {/* usernames */}
-            <Text truncate fontSize={15}>
-              {"usernames"}
+            <Text textTransform="capitalize" truncate fontSize={15}>
+              {username!}
             </Text>
 
-            {/* latest messages */}
+            {/* description / name */}
             <Text
-              // opacity="90%"
+              opacity="0.6"
               textOverflow="ellipsis"
               lineClamp={1}
               fontSize="11px">
-              "body herere"
+              {name! || ""}
             </Text>
           </Flex>
         </Flex>
-
-        {/* time passed */}
-        <Text
-          minW="80px"
-          fontSize={11}
-          opacity="70%"
-          alignSelf="flex-end"
-          textAlign="right">
-          {"getTimePassed()"}
-        </Text>
       </Flex>
     </Box>
   );

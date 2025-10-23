@@ -1,6 +1,7 @@
 import axios from "axios";
-import { type Request } from "express";
+// import Redis from "ioredis";
 import { Session } from "swift-mini";
+import { type Request } from "express";
 
 async function getSession(req: Request, url: string): Promise<Session | null> {
   try {
@@ -23,36 +24,55 @@ async function getSession(req: Request, url: string): Promise<Session | null> {
   }
 }
 
-export { getSession };
+// const redis = new Redis(process.env.REDIS_URL);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const redis: any = {};
 
-/**
+type Cache = {
+  exp: number;
+  session: Session;
+} | null;
 
-import Redis from "ioredis";
-import { getSession } from "next-auth/react"; // use this in Express
-import cookieParser from "cookie-parser";
+const localMem = new Map<string, Cache>();
 
-const redis = new Redis(process.env.REDIS_URL);
-
-export async function getCachedSession(req, sessionUrl) {
+async function getCachedSession(
+  req: Request,
+  url: string,
+  cache: "redis" | "localMem" = "localMem"
+): Promise<Session | null> {
   const cookie =
-    req.cookies["next-auth.session-token"] ||
-    req.cookies["__Secure-next-auth.session-token"];
+    req.cookies["__Secure-swift.session-token"] ||
+    req.cookies["authjs.session-token"];
+
   if (!cookie) return null;
 
+  const TEN_MINUTES = 1000 * 60 * 10;
   const cacheKey = `session:${cookie}`;
 
-  // 1. Try Redis
-  const cached = await redis.get(cacheKey);
-  if (cached) return JSON.parse(cached);
+  if (cache === "localMem") {
+    const cache = localMem.get(cacheKey) || null;
+    if (cache && cache.exp > Date.now()) return cache.session;
+    else {
+      const session = await getSession(req, url);
+      if (session)
+        localMem.set(cacheKey, { session, exp: Date.now() + TEN_MINUTES });
+      return session;
+    }
+  }
 
-  // 2. Fallback: call NextAuth (Mongo lookup under the hood)
-  const session = await getSession({ req, sessionUrl });
-  if (!session) return null;
+  if (cache === "redis") {
+    throw new Error("Redis not implemented yet");
 
-  // 3. Cache it
-  await redis.set(cacheKey, JSON.stringify(session), "EX", 60); // TTL = 60s
+    const cached = await redis.get(cacheKey);
+    if (cached) return JSON.parse(cached);
 
-  return session;
+    const session = await getSession(req, url);
+    if (!session) return null;
+
+    await redis.set(cacheKey, JSON.stringify(session), "EX", 10 * 60); // TTL = 10 minutess
+  }
+
+  return null;
 }
 
-*/
+export { getSession, getCachedSession };

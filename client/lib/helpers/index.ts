@@ -22,7 +22,7 @@ async function syncClock() {
 /**
  *
  * @param searchParam The searchParam value from the url.
- * @returns undefined if seaarchParam is not valid else returns seaarchParam
+ * @returns undefined if searchParam is not valid else returns `searchParam`
  */
 function getParam(searchParam: string | null) {
   const page = {
@@ -66,7 +66,8 @@ function toEms(...px: number[]) {
   return px.map((val) => `${val / 16}em`).join(" ");
 }
 
-function debounce<T extends (...args: unknown[]) => void>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function debounce<T extends (...args: any[]) => any>(
   fn: T,
   ms: number
 ): (...args: Parameters<T>) => void {
@@ -93,7 +94,6 @@ function throttle<T extends (...args: any[]) => any>(
       lastCall = now;
       return fn(...args);
     }
-    // no return → implicitly undefined if throttled
   };
 }
 

@@ -15,8 +15,8 @@ type User = {
   username?: string | null;
   emailVerified?: boolean | null;
   name?: string | null;
-  email?: string | null; // set by Oauth
-  image?: string | null;
+  email?: string | null;
+  image?: string | null; // set by Oauth
   lastSeen?: Date | null;
   hideLastSeen?: boolean;
   userImageUrl?: string | null; // set/upload by User
@@ -36,13 +36,8 @@ type CreateUsernameVariable = {
   userHasImage: boolean;
 };
 
-type SearchedUser = {
-  id: string;
-  username: string;
-};
-
 type SearchUsersData = {
-  searchUsers: SearchedUser[];
+  searchUsers: User[];
 };
 
 type SearchUsersVariable = {
@@ -125,30 +120,6 @@ type chatsData = {
   getChats: ChatsLean[];
 };
 
-// The update query subscription data for create chats
-type ChatUpdate = {
-  subscriptionData: { data?: { chatCreated: ChatsLean } };
-};
-
-type Conversation = {
-  id: string;
-  updatedAt: string | number | Date;
-  latestMessageId: string | null;
-
-  participants: {
-    userId: string;
-    conversationId: string;
-    hasSeenLatestMessage: boolean;
-    user: {
-      id: string;
-      image: string | null;
-      username: string | null;
-    };
-  }[];
-
-  latestMessage: Message | null;
-};
-
 type GetChatsResponse = ApiReturn<ChatLean[], "chats">;
 type GetChatResponse = ApiReturn<ChatPopulated, "chat">;
 
@@ -227,7 +198,6 @@ type IconProp = {
 namespace Swift {
   export type SwiftStore = {
     dispatch: React.Dispatch<ChatAction>;
-    init: () => void;
   } & SwiftReducer;
 
   export type SwiftReducer = {

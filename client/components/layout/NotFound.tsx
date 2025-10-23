@@ -38,7 +38,6 @@ function NotFound() {
             <Text
               style={{ filter: "grayscale(100%)" }}
               textShadow={"1px 2px 2px #000"}
-              border="2px solid redy"
               color="#d1d1d1"
               fontSize={36}
               fontWeight={800}>
