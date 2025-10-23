@@ -10,10 +10,11 @@ import {
 type Props = {
   onClick?: () => void;
   showBackBtn?: boolean;
+  title?: string;
 };
 
 function ModalHeader(prop: Props) {
-  const { showBackBtn = false, onClick = dummy } = prop;
+  const { title, showBackBtn = false, onClick = dummy } = prop;
 
   function dummy() {
     console.log("hit hard on ModalHeader");
@@ -30,7 +31,7 @@ function ModalHeader(prop: Props) {
       {!showBackBtn && <span>&nbsp;</span>}
 
       <Text fontWeight={500} textAlign="center">
-        Find or Create New Chat
+        {title || "Find or Create New Chat"}
       </Text>
 
       <Dialog.CloseTrigger pos="static" asChild>

@@ -18,107 +18,107 @@ function formatUserNames2(chat: ChatLean, id: string) {
   }
 }
 
-function formatUserNames(
-  participants: Conversation["participants"],
-  id: string,
-  type?: "long"
-) {
-  if (participants.length < 1)
-    return {
-      usernames: "",
-      avatar: undefined,
-      name: ""
-    };
+// function formatUserNames(
+//   participants: Conversation["participants"],
+//   id: string,
+//   type?: "long"
+// ) {
+//   if (participants.length < 1)
+//     return {
+//       usernames: "",
+//       avatar: undefined,
+//       name: ""
+//     };
 
-  //   sort array to put name of lastmessage sender at the begining
-  const sorted: Conversation["participants"] = [];
+//   //   sort array to put name of lastmessage sender at the begining
+//   const sorted: Conversation["participants"] = [];
 
-  participants.forEach((p) => {
-    if (p.hasSeenLatestMessage) {
-      sorted.unshift(p);
-    } else {
-      sorted.push(p);
-    }
-  });
+//   participants.forEach((p) => {
+//     if (p.hasSeenLatestMessage) {
+//       sorted.unshift(p);
+//     } else {
+//       sorted.push(p);
+//     }
+//   });
 
-  /** Joins usernames into a comma separated strings while ommitting the current user */
-  function joinUserNames(c: Conversation["participants"]) {
-    return c
-      .map((p) => {
-        if (p.user.id === id) return "";
-        const username = p.user.username!;
-        // make the first letter uppercase
-        return capitalize(username);
-      })
-      .filter((name) => name.length > 1) // filter empty names
-      .join(", "); // join using comma
-  }
+//   /** Joins usernames into a comma separated strings while ommitting the current user */
+//   function joinUserNames(c: Conversation["participants"]) {
+//     return c
+//       .map((p) => {
+//         if (p.user.id === id) return "";
+//         const username = p.user.username!;
+//         // make the first letter uppercase
+//         return capitalize(username);
+//       })
+//       .filter((name) => name.length > 1) // filter empty names
+//       .join(", "); // join using comma
+//   }
 
-  function capitalize(str: string) {
-    return str.substring(0, 1).toUpperCase() + str.substring(1);
-  }
+//   function capitalize(str: string) {
+//     return str.substring(0, 1).toUpperCase() + str.substring(1);
+//   }
 
-  function comma(length: number) {
-    return length < 3 ? "" : ",";
-  }
+//   function comma(length: number) {
+//     return length < 3 ? "" : ",";
+//   }
 
-  // filter out current user's participantObject
-  const thisUser = participants.find((p) => p.user.id === id);
-  let usernames: string = "";
+//   // filter out current user's participantObject
+//   const thisUser = participants.find((p) => p.user.id === id);
+//   let usernames: string = "";
 
-  if (type === "long") {
-    let name: string;
-    let usernames: string;
-    const avatar: string | undefined = sorted[0].user.image || undefined;
+//   if (type === "long") {
+//     let name: string;
+//     let usernames: string;
+//     const avatar: string | undefined = sorted[0].user.image || undefined;
 
-    if (thisUser && thisUser.hasSeenLatestMessage) {
-      name = "You";
-      usernames = joinUserNames(sorted);
-    } else {
-      const [first, ...rest] = sorted;
-      name = capitalize(first.user.username || "");
-      usernames = `${joinUserNames(rest)}${comma(sorted.length)} You`;
-    }
+//     if (thisUser && thisUser.hasSeenLatestMessage) {
+//       name = "You";
+//       usernames = joinUserNames(sorted);
+//     } else {
+//       const [first, ...rest] = sorted;
+//       name = capitalize(first.user.username || "");
+//       usernames = `${joinUserNames(rest)}${comma(sorted.length)} You`;
+//     }
 
-    return {
-      name,
-      usernames,
-      avatar
-    };
-  }
+//     return {
+//       name,
+//       usernames,
+//       avatar
+//     };
+//   }
 
-  //  shortened usernames
-  if (thisUser && thisUser.hasSeenLatestMessage) {
-    const length = sorted.length - 3; // first two names + user's name = 3 names
-    const lastUserName = length > 0 ? `and ${length} other(s)` : "";
+//   //  shortened usernames
+//   if (thisUser && thisUser.hasSeenLatestMessage) {
+//     const length = sorted.length - 3; // first two names + user's name = 3 names
+//     const lastUserName = length > 0 ? `and ${length} other(s)` : "";
 
-    const fewNames = joinUserNames(
-      sorted.filter((p) => p.user.id !== id).slice(0, 2) // first two names
-    );
+//     const fewNames = joinUserNames(
+//       sorted.filter((p) => p.user.id !== id).slice(0, 2) // first two names
+//     );
 
-    usernames = `You to ${fewNames} ${lastUserName}`;
-  } else {
-    const [first, ...rest] = sorted;
-    const length = rest.length - 3; // first two names + user's name = 3 names
+//     usernames = `You to ${fewNames} ${lastUserName}`;
+//   } else {
+//     const [first, ...rest] = sorted;
+//     const length = rest.length - 3; // first two names + user's name = 3 names
 
-    const fewNames = joinUserNames(
-      rest.filter((p) => p.user.id !== id).slice(0, 2) // first two names
-    );
+//     const fewNames = joinUserNames(
+//       rest.filter((p) => p.user.id !== id).slice(0, 2) // first two names
+//     );
 
-    const firstUserName = capitalize(first.user.username || "");
-    const lastUserName = length > 0 ? `and ${length} others` : "";
+//     const firstUserName = capitalize(first.user.username || "");
+//     const lastUserName = length > 0 ? `and ${length} others` : "";
 
-    usernames = `${firstUserName} to You${comma(
-      sorted.length
-    )} ${fewNames} ${lastUserName}`;
-  }
+//     usernames = `${firstUserName} to You${comma(
+//       sorted.length
+//     )} ${fewNames} ${lastUserName}`;
+//   }
 
-  return {
-    usernames,
-    avatar: sorted[0].user.image || undefined,
-    name: usernames.substring(0, 1)
-  };
-} // bugs in  func
+//   return {
+//     usernames,
+//     avatar: sorted[0].user.image || undefined,
+//     name: usernames.substring(0, 1)
+//   };
+// } // bugs in  func
 
 function dateFormatter(rawdate: string | number | Date) {
   const d = new Date(rawdate);
@@ -253,4 +253,4 @@ function dateFormatter(rawdate: string | number | Date) {
   };
 }
 
-export { formatUserNames, dateFormatter, formatUserNames2 };
+export { dateFormatter, formatUserNames2 };

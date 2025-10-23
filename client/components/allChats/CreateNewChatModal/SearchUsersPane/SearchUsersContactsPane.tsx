@@ -2,9 +2,9 @@ import { Session } from "next-auth";
 import UsersList from "../UsersList";
 import SwiftStore from "@/store/Store";
 import { useSession } from "next-auth/react";
+import { debounce, toRems } from "@/lib/helpers";
 import useNavigate from "@/lib/hooks/useNavigate";
 import CategorizedUsers from "./CategorizedUsers";
-import { debounce, throttle, toRems } from "@/lib/helpers";
 import { Box, Text, Input, Center, HStack } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -53,7 +53,12 @@ export const sampleUsers: User[] = [
 
 type UserWithChatId = User & { chatId: string };
 
-function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
+type Props = {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  type: "user" | "group";
+};
+
+function SearchUsersContactsPane({ type, setIsOpen }: Props) {
   const { allChats } = SwiftStore();
   const { openChat } = useNavigate();
   const session = useSession().data as Session;
@@ -61,11 +66,11 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
   const [username, setUsername] = useState("");
   const [searchedUser, _setSearchedUser] = useState<User[] | ChatLean[]>([]);
 
-  const lists = useMemo(() => {
+  const [lists] = useState(() => {
     if (type === "group") return extractGroups(allChats);
     else return extractUniqueMembers(allChats, session.user.id);
     // else return sampleUsers; // mock code - remove this.
-  }, [allChats, type, session.user.id]);
+  });
 
   const setSearchedUser = useMemo(() => {
     return debounce(_setSearchedUser, 100);
@@ -88,7 +93,7 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
   );
 
   const searchUsers = useMemo(() => {
-    return throttle(_searchUsers, 300);
+    return debounce(_searchUsers, 300);
   }, [_searchUsers]); // thottled
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
@@ -101,27 +106,35 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
     searchUsers(username);
   }
 
-  const InputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!InputRef.current) return;
-    InputRef.current.focus();
-  }, []);
+  const handleClick = useCallback(
+    (_: string, opts?: { chatId?: string }) => {
+      openChat(opts?.chatId || "");
+      setIsOpen(false);
+    },
+    [openChat, setIsOpen]
+  );
 
   const customProps = useMemo(() => {
     if (type == "group") {
       return {
         type: "group" as const,
         groupList: searchedUser as ChatLean[],
-        onClick: openChat
+        onClick: handleClick
       };
     } else {
       return {
         type: "user" as const,
         userList: searchedUser as User[],
-        onClick: openChat
+        onClick: handleClick
       };
     }
-  }, [searchedUser, type, openChat]);
+  }, [searchedUser, type, handleClick]);
+
+  const InputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!InputRef.current) return;
+    InputRef.current.focus();
+  }, []);
 
   return (
     <Box h="calc(100% - 3.75rem)">
@@ -144,14 +157,14 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
         mt={5}
         overflowY="scroll"
         h="calc(100% - 4rem)"
-        scrollbarWidth="none"
-        border="2px solid redy">
+        scrollbarWidth="none">
         <HStack
           pt={2}
           pb={1}
           maxW="95%"
           wrap="nowrap"
-          color="gray.600"
+          color="gray.400"
+          _dark={{ color: "gray.600" }}
           justify="space-between">
           <Text whiteSpace="nowrap">
             {type == "group"
@@ -162,7 +175,10 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
           <Text> - </Text>
 
           <Text as="span" truncate px={1} bg="{colors.primaryBg/20}">
-            Search for {username || "none"}
+            Search for{" "}
+            <Text as="span" opacity={0.6} color="{colors.primaryText}">
+              {username || "none"}
+            </Text>
           </Text>
         </HStack>
 
@@ -171,7 +187,7 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
           mt={1}
           scrollbarWidth="1px"
           customProps={customProps}
-          bg="{colors.primaryBg/20}"
+          bg="{colors.primaryBg/15}"
           maxH={`calc(100% - ${toRems(130)})`}
         />
 
@@ -180,7 +196,8 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
           <Text
             mb={3}
             display="flex"
-            color="gray.600"
+            color="gray.400"
+            _dark={{ color: "gray.600" }}
             justifyContent="space-between">
             <Text as="span">
               {type == "group" ? "Group chats" : "Your swift contacts"}
@@ -193,7 +210,7 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
           {type == "user" && (
             <CategorizedUsers
               type="user"
-              userClick={openChat}
+              userClick={handleClick}
               list={lists as User[]}
             />
           )}
@@ -201,7 +218,7 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
           {type == "group" && (
             <CategorizedUsers
               type="group"
-              userClick={openChat}
+              userClick={handleClick}
               list={lists as ChatLean[]}
             />
           )}
@@ -213,10 +230,15 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
               flexDir="column"
               color="gray.500"
               border="1px dashed">
-              <Text>You are yet to add any contacts</Text>
+              <Text>
+                {type == "group"
+                  ? "You are yet to join any groups"
+                  : "You are yet to add any contacts"}
+              </Text>
               <Text opacity={0.7} mt={1} fontSize={13} textAlign="center">
-                When a swift user accepts your message invite, they
-                automatically are added to your contact list
+                {type == "group"
+                  ? "Groups you have created or joined will appear here"
+                  : " When a swift user accepts your message invite, they automatically are added to your contact list"}
               </Text>
             </Center>
           )}
@@ -228,7 +250,7 @@ function SearchUsersContactsPane({ type }: { type: "user" | "group" }) {
 
 export default SearchUsersContactsPane;
 
-function extractUniqueMembers(array: ChatLean[], userId: string) {
+export function extractUniqueMembers(array: ChatLean[], userId: string) {
   const user: User[] = [];
   const lookUp: Record<string, boolean> = {};
 
@@ -243,7 +265,6 @@ function extractUniqueMembers(array: ChatLean[], userId: string) {
       if (member.id === userId) continue;
 
       lookUp[member.id] = true;
-      // @ts-expect-error : Todo create a type for the return of this func and sync across all associated coponent
       user.push({ ...member, chatId });
     }
   }

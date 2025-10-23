@@ -41,7 +41,7 @@ function ModalBtn(prop: Props) {
           "inset 1px 1px 1px {colors.secondaryBg}, inset -1px -1px 1px {colors.secondaryBg}"
       }}
       transition="all 0.3s ease">
-      {type == "chat" ? "Search Users by Usernames" : "Create New Group"}
+      {type == "chat" ? "Find Swift Users" : "Create New Group"}
     </Button>
   );
 }

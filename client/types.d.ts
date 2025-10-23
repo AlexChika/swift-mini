@@ -10,6 +10,8 @@ type ApiReturn<T, Name extends string> =
 
 /* --------------------- users --------------------- */
 type User = {
+  selected?: boolean; // remove - compose new types
+  chatId?: string; // remove - compose new types
   _id: string; // MongoDB ObjectId
   id: string;
   username?: string | null;

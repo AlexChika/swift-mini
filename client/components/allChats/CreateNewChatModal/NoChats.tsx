@@ -23,7 +23,7 @@ function NoChats(props: Props) {
 
   return (
     <Center
-      h="9rem"
+      h="8rem"
       flexDir="column"
       {...centerProps}
       color={centerProps.color || "gray.500"}

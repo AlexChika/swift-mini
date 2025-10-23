@@ -5,6 +5,7 @@ import { memo, useEffect, useState, useTransition } from "react";
 
 type Props = {
   userClick: (id: string) => void;
+  checkMarks?: boolean;
 } & (
   | {
       type: "user";
@@ -16,7 +17,7 @@ type Props = {
     }
 );
 
-function CategorizedUsers({ userClick, type, list }: Props) {
+function CategorizedUsers({ userClick, checkMarks, type, list }: Props) {
   const [categories, setCategories] = useState<Category[] | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -46,7 +47,7 @@ function CategorizedUsers({ userClick, type, list }: Props) {
     return (
       <Box mb={7} key={alphabet}>
         <HStack mb={1.5}>
-          <Avatar.Root shape="rounded" size="sm">
+          <Avatar.Root shape="rounded" size="xs">
             <Avatar.Fallback colorInterpolation="auto" name={alphabet} />
           </Avatar.Root>
         </HStack>
@@ -62,10 +63,11 @@ function CategorizedUsers({ userClick, type, list }: Props) {
               : {
                   userList,
                   type: "user",
-                  onClick: userClick
+                  onClick: userClick,
+                  checkMarks: checkMarks
                 }
           }
-          bg="{colors.primaryBg/20}"
+          bg="{colors.primaryBg/15}"
         />
       </Box>
     );

@@ -1,19 +1,22 @@
 import {
   Box,
   Flex,
-  Icon,
   Text,
   VStack,
   Avatar,
-  BoxProps
+  BoxProps,
+  Checkbox
 } from "@chakra-ui/react";
-import { memo } from "react";
-import { UserSearchIcon } from "@/lib/icons";
+import { memo, useState } from "react";
 
 type Prop = BoxProps & {
   customProps: {
     emptyListText?: string;
-    onClick?: (id: string) => void;
+    checkMarks?: boolean;
+    onClick?: (
+      id: string,
+      opts?: { isTrusted: boolean; chatId?: string }
+    ) => void;
   } & (
     | {
         type: "user";
@@ -29,14 +32,10 @@ type Prop = BoxProps & {
 function UsersList(prop: Prop) {
   const { customProps, ...boxProps } = prop;
 
-  const { type, onClick, emptyListText } = customProps;
+  const { type, onClick, emptyListText, checkMarks } = customProps;
 
   const isListEmpty =
     (type == "user" ? customProps.userList : customProps.groupList).length < 1;
-  const text =
-    emptyListText || type == "user"
-      ? "User you searched for was not found."
-      : "Group you searched for was not found.";
 
   function dummy() {
     console.log("fired a dummy @ UserList");
@@ -47,23 +46,23 @@ function UsersList(prop: Prop) {
       {...boxProps}
       p={boxProps.p || 1}
       h={boxProps.h || "auto"}
-      bg={boxProps.bg || "transparent"}
+      bg={isListEmpty ? "transparent" : boxProps.bg || "transparent"}
       maxH={boxProps.maxH || "100%"}
       overflowY={boxProps.overflowY || "auto"}
       borderRadius={boxProps.borderRadius || 6}
       scrollbarWidth={boxProps.scrollbarWidth || "none"}
       border={
-        boxProps.border || isListEmpty
-          ? ""
-          : "1px solid {colors.primaryText/20}"
+        boxProps.border ||
+        (isListEmpty ? "" : "1px solid {colors.primaryText/10}")
       }>
       {type == "user" &&
         customProps.userList?.map((user) => (
           <User
             type="user"
-            onClick={onClick || dummy}
             user={user}
             key={user.id}
+            checkMarks={checkMarks}
+            onClick={onClick || dummy}
           />
         ))}
 
@@ -79,16 +78,20 @@ function UsersList(prop: Prop) {
 
       {isListEmpty && (
         <VStack
-          border="1px dashed"
           gap={0}
-          color="gray.500"
+          h="8rem"
+          px={3}
           justify="center"
-          h="9rem">
-          <Icon size="lg">
-            <UserSearchIcon />
-          </Icon>
-          <Text>Ooops</Text>
-          <Text mt={1}>{text}</Text>
+          color="gray.500"
+          border="1px dashed"
+          bg={boxProps.bg || "transparent"}>
+          <Text mb={0}>Ooops</Text>
+          <Text textAlign="center">
+            {emptyListText ||
+              (type == "user"
+                ? "User you searched for was not found."
+                : "Group you searched for was not found.")}
+          </Text>
         </VStack>
       )}
     </Box>
@@ -98,7 +101,8 @@ function UsersList(prop: Prop) {
 export default memo(UsersList);
 
 type UserProp = {
-  onClick: (id: string) => void;
+  onClick: (id: string, opts?: { isTrusted: boolean; chatId?: string }) => void;
+  checkMarks?: boolean;
 } & (
   | {
       type: "user";
@@ -111,20 +115,20 @@ type UserProp = {
 );
 
 function User(props: UserProp) {
-  const { onClick, type } = props;
+  const { onClick, type, checkMarks } = props;
+  const [checked, setChecked] = useState(false);
 
   let name: string;
   let username: string;
   let id: string;
   let image: string | undefined;
+  let chatId: string | undefined;
 
   if (type == "user") {
     name = props.user.name || "";
     username = props.user.username || "";
-
-    // chatId for existing user search, id - used to create new chat
-    // @ts-expect-error : Todo create a type for the return of this func and sync across all associated coponent
-    id = props.user.chatId || props.user.id;
+    id = props.user.id;
+    chatId = props.user.chatId;
     image =
       props.user.permanentImageUrl ??
       props.user.userImageUrl ??
@@ -153,7 +157,8 @@ function User(props: UserProp) {
       // avatar was clicked, handle navigate to users profile
       console.log("clicked avatar");
     } else {
-      onClick(id);
+      onClick(id, { isTrusted: e.isTrusted, chatId });
+      if (checkMarks) setChecked(!checked);
       // opene a newChat with the user
     }
   }
@@ -165,13 +170,14 @@ function User(props: UserProp) {
       _hover={{
         opacity: 0.6
       }}
-      title={"name here"}
-      color="primaryText"
       cursor="pointer"
       bg="transparent"
-      transition="background-color 0.2s ease"
+      color="primaryText"
+      data-swft-userlist-item={id!}
       onClick={clickHandler}
+      title={name! || username!}
       border="1px solid transparent"
+      transition="background-color 0.2s ease"
       borderBottom="1px solid {colors.primaryBg/15}">
       <Flex align="center" gap={2} justify="space-between">
         <Flex truncate align="center" gap={2}>
@@ -204,6 +210,16 @@ function User(props: UserProp) {
             </Text>
           </Flex>
         </Flex>
+
+        {checkMarks && (
+          <Checkbox.Root
+            onClick={(e) => e.preventDefault()}
+            checked={checked}
+            onCheckedChange={(e) => setChecked(!!e.checked)}>
+            <Checkbox.HiddenInput />
+            <Checkbox.Control cursor="pointer" />
+          </Checkbox.Root>
+        )}
       </Flex>
     </Box>
   );

@@ -26,6 +26,7 @@ import { useThemeValue } from "@/lib/helpers/color-mode";
 import SearchSwiftUsersPane from "./SearchUsersPane/SearchSwiftUsersPane";
 import SearchUsersContactsPane from "./SearchUsersPane/SearchUsersContactsPane";
 import CreateGroupPane from "@/components/groups/CreateNewGroupModal/CreateGroupPane";
+import NoChats from "./NoChats";
 
 type Props = {
   isOpen: boolean;
@@ -90,6 +91,13 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
     setUIState(type);
   }
 
+  const modalTitle: Record<UI_STATE, string> = {
+    createGroup: "Create New Group",
+    default: "Find or Create New Chat",
+    swiftUsers: "Find Swift Users",
+    usersContact: "Your Swift Contacts"
+  };
+
   return (
     <Dialog.Root
       open={isOpen}
@@ -109,6 +117,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
             color="{colors.primaryText}"
             border={"1px solid {colors.appBorder}"}>
             <ModalHeader
+              title={modalTitle[UIState]}
               onClick={() => handleSetUIState("default")}
               showBackBtn={UIState != "default"}
             />
@@ -135,10 +144,8 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
                 scrollbarWidth="none"
                 border="2px solid redy">
                 <Box mt={2}>
-                  <HStack justify="space-between">
-                    <Text mb={1} opacity={0.6}>
-                      Recently contacted
-                    </Text>
+                  <HStack mb={2} justify="space-between">
+                    <Text opacity={0.6}>Recently contacted</Text>
                     <SeeMoreBtn
                       onClick={() => handleSetUIState("usersContact")}
                       text="See all"
@@ -146,24 +153,12 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
                     />
                   </HStack>
                   {/* <UsersList maxH="32dvh" /> if recent users  */}
-                  <Center
-                    h="9rem"
-                    flexDir="column"
-                    color="gray.500"
-                    border="1px dashed">
-                    <Text>You are yet to add any contacts</Text>
-                    <Text opacity={0.7} mt={1} fontSize={13} textAlign="center">
-                      When a swift user accepts your message invite, they
-                      automatically are added to your contact list
-                    </Text>
-                  </Center>
+                  <NoChats />
                 </Box>
 
                 <Box mt={14}>
-                  <HStack justify="space-between">
-                    <Text mb={1} opacity={0.6}>
-                      Other people using swift
-                    </Text>
+                  <HStack mb={2} justify="space-between">
+                    <Text opacity={0.6}>Other people using swift</Text>
 
                     <SeeMoreBtn
                       onClick={() => handleSetUIState("swiftUsers")}
@@ -180,10 +175,14 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
             )}
 
             {/* Search pane state Body of modal  */}
-            {UIState == "createGroup" && <CreateGroupPane />}
-            {UIState == "swiftUsers" && <SearchSwiftUsersPane />}
+            {UIState == "createGroup" && (
+              <CreateGroupPane setIsOpen={setIsOpen} />
+            )}
+            {UIState == "swiftUsers" && (
+              <SearchSwiftUsersPane setIsOpen={setIsOpen} />
+            )}
             {UIState == "usersContact" && (
-              <SearchUsersContactsPane type="user" />
+              <SearchUsersContactsPane setIsOpen={setIsOpen} type="user" />
             )}
           </Dialog.Content>
         </Dialog.Positioner>

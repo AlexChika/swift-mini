@@ -19,7 +19,11 @@ type CreateDuoChatData = {
   };
 };
 
-function SearchSwiftUsersPane() {
+type Props = {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function SearchSwiftUsersPane({ setIsOpen }: Props) {
   const [username, setUsername] = useState("");
 
   const [search, { loading, data }] = useLazyQuery<
@@ -61,7 +65,8 @@ function SearchSwiftUsersPane() {
 
         if (!chatId) throw new Error("Failed to create conversation");
 
-        openChat(chatId);
+        await openChat(chatId);
+        setIsOpen(false);
       } catch (error) {
         const e = error as unknown as { message: string };
         toast.error(e?.message, {
@@ -69,7 +74,7 @@ function SearchSwiftUsersPane() {
         });
       }
     },
-    [createDuoChat, openChat]
+    [createDuoChat, openChat, setIsOpen]
   );
 
   const InputRef = useRef<HTMLInputElement>(null);

@@ -28,14 +28,23 @@ function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
     [allChats.length]
   );
 
-  function handleClick(id: string) {
-    openChat(id);
-    setIsOpen(false);
-  }
+  const handleClick = useCallback(
+    (id: string) => {
+      openChat(id);
+      setIsOpen(false);
+    },
+    [openChat, setIsOpen]
+  );
 
   type UI_STATE = "default" | "createGroup" | "usersGroup";
   const [UIState, setUIState] = useState<UI_STATE>("default");
   const redColor = useThemeValue("red.600", "red.500");
+
+  const modalTitle: Record<UI_STATE, string> = {
+    createGroup: "Create New Group",
+    default: "Find or Create New Group",
+    usersGroup: "Your Group Chats"
+  };
 
   return (
     <Dialog.Root
@@ -57,6 +66,7 @@ function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
             color="{colors.primaryText}"
             border={"1px solid {colors.appBorder}"}>
             <ModalHeader
+              title={modalTitle[UIState]}
               onClick={() => setUIState("default")}
               showBackBtn={UIState != "default"}
             />
@@ -107,9 +117,11 @@ function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
             )}
 
             {/* Search pane state Body of modal  */}
-            {UIState == "createGroup" && <CreateGroupPane />}
+            {UIState == "createGroup" && (
+              <CreateGroupPane setIsOpen={setIsOpen} />
+            )}
             {UIState == "usersGroup" && (
-              <SearchUsersContactsPane type="group" />
+              <SearchUsersContactsPane setIsOpen={setIsOpen} type="group" />
             )}
           </Dialog.Content>
         </Dialog.Positioner>
