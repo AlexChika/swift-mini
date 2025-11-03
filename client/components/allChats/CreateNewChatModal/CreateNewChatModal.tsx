@@ -18,15 +18,16 @@ import useNavigate from "@/lib/hooks/useNavigate";
 import userOps from "@/graphql/operations/user.ops";
 import chatOps from "@/graphql/operations/chat.ops";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
+import NoChats from "./NoChats";
 import ModalBtn from "./ModalBtn";
 import UsersList from "./UsersList";
 import ModalHeader from "./ModalHeader";
 import { LeftArrowIcon } from "@/lib/icons";
+import { useEvent } from "@/lib/hooks/useEvents";
 import { useThemeValue } from "@/lib/helpers/color-mode";
 import SearchSwiftUsersPane from "./SearchUsersPane/SearchSwiftUsersPane";
 import SearchUsersContactsPane from "./SearchUsersPane/SearchUsersContactsPane";
-import CreateGroupPane from "@/components/groups/CreateNewGroupModal/CreateGroupPane";
-import NoChats from "./NoChats";
+import CreateGroupPane from "@/components/groups/CreateGroupPane/CreateGroupPane";
 
 type Props = {
   isOpen: boolean;
@@ -43,6 +44,8 @@ type CreateDuoChatData = {
     chatId: string;
   };
 };
+
+type UI_STATE = Swift.Create_Chats_UI_State;
 
 function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
   // const [username, setUsername] = React.useState("");
@@ -83,20 +86,34 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
   //   }
   // }
 
-  type UI_STATE = "default" | "swiftUsers" | "usersContact" | "createGroup";
   const [UIState, setUIState] = useState<UI_STATE>("default");
   const redColor = useThemeValue("red.600", "red.500");
+  const { dispatch } = useEvent("GROUP_UI_UPDATE");
 
   function handleSetUIState(type: UI_STATE) {
     setUIState(type);
   }
 
   const modalTitle: Record<UI_STATE, string> = {
+    swiftUsers: "Find Swift Users",
     createGroup: "Create New Group",
     default: "Find or Create New Chat",
-    swiftUsers: "Find Swift Users",
-    usersContact: "Your Swift Contacts"
+    usersContact: "Your Swift Contacts",
+    createGroupDetails: "Create New Group - Details",
+    usersGroup: "Your Group Chats" // added for type compatibility
   };
+
+  function headerOnClick() {
+    setUIState((prev) => {
+      let state = prev;
+      if (prev == "swiftUsers") state = "default";
+      if (prev == "usersContact") state = "default";
+      else if (prev == "createGroup") state = "default";
+      else if (prev == "createGroupDetails") state = "createGroup";
+      dispatch(state);
+      return state;
+    });
+  }
 
   return (
     <Dialog.Root
@@ -118,7 +135,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
             border={"1px solid {colors.appBorder}"}>
             <ModalHeader
               title={modalTitle[UIState]}
-              onClick={() => handleSetUIState("default")}
+              onClick={headerOnClick}
               showBackBtn={UIState != "default"}
             />
 
@@ -175,14 +192,16 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
             )}
 
             {/* Search pane state Body of modal  */}
-            {UIState == "createGroup" && (
-              <CreateGroupPane setIsOpen={setIsOpen} />
-            )}
             {UIState == "swiftUsers" && (
               <SearchSwiftUsersPane setIsOpen={setIsOpen} />
             )}
+
             {UIState == "usersContact" && (
               <SearchUsersContactsPane setIsOpen={setIsOpen} type="user" />
+            )}
+
+            {UIState.includes("Group") && (
+              <CreateGroupPane setUIState={setUIState} setIsOpen={setIsOpen} />
             )}
           </Dialog.Content>
         </Dialog.Positioner>

@@ -54,6 +54,7 @@ type ChatLean = {
   id: string;
   description: string;
   chatName: string;
+  avatar: string;
   chatType: "group" | "duo";
   groupType: "private" | "public";
   inviteLink: string | null;
@@ -73,6 +74,7 @@ type ChatPopulated = {
   id: string;
   description: string;
   chatName: string;
+  avatar: string;
   chatType: "group" | "duo";
   groupType: "private" | "public";
   inviteLink: string | null;
@@ -204,10 +206,10 @@ namespace Swift {
 
   export type SwiftReducer = {
     allChats: ChatLean[];
-    initSwiftMini: Swift.InitSwiftMiniPayload;
+    initSwiftMini: InitSwiftMini;
   };
 
-  export type InitSwiftMiniPayload = {
+  export type InitSwiftMini = {
     status: "success" | "loading" | "failed" | "error";
     data: ChatLean[] | null;
     error: Error | ErrorLike | null;
@@ -219,5 +221,18 @@ namespace Swift {
     | { type: "ADD_CHAT"; payload: ChatLean }
     | { type: "UPDATE_CHAT"; payload: ChatLean }
     | { type: "REMOVE_CHAT"; payload: string }
-    | { type: "INIT_SWIFT"; payload: InitSwiftMiniPayload };
+    | { type: "INIT_SWIFT"; payload: InitSwiftMini };
+
+  export type Create_Chats_UI_State =
+    | "default"
+    | "swiftUsers"
+    | "usersGroup"
+    | "createGroup"
+    | "usersContact"
+    | "createGroupDetails";
+
+  export type Events = {
+    GROUP_UI_UPDATE: Create_Group_UI_State;
+    GROUP_SELECTED_USERS: User[];
+  };
 }

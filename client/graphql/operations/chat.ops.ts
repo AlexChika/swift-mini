@@ -13,6 +13,7 @@ const getChat = gql`
         groupAdmins # not used in client
         chatName
         chatType
+        avatar
         groupType # not used in client
         inviteLink # not used in client
         # {}
@@ -106,6 +107,7 @@ const getChats = gql`
       chats {
         id
         description
+        avatar
         # superAdmin
         # groupAdmins
         chatName
@@ -197,6 +199,8 @@ const getChats = gql`
 const createDuoChat = gql`
   mutation CreateDuoChat($otherUserId: String!) {
     createDuoChat(otherUserId: $otherUserId) {
+      success
+      msg
       chatId
     }
   }
@@ -208,13 +212,17 @@ const createGroupChat = gql`
     $chatName: String!
     $description: String!
     $groupType: GroupType!
+    $avatar: String!
   ) {
     createGroupChat(
       memberIds: $memberIds
       chatName: $chatName
       description: $description
       groupType: $groupType
+      avatar: $avatar
     ) {
+      success
+      msg
       chatId
     }
   }

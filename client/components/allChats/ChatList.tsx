@@ -31,7 +31,7 @@ function ChatList({ session, chatList, openChat }: Props) {
       pb={2.5}
       ref={BoxRef}
       css={{
-        [`&[data-current-swft-chat="${chatId}"] [data-swft-chat="${chatId}"]`]:
+        [`&[data-current-swift-chat="${chatId}"] [data-swift-chat="${chatId}"]`]:
           {
             backgroundColor: "{colors.primaryBg}/30",
             border: "1px solid {colors.appBorder}",
@@ -41,7 +41,7 @@ function ChatList({ session, chatList, openChat }: Props) {
         ...hideScrollbar,
         overflowY: "auto"
       }}
-      data-current-swft-chat={chatId}>
+      data-current-swift-chat={chatId}>
       <Stack>
         {chatList.map((c) => {
           return (

@@ -19,7 +19,6 @@ const joinRequest = new mongoose.Schema(
   { _id: false }
 );
 
-// TODO: add group avatar
 const chatSchema = new mongoose.Schema<Chat<Types.ObjectId>>(
   {
     description: {
@@ -48,6 +47,16 @@ const chatSchema = new mongoose.Schema<Chat<Types.ObjectId>>(
           );
         },
         message: "MongoDB error: Group admins are required for group chats"
+      }
+    },
+    avatar: {
+      type: String,
+      default: "default",
+      validate: {
+        validator: function (value) {
+          return this.chatType !== "group" || value.trim().length > 0;
+        },
+        message: "MongoDB error: Avatar is required for group chats"
       }
     },
     chatName: {

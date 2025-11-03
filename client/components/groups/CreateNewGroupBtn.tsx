@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Session } from "next-auth";
 import { toRems } from "@/lib/helpers";
 import { Box, Text } from "@chakra-ui/react";
-import CreateNewGroupModal from "./CreateNewGroupModal/CreateNewGroupModal";
+import CreateNewGroupModal from "./CreateNewGroupModal";
 
 type Props = {
   session: Session;

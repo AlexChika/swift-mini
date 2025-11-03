@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
+import { DATABASE_URL } from "./utils/constants";
 
-const DATABASE_URL = process.env.DATABASE_URL as string;
 let isConnected = false;
 
 export async function connectDB() {

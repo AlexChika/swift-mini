@@ -24,7 +24,7 @@
   font-style: normal;
 }
 
-.swftMini {
+.swiftMini {
   font-family: "Agbalumo", system-ui !important;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -65,14 +65,14 @@ html.dark::before {
 
 html.dark {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/geometry2.png");
-  --swftLight: #000;
-  --swftReverseLight: #fff;
+  --swiftLight: #000;
+  --swiftReverseLight: #fff;
 }
 
 html.light {
   background-image: url("https://www.toptal.com/designers/subtlepatterns/uploads/binding_dark.png");
-  --swftLight: #fff;
-  --swftReverseLight: #000;
+  --swiftLight: #fff;
+  --swiftReverseLight: #000;
 }
 
 /* html.dark {

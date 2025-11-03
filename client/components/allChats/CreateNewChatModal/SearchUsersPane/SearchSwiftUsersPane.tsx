@@ -14,9 +14,7 @@ type CreateDuoChatVariable = {
 };
 
 type CreateDuoChatData = {
-  createDuoChat: {
-    chatId: string;
-  };
+  createDuoChat: ApiReturn<string, "chatId">;
 };
 
 type Props = {
@@ -61,17 +59,19 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
           variables: { otherUserId }
         });
 
-        const { chatId } = data?.createDuoChat || {};
+        const res = data?.createDuoChat;
+        if (!res) throw new Error("Failed to create chat");
 
-        if (!chatId) throw new Error("Failed to create conversation");
-
-        await openChat(chatId);
-        setIsOpen(false);
+        if (res.success) {
+          openChat(res.chatId);
+          setIsOpen(false);
+        } else throw new Error(res.msg, { cause: res.msg });
       } catch (error) {
-        const e = error as unknown as { message: string };
-        toast.error(e?.message, {
-          id: "create new chat"
+        const e = error as unknown as { message: string; cause: string };
+        toast.error(e.message || e.cause || "Unable to create chat", {
+          id: "create chat"
         });
+        console.log(e.message || "Unable to create chat");
       }
     },
     [createDuoChat, openChat, setIsOpen]
@@ -116,7 +116,11 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
         <HStack maxW="95%" wrap="nowrap" mb={2}>
           <Text whiteSpace="nowrap">
             People using
-            <Text color="gray.600" fontSize={16} as="span" className="swftMini">
+            <Text
+              color="gray.600"
+              fontSize={16}
+              as="span"
+              className="swiftMini">
               &nbsp; Swift &nbsp;
             </Text>
             - Search for

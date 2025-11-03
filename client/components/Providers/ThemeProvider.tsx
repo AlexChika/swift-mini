@@ -51,7 +51,7 @@ export function ThemeProvider({
     // and default theme is system
     if (!serverTheme && !__theme && defaultTheme === "system") return;
     Cookies.set({
-      name: "swft-theme",
+      name: "swift-theme",
       value: theme,
       expDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
     });

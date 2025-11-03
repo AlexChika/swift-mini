@@ -46,7 +46,7 @@ async function getCachedSession(
 
   if (!cookie) return null;
 
-  const TEN_MINUTES = 1000 * 60 * 10;
+  const THIRTY_MINUTES = 1000 * 60 * 30;
   const cacheKey = `session:${cookie}`;
 
   if (cache === "localMem") {
@@ -55,7 +55,7 @@ async function getCachedSession(
     else {
       const session = await getSession(req, url);
       if (session)
-        localMem.set(cacheKey, { session, exp: Date.now() + TEN_MINUTES });
+        localMem.set(cacheKey, { session, exp: Date.now() + THIRTY_MINUTES });
       return session;
     }
   }
@@ -69,7 +69,8 @@ async function getCachedSession(
     const session = await getSession(req, url);
     if (!session) return null;
 
-    await redis.set(cacheKey, JSON.stringify(session), "EX", 10 * 60); // TTL = 10 minutess
+    await redis.set(cacheKey, JSON.stringify(session), "EX", 30 * 60); // TTL = 30 minutes
+    return session;
   }
 
   return null;

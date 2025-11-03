@@ -63,7 +63,7 @@
 //   return (
 //     <Box
 //       css={{
-//         "&[data-current-swft-chat] [data-swft-chat]": {
+//         "&[data-current-swift-chat] [data-swift-chat]": {
 //           cursor: "pointer",
 //           backgroundColor: "transparent",
 //           transition: "background-color 0.2s ease",
@@ -71,7 +71,7 @@
 //           borderBottom: "1px solid {colors.appBorder}"
 //         },
 
-//         [`&[data-current-swft-chat="${chatId}"] [data-swft-chat="${chatId}"]`]:
+//         [`&[data-current-swift-chat="${chatId}"] [data-swift-chat="${chatId}"]`]:
 //           {
 //             backgroundColor: "{colors.primaryBg}/30",
 //             border: "1px solid {colors.appBorder}",
@@ -81,7 +81,7 @@
 //         ...hideScrollbar,
 //         overflowY: "auto"
 //       }}
-//       data-current-swft-chat={chatId}
+//       data-current-swift-chat={chatId}
 //       ref={BoxRef}
 //       w="100%"
 //       pb={2.5}>

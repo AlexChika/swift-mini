@@ -1,24 +1,19 @@
-import { useCallback, useEffect, type Dispatch } from "react";
+import { useCallback, useEffect } from "react";
 
-interface AppEvent<PayloadType = unknown> extends Event {
-  detail: PayloadType;
+interface AppEvent<P> extends Event {
+  detail: { data: P };
 }
 
-export interface CustomWindowEventMap extends WindowEventMap {
-  /* Custom Event */
-  onMyEvent: AppEvent<string>;
-}
-
-export const useEvent = <PayloadType = unknown,>(
-  eventName: keyof CustomWindowEventMap,
-  callback?: Dispatch<PayloadType> | VoidFunction
-) => {
+export function useEvent<K extends keyof Swift.Events>(
+  eventName: K,
+  callback?: ({ data }: { data: Swift.Events[K] }) => void
+) {
   useEffect(() => {
     if (!callback) {
       return;
     }
 
-    const listener = ((event: AppEvent<PayloadType>) => {
+    const listener = ((event: AppEvent<Swift.Events[K]>) => {
       callback(event.detail); // Use `event.detail` for custom payloads
     }) as EventListener;
 
@@ -29,13 +24,12 @@ export const useEvent = <PayloadType = unknown,>(
   }, [callback, eventName]);
 
   const dispatch = useCallback(
-    (detail: PayloadType) => {
-      const event = new CustomEvent(eventName, { detail });
+    (data: Swift.Events[K]) => {
+      const event = new CustomEvent(eventName, { detail: { data } });
       window.dispatchEvent(event);
     },
     [eventName]
   );
 
-  // Return a function to dispatch the event
   return { dispatch };
-};
+}

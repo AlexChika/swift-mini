@@ -14,6 +14,7 @@ import Groups from "@/components/groups/Groups";
 import AllChats from "@/components/allChats/AllChats";
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { getPageName, getParam, toEms, toRems } from "@/lib/helpers";
+import AI from "../ai/AI";
 
 type Props = {
   session: Session;
@@ -62,7 +63,7 @@ function Home({ session }: Props) {
 
           {param === "home" && <AllChats session={session} />}
           {param === "duo" && <Chats session={session} />}
-          {param === "swiftAi" && <Text>AI</Text>}
+          {param === "swiftAi" && <AI />}
           {param === "group" && <Groups session={session} />}
           {param === "calls" && <Text>Calls</Text>}
           {param === "search" && <Text>Search</Text>}

@@ -7,7 +7,7 @@ function SwiftMini() {
       outline="none"
       p={0}
       m={0}
-      className="swftMini"
+      className="swiftMini"
       fontSize="1.5rem"
       color="red.600"
       asChild>

@@ -64,17 +64,13 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
   const session = useSession().data as Session;
 
   const [username, setUsername] = useState("");
-  const [searchedUser, _setSearchedUser] = useState<User[] | ChatLean[]>([]);
+  const [searchedUser, setSearchedUser] = useState<User[] | ChatLean[]>([]);
 
   const [lists] = useState(() => {
     if (type === "group") return extractGroups(allChats);
     else return extractUniqueMembers(allChats, session.user.id);
     // else return sampleUsers; // mock code - remove this.
   });
-
-  const setSearchedUser = useMemo(() => {
-    return debounce(_setSearchedUser, 100);
-  }, []); // debounced
 
   const _searchUsers = useCallback(
     function (username: string) {
@@ -89,7 +85,7 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
       setSearchedUser(res);
     },
 
-    [lists, setSearchedUser, type]
+    [lists, type]
   );
 
   const searchUsers = useMemo(() => {

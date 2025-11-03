@@ -5,11 +5,13 @@ scalar Date
 
 type Mutation {
     createDuoChat(otherUserId: String!): createChatResponse
-    createGroupChat(memberIds: [String!]!, chatName: String!, description: String!, groupType: GroupType!): createChatResponse
+    createGroupChat(memberIds: [String!]!, chatName: String!, description: String!, groupType: GroupType!, avatar: String!): createChatResponse
 }
 
 type createChatResponse {
-    chatId: String!
+    success: Boolean!
+    msg: String!
+    chatId: String
 }
 
 # --------------- Query ----------------
@@ -42,6 +44,7 @@ type Subscription {
 # returns a complete chat object
 type ChatPopulated {
     id: String!
+    avatar: String!
     description: String!
     superAdmin: String
     groupAdmins: [String!]
@@ -65,6 +68,7 @@ type ChatPopulated {
 # returns a lean chat object
 type ChatLean {
     id: String!
+    avatar: String!
     description: String!
     superAdmin: String
     groupAdmins: [String!]

@@ -82,7 +82,7 @@ app.use("/graphql", cookieParser());
 
 app.use(
   "/graphql",
-  express.json(),
+  express.json({ limit: "5mb" }),
   expressMiddleware(server, {
     context: async ({ req }): Promise<GraphqlContext> => {
       const sessionUrl = req.headers["x-session-url"] as string;

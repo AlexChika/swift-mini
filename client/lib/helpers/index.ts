@@ -112,6 +112,63 @@ function getSearchParam(search = "swift") {
   return getParam(sp.get(search)) || "home";
 }
 
+type TransformOptions = {
+  width?: number;
+  height?: number;
+  radius?: number | "max";
+  crop?: string;
+  quality?: string | number;
+  format?: string;
+  effect?: string;
+  gravity?: string;
+  other?: string; // for advanced/custom transforms
+};
+
+interface GetCloudinaryUrlParams {
+  publicId: string;
+  folder?: string;
+  format?: string;
+  options?: TransformOptions;
+}
+
+function getCloudinaryUrl({
+  publicId,
+  folder,
+  format = "jpg",
+  options = {}
+}: GetCloudinaryUrlParams): string {
+  const cloudName = process.env.NEXT_PUBLIC_CD_NAME;
+
+  // Default transformations for thumbnails, avatars, etc.
+  const defaultOptions: TransformOptions = {
+    crop: "fill",
+    radius: "max", // makes avatars circular
+    format: "auto", // let Cloudinary pick best format
+    quality: "auto" // smart compression
+  };
+
+  // Merge options with defaults (user overrides)
+  const config: TransformOptions = { ...defaultOptions, ...options };
+
+  // compose transformation string dynamically
+  const transformParts: string[] = [];
+
+  if (config.width) transformParts.push(`w_${config.width}`);
+  if (config.height) transformParts.push(`h_${config.height}`);
+  if (config.crop) transformParts.push(`c_${config.crop}`);
+  if (config.radius) transformParts.push(`r_${config.radius}`);
+  if (config.quality) transformParts.push(`q_${config.quality}`);
+  if (config.format) transformParts.push(`f_${config.format}`);
+  if (config.effect) transformParts.push(`e_${config.effect}`);
+  if (config.gravity) transformParts.push(`g_${config.gravity}`);
+  if (config.other) transformParts.push(config.other);
+
+  const transform = transformParts.join(",");
+
+  const folderPath = folder ? `${folder}/` : "";
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transform}/${folderPath}${publicId}.${format}`;
+}
+
 export * as Cookies from "./clientcookie";
 export * as ColorMode from "./color-mode";
 export { reloadSession } from "./reloadSession";
@@ -124,5 +181,6 @@ export {
   debounce,
   throttle,
   truthy,
-  getSearchParam
+  getSearchParam,
+  getCloudinaryUrl
 };

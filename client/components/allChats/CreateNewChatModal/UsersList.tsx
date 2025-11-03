@@ -86,7 +86,7 @@ function UsersList(prop: Prop) {
           border="1px dashed"
           bg={boxProps.bg || "transparent"}>
           <Text mb={0}>Ooops</Text>
-          <Text textAlign="center">
+          <Text fontSize={13} opacity={0.7} textAlign="center">
             {emptyListText ||
               (type == "user"
                 ? "User you searched for was not found."
@@ -173,7 +173,7 @@ function User(props: UserProp) {
       cursor="pointer"
       bg="transparent"
       color="primaryText"
-      data-swft-userlist-item={id!}
+      data-swift-userlist-item={id!}
       onClick={clickHandler}
       title={name! || username!}
       border="1px solid transparent"

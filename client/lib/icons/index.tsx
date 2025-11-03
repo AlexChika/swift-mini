@@ -6,6 +6,7 @@ export { default as GearIcon } from "./GearIcon";
 export { default as SendIcon } from "./SendIcon";
 export { default as CallsIcon } from "./CallsIcon";
 export { default as CloseIcon } from "./CloseIcon";
+export { default as CaretIcon } from "./CaretIcon";
 export { default as SearchIcon } from "./SearchIcon";
 export { default as AIChatIcon } from "./AIChatIcon";
 export { default as DuoChatIcon } from "./DuoChatIcon";

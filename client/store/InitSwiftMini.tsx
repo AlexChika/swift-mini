@@ -46,7 +46,7 @@ async function InitSwiftMini(dispatch?: React.Dispatch<Swift.ChatAction>) {
     data: data,
     msg: getChats?.msg || msg,
     error: _error
-  } as Swift.InitSwiftMiniPayload;
+  } as Swift.InitSwiftMini;
 
   dispatch?.({
     type: SwiftTypes.INIT_SWIFT,

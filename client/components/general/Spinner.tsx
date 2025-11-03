@@ -9,7 +9,7 @@ function Spinner(props: Props) {
     size = "md",
     borderWidth = 3,
     trackColor = "red.600",
-    color = "var(--swftReverseLight)",
+    color = "var(--swiftReverseLight)",
     ...rest
   } = props;
   return (

@@ -17,7 +17,7 @@ function ModalHeader(prop: Props) {
   const { title, showBackBtn = false, onClick = dummy } = prop;
 
   function dummy() {
-    console.log("hit hard on ModalHeader");
+    console.log("a dummy was fired @ ModalHeader");
   }
 
   return (

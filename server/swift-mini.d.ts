@@ -20,6 +20,7 @@ type Chat<T> = {
   id: string;
   description: string;
   chatName: string;
+  avatar: string;
   chatType: "group" | "duo";
   groupType: "private" | "public";
   inviteLink: string | null;

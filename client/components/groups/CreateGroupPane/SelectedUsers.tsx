@@ -31,12 +31,17 @@ function SelectedUsers(props: Props) {
 
       {listIsEmpty && (
         <Center
+          flexDir="column"
           border="1px dashed"
           width="100%"
           gap={0}
           color="gray.500"
-          h="4rem">
-          <Text opacity={0.7}>You have not selected any users yet</Text>
+          h="7rem">
+          <Text>{emptyListText || "You have not selected any users yet"}</Text>
+          <Text mt={2} opacity={0.7} textAlign="center" fontSize={13}>
+            Select atleast One user(s) to create a group. <br /> You can always
+            add more members later
+          </Text>
         </Center>
       )}
     </Flex>
@@ -69,7 +74,7 @@ function SelectedUser(props: SelectedProp) {
   };
 
   function dummy(id: string) {
-    console.log("a dummy was doubred @ SelectedUser with " + id);
+    console.log("a dummy was fired @ SelectedUser with " + id);
   }
 
   function handleClick(e: React.MouseEvent) {

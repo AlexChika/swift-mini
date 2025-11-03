@@ -7,17 +7,23 @@ import {
 } from "swift-mini";
 import mongoose from "mongoose";
 import { GraphQLError } from "graphql";
-import { inviteLinkEncoder } from "@lib/utils";
+import {
+  inviteLinkEncoder,
+  validateBase64Image,
+  validateField
+} from "@lib/utils";
 import chatModel from "@src/models/chat.model";
 import userModel from "@src/models/user.model";
 import { withFilter } from "graphql-subscriptions";
 import chatMemberModel from "@src/models/chatMember.model";
+import { getCloudinaryUrl, uploadToCloudinary } from "@lib/cloudinary";
 
 type createGroupChatArgs = {
   description: string;
   chatName: string;
   groupType: "private" | "public";
   memberIds: string[];
+  avatar: string;
 };
 
 type createDuoChatArgs = {
@@ -25,6 +31,8 @@ type createDuoChatArgs = {
 };
 
 type ReturnedChatLean = ApiReturn<ChatLean[], "chats">;
+
+type ReturnedCreateChat = ApiReturn<string, "chatId">;
 
 const chatResolver = {
   Query: {
@@ -188,6 +196,7 @@ const chatResolver = {
               _id: 0,
               id: 1,
               description: 1,
+              avatar: 1,
               // superAdmin: 1,
               // groupAdmins: 1,
               chatName: 1,
@@ -390,6 +399,7 @@ const chatResolver = {
             $project: {
               _id: 0,
               id: { $toString: "$_id" },
+              avatar: 1,
               description: 1,
               superAdmin: 1,
               groupAdmins: 1,
@@ -468,30 +478,38 @@ const chatResolver = {
       }
     }
   },
+
   Mutation: {
     createDuoChat: async (
       _: unknown,
       args: createDuoChatArgs,
       ctx: GraphqlContext
-    ): Promise<{ chatId: string }> => {
+    ): Promise<ReturnedCreateChat> => {
       const { session, pubsub } = ctx;
       const { otherUserId } = args;
 
       /* ------------ // is user authenticated ----------- */
-      if (!session?.user) throw new GraphQLError("User is not authenticated");
+      if (!session?.user)
+        return {
+          success: false,
+          msg: "User is not authenticated"
+        };
 
       /* ------------ // validate otherUserId ------------ */
-      if (!otherUserId || !mongoose.isValidObjectId(otherUserId)) {
-        throw new GraphQLError(`The provided userId ${otherUserId} is invalid`);
-      }
+      if (!otherUserId || !mongoose.isValidObjectId(otherUserId))
+        return {
+          success: false,
+          msg: `The provided otherUserId ${otherUserId} is invalid`
+        };
 
       /* -------- // checks to see if user exists -------- */
       const otherUser = await userModel.findById(otherUserId);
 
       if (!otherUser)
-        throw new GraphQLError(
-          `Unable to create chat. User with id ${otherUserId} does not exist`
-        );
+        return {
+          success: false,
+          msg: `User with id ${otherUserId} does not exist`
+        };
 
       /* --- check if duo chat already exists btw users -- */
       const existingChat = await chatMemberModel.findOne({
@@ -505,7 +523,11 @@ const chatResolver = {
       });
 
       if (existingChat) {
-        return { chatId: existingChat.chatId.toString() };
+        return {
+          success: true,
+          msg: "success",
+          chatId: existingChat.chatId.toString()
+        };
       }
 
       const msession = await mongoose.startSession();
@@ -680,7 +702,11 @@ const chatResolver = {
           chatCreated
         });
 
-        return { chatId: chat.id };
+        return {
+          success: true,
+          msg: "success",
+          chatId: chat.id
+        };
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("createDuoChat error", error);
@@ -692,21 +718,27 @@ const chatResolver = {
       _: unknown,
       args: createGroupChatArgs,
       ctx: GraphqlContext
-    ): Promise<{ chatId: string }> => {
+    ): Promise<ReturnedCreateChat> => {
       const { session } = ctx;
-      const { chatName, description, groupType, memberIds } = args;
+      const { chatName, description, groupType, memberIds, avatar } = args;
 
       // is user authenticated
-      if (!session?.user) throw new GraphQLError("User is not authenticated");
+      if (!session?.user)
+        return {
+          success: false,
+          msg: "User is not authenticated"
+        };
 
       // Remove duplicates and ensure valid ObjectId format
       const uniqueIds = [...new Set(memberIds)].filter((id) =>
         mongoose.isValidObjectId(id)
       );
 
-      if (!uniqueIds.length) {
-        throw new Error("No valid member IDs provided");
-      }
+      if (!uniqueIds.length)
+        return {
+          success: false,
+          msg: "No valid member IDs provided"
+        };
 
       // validate that memberIds are real existing users
       const existingUsers = await userModel
@@ -723,21 +755,43 @@ const chatResolver = {
         (id) => !existingUserIds.includes(id)
       );
 
-      if (invalidIds.length) {
-        throw new Error(`Invalid user IDs: ${invalidIds.join(", ")}`);
-      }
+      if (invalidIds.length)
+        return {
+          success: false,
+          msg: `Invalid user IDs: ${invalidIds.join(", ")}`
+        };
 
-      // validate all arguments
-      if (!chatName || chatName.trim().length === 0) {
-        throw new GraphQLError("Chat name is required for group chats");
-      }
-      if (!description || description.trim().length === 0) {
-        throw new GraphQLError("Description is required for group chats");
-      }
-      if (!groupType || !["private", "public"].includes(groupType)) {
-        throw new GraphQLError(
-          "Group type must be either 'private' or 'public'"
-        );
+      /* ----------- // validate all arguments ----------- */
+      const fields = [
+        {
+          name: "chatName",
+          value: chatName,
+          msg: "Chat name is required for group chats"
+        },
+        {
+          name: "description",
+          value: description,
+          msg: "Description is required for group chats"
+        },
+        {
+          name: "groupType",
+          value: groupType,
+          msg: "Group type must be either 'private' or 'public'",
+          validator: (v: string) => ["private", "public"].includes(v)
+        }
+      ];
+
+      const { base64String, valid, error } = validateBase64Image(avatar);
+
+      if (!valid)
+        return {
+          success: false,
+          msg: error || "Invalid avatar"
+        };
+
+      for (const field of fields) {
+        const check = validateField(field.value, field.msg, field.validator);
+        if (!check.success) return check;
       }
 
       const chatId = new mongoose.Types.ObjectId();
@@ -745,12 +799,34 @@ const chatResolver = {
         chatId: chatId.toString()
       });
 
+      // upload chat avatar to cloudinary
+      const { success, msg } = await uploadToCloudinary(
+        base64String,
+        chatId.toString(),
+        "swift-group-chats"
+      );
+
+      if (!success) {
+        console.error(msg, "uploadToCloudinary error");
+        return {
+          success: false,
+          msg: "Sorry, something went wrong. Please try again later"
+        };
+      }
+
+      const formedUrl = getCloudinaryUrl({
+        folder: "swift-group-chats",
+        publicId: chatId.toString()
+      });
+
+      /* ------------ // Create new group chat ----------- */
       const chatData = {
         _id: chatId,
         chatName,
         description,
         groupType,
         chatType: "group",
+        avatar: formedUrl,
         superAdmin: session.user.id,
         groupAdmins: [session.user.id],
         inviteLink
@@ -782,7 +858,11 @@ const chatResolver = {
         //   conversationCreated: chat
         // });
 
-        return { chatId: chatId.toString() };
+        return {
+          success: true,
+          msg: "success",
+          chatId: chatId.toString()
+        };
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("createDuoChat error", error);
@@ -790,6 +870,7 @@ const chatResolver = {
       }
     }
   },
+
   Subscription: {
     chatCreated: {
       subscribe: withFilter(

@@ -1,274 +1,151 @@
-// import {
-//   Stack,
-//   Input,
-//   Button,
-//   Text,
-//   Avatar,
-//   Flex,
-//   IconButton,
-//   Dialog,
-//   Portal,
-//   CloseButton
-// } from "@chakra-ui/react";
-// import React from "react";
-// import toast from "react-hot-toast";
-// import { Session } from "next-auth";
-// import { useRouter } from "next/navigation";
-// import CloseIcon from "@/lib/icons/CloseIcon";
-// import useNavigate from "@/lib/hooks/useNavigate";
-// import chatOps from "@/graphql/operations/chat.ops";
-// import userOps from "@/graphql/operations/user.ops";
-// import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { Session } from "next-auth";
+import SwiftStore from "@/store/Store";
+import useNavigate from "@/lib/hooks/useNavigate";
+import { useThemeValue } from "@/lib/helpers/color-mode";
+import React, { useCallback, useMemo, useState } from "react";
+import CreateGroupPane from "./CreateGroupPane/CreateGroupPane";
+import { Text, Dialog, Portal, Box, HStack } from "@chakra-ui/react";
+import NoChats from "@/components/allChats/CreateNewChatModal/NoChats";
+import ModalBtn from "@/components/allChats/CreateNewChatModal/ModalBtn";
+import UsersList from "@/components/allChats/CreateNewChatModal/UsersList";
+import ModalHeader from "@/components/allChats/CreateNewChatModal/ModalHeader";
+import { SeeMoreBtn } from "@/components/allChats/CreateNewChatModal/CreateNewChatModal";
+import SearchUsersContactsPane from "@/components/allChats/CreateNewChatModal/SearchUsersPane/SearchUsersContactsPane";
+import { useEvent } from "@/lib/hooks/useEvents";
 
-// type Props = {
-//   isOpen: boolean;
-//   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-//   session: Session;
-// };
+type Props = {
+  isOpen: boolean;
+  session: Session;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-// type CreateGroupChatVariable = {
-//   description: string;
-//   chatName: string;
-//   groupType: "private" | "public";
-//   memberIds: string[];
-// };
+type UI_STATE = Swift.Create_Chats_UI_State;
 
-// type CreateGroupChatData = {
-//   createGroupChat: {
-//     chatId: string;
-//   };
-// };
+function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
+  const { allChats } = SwiftStore();
+  const { openChat } = useNavigate();
+  const { dispatch } = useEvent("GROUP_UI_UPDATE");
 
-// function CreateNewGroupModal({ isOpen, setIsOpen, session }: Props) {
-//   const router = useRouter();
-//   const [username, setUsername] = React.useState("");
-//   const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
+  const groupChats = useMemo(
+    () => allChats.filter((chat) => chat.chatType === "group"),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [allChats.length]
+  );
 
-//   const [searchUsers, { loading, data }] = useLazyQuery<
-//     SearchUsersData,
-//     SearchUsersVariable
-//   >(userOps.Queries.searchUsers);
+  const handleClick = useCallback(
+    (id: string) => {
+      openChat(id);
+      setIsOpen(false);
+    },
+    [openChat, setIsOpen]
+  );
 
-//   const [createGroupChat, { loading: createConversationLoading }] = useMutation<
-//     CreateGroupChatData,
-//     CreateGroupChatVariable
-//   >(chatOps.Mutations.createGroupChat);
+  const [UIState, setUIState] = useState<UI_STATE>("default");
+  const redColor = useThemeValue("red.600", "red.500");
 
-//   // functions
-//   function handleSearchUsers(e: React.FormEvent<HTMLFormElement>) {
-//     e.preventDefault();
-//     const name = username.trim().toLowerCase();
+  const modalTitle: Record<UI_STATE, string> = {
+    usersGroup: "Your Group Chats",
+    createGroup: "Create New Group",
+    default: "Find or Create New Group",
+    createGroupDetails: "Create New Group - Details",
+    swiftUsers: "Find Swift Users", // added for type compatibility
+    usersContact: "Your Swift Contacts" // added for type compatibility
+  };
 
-//     if (!name) return;
-//     searchUsers({ variables: { username: name } });
-//   }
+  function headerOnClick() {
+    setUIState((prev) => {
+      let state = prev;
+      if (prev == "usersGroup") state = "default";
+      else if (prev == "createGroupDetails") state = "createGroup";
+      else if (prev == "createGroup") state = "default";
+      dispatch(state);
+      return state;
+    });
+  }
 
-//   function addParticipant(user: SearchedUser) {
-//     const userExist = participants.find((p) => p.id === user.id);
-//     if (userExist) return;
+  return (
+    <Dialog.Root
+      modal={false}
+      open={isOpen}
+      role="alertdialog"
+      placement="center"
+      onOpenChange={(e) => setIsOpen(e.open)}>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content
+            mx={2}
+            pb={4}
+            px={4}
+            maxW="25rem"
+            height="95dvh"
+            bg="{colors.secondaryBg}"
+            color="{colors.primaryText}"
+            border={"1px solid {colors.appBorder}"}>
+            <ModalHeader
+              onClick={headerOnClick}
+              title={modalTitle[UIState]}
+              showBackBtn={UIState != "default"}
+            />
 
-//     setUsername("");
-//     setParticipants((prev) => [...prev, user]);
-//   }
+            {/* create group. btn */}
+            {UIState == "default" && (
+              <ModalBtn
+                onClick={() => setUIState("createGroup")}
+                type="group"
+              />
+            )}
 
-//   function removeParticipant(userId: string) {
-//     setParticipants((prev) => prev.filter((p) => p.id !== userId));
-//   }
+            {/* Default State Body of modal */}
+            {UIState == "default" && (
+              <Box h="calc(100% - 8rem)" mt={5}>
+                <HStack justify="space-between">
+                  <Text mb={1} opacity={0.6}>
+                    Groups you are active in
+                  </Text>
+                  <SeeMoreBtn
+                    onClick={() => setUIState("usersGroup")}
+                    text="See all"
+                    color={redColor}
+                  />
+                </HStack>
 
-//   const { openChat } = useNavigate();
-//   async function onCreateConversation() {
-//     const memberIds = participants.map((p) => p.id);
-//     try {
-//       const { data } = await createGroupChat({
-//         variables: {
-//           memberIds,
-//           chatName: `${session.user.username}'s group chat`,
-//           description: "You are welcome to the group chat",
-//           groupType: "public"
-//         }
-//       });
+                {groupChats.length < 1 && (
+                  <NoChats
+                    mt={2}
+                    customProps={{
+                      type: "groups"
+                    }}
+                  />
+                )}
 
-//       const { chatId } = data?.createGroupChat || {};
+                {groupChats.length > 0 && (
+                  <UsersList
+                    mt={2}
+                    customProps={{
+                      type: "group",
+                      onClick: handleClick,
+                      groupList: groupChats
+                    }}
+                    maxH="calc(100% - 2.5rem)"
+                  />
+                )}
+              </Box>
+            )}
 
-//       if (!chatId) throw new Error("Failed to create conversation");
+            {UIState == "usersGroup" && (
+              <SearchUsersContactsPane setIsOpen={setIsOpen} type="group" />
+            )}
 
-//       setParticipants([]);
-//       setUsername("");
-//       setIsOpen(false);
-//       openChat(chatId);
-//     } catch (error) {
-//       const e = error as unknown as { message: string };
-//       toast.error(e?.message, {
-//         id: "create conversation"
-//       });
-//     }
-//   }
+            {/* Search pane state Body of modal  */}
+            {UIState.includes("create") && (
+              <CreateGroupPane setUIState={setUIState} setIsOpen={setIsOpen} />
+            )}
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+  );
+}
 
-//   return (
-//     <Dialog.Root
-//       role="alertdialog"
-//       open={isOpen}
-//       onOpenChange={(e) => setIsOpen(e.open)}>
-//       <Portal>
-//         <Dialog.Backdrop />
-//         <Dialog.Positioner>
-//           <Dialog.Content
-//             mx={2}
-//             border={"1px solid {colors.primaryBg}"}
-//             color="{colors.primaryText}"
-//             bg="{colors.secondaryBg}"
-//             pb={4}>
-//             <Dialog.Header>
-//               <Dialog.Title>Create a conversation</Dialog.Title>
-//             </Dialog.Header>
-
-//             <Dialog.CloseTrigger asChild>
-//               <CloseButton color="{colors.primaryText}" size="sm" />
-//             </Dialog.CloseTrigger>
-
-//             <Dialog.Body>
-//               {/*
-//                *
-//                *
-//                * Username Input Form */}
-//               <form onSubmit={handleSearchUsers}>
-//                 <Stack gap={4}>
-//                   <Input
-//                     value={username}
-//                     onChange={(e) => setUsername(e.target.value)}
-//                     placeholder="Enter a username"
-//                   />
-//                   <Button
-//                     color="{colors.primaryText}"
-//                     bg="{colors.secondaryBg}"
-//                     loading={loading}
-//                     disabled={!username}
-//                     type="submit">
-//                     Search
-//                   </Button>
-//                 </Stack>
-//               </form>
-
-//               {/*
-//            *
-//            *
-//            Search Result List */}
-//               {data?.searchUsers && (
-//                 <UserSearchList
-//                   users={data?.searchUsers}
-//                   addParticipant={addParticipant}
-//                 />
-//               )}
-
-//               {/*
-//            *
-//            *
-//            Selected users {participants}*/}
-//               {participants.length > 0 && (
-//                 <>
-//                   <SelectedParticipants
-//                     removeParticipant={removeParticipant}
-//                     participants={participants}
-//                   />
-//                   <Button
-//                     loading={createConversationLoading}
-//                     onClick={() => onCreateConversation()}
-//                     w="100%"
-//                     mt={6}
-//                     colorScheme="blue">
-//                     Create Conversation
-//                   </Button>
-//                 </>
-//               )}
-//             </Dialog.Body>
-//           </Dialog.Content>
-//         </Dialog.Positioner>
-//       </Portal>
-//     </Dialog.Root>
-//   );
-// }
-// /*
-//  *
-//  */
-// type ListProp = {
-//   users: SearchedUser[];
-//   addParticipant: (user: SearchedUser) => void;
-// };
-// function UserSearchList({ users, addParticipant }: ListProp) {
-//   if (users.length < 1)
-//     return (
-//       <Text mt={5} textAlign="center" fontSize="14px" color="whiteAlpha.500">
-//         No user found
-//       </Text>
-//     );
-
-//   return (
-//     <Stack mt={3}>
-//       {users.map((user) => {
-//         return (
-//           <Stack
-//             key={user.id}
-//             direction="row"
-//             align="center"
-//             gap={4}
-//             py={2}
-//             px={2}
-//             borderRadius={4}
-//             _hover={{ bg: "whiteAlpha.200" }}>
-//             <Avatar.Root size={"sm"} variant="solid">
-//               <Avatar.Fallback name={user.username} />
-//             </Avatar.Root>
-//             <Flex align="center" justify="space-between" w="100%">
-//               <Text>{user.username}</Text>
-//               <Button
-//                 size="sm"
-//                 onClick={() => addParticipant(user)}
-//                 colorScheme="blue"
-//                 variant="outline">
-//                 Select
-//               </Button>
-//             </Flex>
-//           </Stack>
-//         );
-//       })}
-//     </Stack>
-//   );
-// }
-
-// /*
-//  *
-//  */
-// type ParticipantsProps = {
-//   participants: SearchedUser[];
-//   removeParticipant: (id: string) => void;
-// };
-// function SelectedParticipants({
-//   participants,
-//   removeParticipant
-// }: ParticipantsProps) {
-//   return (
-//     <Flex mt={8} gap="10px" flexWrap="wrap">
-//       {participants.map((p) => {
-//         return (
-//           <Stack
-//             bg="whiteAlpha.200"
-//             borderRadius={4}
-//             p={2}
-//             align="center"
-//             key={p.id}
-//             direction="row">
-//             <Text>{p.username}</Text>
-//             <IconButton
-//               onClick={() => removeParticipant(p.id)}
-//               variant="plain"
-//               aria-label="delete selected user button">
-//               <CloseIcon color="white" />
-//             </IconButton>
-//           </Stack>
-//         );
-//       })}
-//     </Flex>
-//   );
-// }
-
-// export default CreateNewGroupModal;
+export default CreateNewGroupModal;

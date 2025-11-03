@@ -26,7 +26,7 @@ function ChatItem(props: Props) {
       }}
       title={usernames}
       color="primaryText"
-      data-swft-chat={id}
+      data-swift-chat={id}
       cursor="pointer"
       bg="transparent"
       transition="background-color 0.2s ease"

@@ -5,12 +5,15 @@ import { useCallback, useMemo } from "react";
 function useNavigate() {
   const router = useRouter();
 
-  const openChat = useCallback(async function (chatId: string) {
-    const param = getSearchParam("swift");
-    router.push(`/${chatId}?swift=${param}`);
-  }, []);
+  const openChat = useCallback(
+    function (chatId: string) {
+      const param = getSearchParam("swift");
+      router.push(`/${chatId}?swift=${param}`);
+    },
+    [router]
+  );
 
-  return useMemo(() => ({ openChat }), []);
+  return useMemo(() => ({ openChat }), [openChat]);
 }
 
 export default useNavigate;

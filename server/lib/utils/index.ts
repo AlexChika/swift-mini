@@ -38,10 +38,10 @@ function inviteLinkEncoder<T extends keyof InviteLinkOpts>(
   opts: InviteLinkOpts[T]
 ): string | { chatId: string; inviteId: string } {
   const paramsMap = {
-    chatId: "swftxyjlk",
-    inviteId: "swftqxzlw",
-    swftqxzlw: "inviteId",
-    swftxyjlk: "chatId"
+    chatId: "swiftxyjlk",
+    inviteId: "swiftqxzlw",
+    swiftqxzlw: "inviteId",
+    swiftxyjlk: "chatId"
   };
 
   if (type === "encode") {
@@ -142,4 +142,67 @@ function merge(
   return base;
 }
 
-export { createPermanentUrl, getRandomId, inviteLinkEncoder, merge };
+/* --------------- U --------------- */
+
+/* --------------- V --------------- */
+
+function validateBase64Image(base64: string) {
+  if (typeof base64 !== "string" || !base64.startsWith("data:image/")) {
+    return { valid: false as const, error: "Invalid base64 avatar string" };
+  }
+
+  const matches = base64.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+  if (!matches) {
+    return { valid: false as const, error: "Malformed base64 avatar data" };
+  }
+
+  const mimeType = matches[1];
+  const base64Data = matches[2];
+
+  try {
+    const buffer = Buffer.from(base64Data, "base64");
+    const sizeInKB = buffer.length / 1024;
+
+    if (sizeInKB > 1024 * 3) {
+      // 3 MB limit
+      return { valid: false as const, error: "Avatar exceeds 5MB size limit" };
+    }
+
+    // return both versions
+    return {
+      valid: true as const,
+      mimeType,
+      sizeInKB,
+      buffer,
+      base64String: `data:${mimeType};base64,${base64Data}` // for storage & rendering
+    };
+  } catch {
+    return { valid: false as const, error: "Failed to parse base64 avatar" };
+  }
+}
+
+function validateField(
+  value: string,
+  message: string,
+  extraCheck?: (v: string) => boolean
+): { msg: string; success: false } | { success: true } {
+  if (value === undefined || value === null) {
+    return { success: false, msg: message };
+  }
+
+  const str = String(value).trim();
+  if (!str.length || (extraCheck && !extraCheck(str))) {
+    return { success: false, msg: message };
+  }
+
+  return { success: true };
+}
+
+export {
+  createPermanentUrl,
+  getRandomId,
+  inviteLinkEncoder,
+  merge,
+  validateBase64Image,
+  validateField
+};

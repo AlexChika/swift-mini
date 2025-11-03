@@ -50,9 +50,9 @@ function MessageInput(props: Props) {
 
       if (error) toast.error("Could not send");
     } catch (error) {
+      toast.error("Could not send");
       handleError(error, (err) => {
         console.log("onMessageError", err);
-        toast.error("Could not send");
       });
     }
   }
@@ -77,14 +77,13 @@ function MessageInput(props: Props) {
 
   // ref
   const InputBox = React.useRef<HTMLDivElement>(null);
-  useMobileInputScrollFix(InputBox, "swft-message-container");
+  useMobileInputScrollFix(InputBox, "swift-message-container");
 
   //TODO: use rems and ems
   return (
     <Box
       py={3}
       w="100%"
-      id="swft-message-box"
       px={{ base: 3, xmd: 6 }}
       bg="{colors.secondaryBg}"
       borderBottomRadius="inherit"

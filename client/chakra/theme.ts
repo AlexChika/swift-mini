@@ -42,7 +42,7 @@ const space = {
 };
 
 const config = defineConfig({
-  cssVarsPrefix: "swft",
+  cssVarsPrefix: "swift",
   globalCss: {
     html: {
       margin: 0,

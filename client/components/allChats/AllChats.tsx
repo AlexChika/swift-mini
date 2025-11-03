@@ -15,6 +15,8 @@ function AllChats({ session }: Props) {
   const router = useRouter();
   const { allChats } = SwiftStore();
 
+  console.log({ allChats });
+
   const openChat = useCallback(async function (chatId: string) {
     const param = getSearchParam("swift");
     router.push(`/${chatId}?swift=${param}`);

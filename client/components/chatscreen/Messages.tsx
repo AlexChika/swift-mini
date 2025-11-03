@@ -218,7 +218,7 @@ function Messages({ session, id }: Props) {
       position="relative"
       h="calc(100% - 60px)"
       justifyContent="flex-end"
-      id="swft-message-container"
+      id="swift-message-container"
       borderBottomRadius="inherit"
       bgImage={theme === "light" ? whiteBgStrs[bg].url : bgStrs[bg].url}>
       <Stack
@@ -270,7 +270,7 @@ function Messages({ session, id }: Props) {
           })}
 
         <button
-          className="swftMini"
+          className="swiftMini"
           onClick={() => setBg((prev) => (prev + 1) % bgStrs.length)}
           style={{ color: "gray" }}>
           {bgStrs[bg].name} Swift Mini
