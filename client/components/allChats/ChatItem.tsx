@@ -37,7 +37,9 @@ function ChatItem(props: Props) {
         {/* avatar,  usernames, latest message */}
         <Flex truncate align="center" gap={2}>
           {/* user profile pic */}
-          <Avatar.Root size="sm">
+          <Avatar.Root
+            shape={chat.chatType == "duo" ? "full" : "rounded"}
+            size="sm">
             <Avatar.Fallback name={name} />
             <Avatar.Image background="Highlight" src={avatar} />
           </Avatar.Root>

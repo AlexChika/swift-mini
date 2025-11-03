@@ -10,7 +10,8 @@ function formatUserNames2(chat: ChatLean, id: string) {
         publicId: chat.id,
         options: {
           width: 500,
-          height: 500
+          height: 500,
+          radius: 0
         }
       }),
       usernames: chat.chatName,
@@ -19,6 +20,14 @@ function formatUserNames2(chat: ChatLean, id: string) {
   } else {
     const otherUser = chat.duo_chat_members.find((m) => m.memberId !== id);
 
+    // getCloudinaryUrl({
+    //   folder: "swift-group-chats",
+    //   publicId: chat.id,
+    //   options: {
+    //     width: 500,
+    //     height: 500,
+    //   }
+    // });
     return {
       usernames: otherUser?.member.username || "",
       avatar: otherUser?.member.image || undefined,

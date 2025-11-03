@@ -77,10 +77,10 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
       const res =
         type == "group"
           ? (lists as ChatLean[]).filter((chat) =>
-              chat.chatName?.includes(username)
+              chat.chatName?.toLowerCase().includes(username)
             )
           : (lists as User[]).filter((user) =>
-              user.username?.includes(username)
+              user.username?.toLowerCase().includes(username)
             );
       setSearchedUser(res);
     },
@@ -103,11 +103,11 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
   }
 
   const handleClick = useCallback(
-    (_: string, opts?: { chatId?: string }) => {
-      openChat(opts?.chatId || "");
+    (id: string, opts?: { chatId?: string }) => {
+      openChat(type == "group" ? id : opts?.chatId || "");
       setIsOpen(false);
     },
-    [openChat, setIsOpen]
+    [openChat, setIsOpen, type]
   );
 
   const customProps = useMemo(() => {

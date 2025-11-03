@@ -140,7 +140,7 @@ function User(props: UserProp) {
     name = props.chat.description;
     username = props.chat.chatName;
     id = props.chat.id;
-    image = undefined;
+    image = props.chat.avatar;
   }
 
   const colorPalette = ["purple", "blue", "green", "pink", "red", "black"];
