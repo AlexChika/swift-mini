@@ -4,25 +4,49 @@ import { gql } from "@apollo/client";
 const searchUsers = gql`
   query SearchUsers($username: String!) {
     searchUsers(username: $username) {
-      id
-      username
+      success
+      msg
+      users {
+        id
+        username
+        image
+        name
+        permanentImageUrl
+      }
+    }
+  }
+`;
+
+const getRecentRandomUsers = gql`
+  query GetRecentRandomUsers($count: Int) {
+    getRecentRandomUsers(count: $count) {
+      success
+      msg
+      users {
+        id
+        username
+        image
+        name
+        permanentImageUrl
+      }
     }
   }
 `;
 
 /* ---------------- mutatations --------------- */
 const createUsername = gql`
-  mutation CreateUsername($username: String!, $userHasImage: Boolean!) {
-    createUsername(username: $username, userHasImage: $userHasImage) {
+  mutation CreateUsername($username: String!) {
+    createUsername(username: $username) {
       username
       success
-      error
+      msg
     }
   }
 `;
 
 const Queries = {
-  searchUsers
+  searchUsers,
+  getRecentRandomUsers
 };
 
 const Mutations = {

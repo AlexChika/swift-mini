@@ -1,8 +1,9 @@
 import { Session } from "next-auth";
-import SwiftStore from "@/store/Store";
+import { useEvent } from "@/lib/hooks/useEvents";
 import useNavigate from "@/lib/hooks/useNavigate";
+import { useRecentGroups } from "./useRecentGroups";
+import React, { useCallback, useState } from "react";
 import { useThemeValue } from "@/lib/helpers/color-mode";
-import React, { useCallback, useMemo, useState } from "react";
 import CreateGroupPane from "./CreateGroupPane/CreateGroupPane";
 import { Text, Dialog, Portal, Box, HStack } from "@chakra-ui/react";
 import NoChats from "@/components/allChats/CreateNewChatModal/NoChats";
@@ -11,7 +12,6 @@ import UsersList from "@/components/allChats/CreateNewChatModal/UsersList";
 import ModalHeader from "@/components/allChats/CreateNewChatModal/ModalHeader";
 import { SeeMoreBtn } from "@/components/allChats/CreateNewChatModal/CreateNewChatModal";
 import SearchUsersContactsPane from "@/components/allChats/CreateNewChatModal/SearchUsersPane/SearchUsersContactsPane";
-import { useEvent } from "@/lib/hooks/useEvents";
 
 type Props = {
   isOpen: boolean;
@@ -22,15 +22,10 @@ type Props = {
 type UI_STATE = Swift.Create_Chats_UI_State;
 
 function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
-  const { allChats } = SwiftStore();
   const { openChat } = useNavigate();
   const { dispatch } = useEvent("GROUP_UI_UPDATE");
 
-  const groupChats = useMemo(
-    () => allChats.filter((chat) => chat.chatType === "group"),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [allChats.length]
-  );
+  const recentGroups = useRecentGroups();
 
   const handleClick = useCallback(
     (id: string) => {
@@ -110,7 +105,7 @@ function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
                   />
                 </HStack>
 
-                {groupChats.length < 1 && (
+                {recentGroups.length < 1 && (
                   <NoChats
                     mt={2}
                     customProps={{
@@ -119,13 +114,13 @@ function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
                   />
                 )}
 
-                {groupChats.length > 0 && (
+                {recentGroups.length > 0 && (
                   <UsersList
                     mt={2}
                     customProps={{
                       type: "group",
                       onClick: handleClick,
-                      groupList: groupChats
+                      groupList: recentGroups
                     }}
                     maxH="calc(100% - 2.5rem)"
                   />

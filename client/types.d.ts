@@ -25,21 +25,16 @@ type User = {
   permanentImageUrl?: string | null;
 };
 
-type CreateUsernameData = {
-  createUsername: {
-    username: string;
-    success: boolen;
-    error: string;
-  };
-};
-
-type CreateUsernameVariable = {
+type UserLean = {
+  id: string;
+  name: string;
+  image: string;
   username: string;
-  userHasImage: boolean;
+  permanentImageUrl: string;
 };
 
 type SearchUsersData = {
-  searchUsers: User[];
+  searchUsers: ApiReturn<UserLean[], "users">;
 };
 
 type SearchUsersVariable = {
@@ -154,11 +149,7 @@ type Message = {
   clientSentAt: string;
   eddited: boolean;
   deleted: boolean;
-  sender: {
-    id: string;
-    username: string;
-    image: string;
-  };
+  sender: UserLean;
   meta: {
     readStatus: {
       hasRead: boolean;

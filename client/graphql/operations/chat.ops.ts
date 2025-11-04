@@ -155,8 +155,10 @@ const getChats = gql`
           }
           member {
             id
-            username
+            name
             image
+            username
+            permanentImageUrl
           }
         }
         self_member {

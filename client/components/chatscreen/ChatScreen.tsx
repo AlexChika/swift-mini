@@ -17,7 +17,8 @@ function ChatScreen({ session, id }: Props) {
       bg="{colors.secondaryBg}"
       borderLeft={{ xmd: "none" }}
       justifyContent="space-between"
-      border="4px solid {colors.appBorder}"
+      xmd={{ border: "4px solid {colors.appBorder}" }}
+      borderLeftWidth={{ xmd: "0px" }}
       css={{
         margin: { base: "0px", xmd: toEms(5, 5, 5, 0) },
         borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" }

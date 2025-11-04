@@ -1,19 +1,11 @@
-import { GraphQLError } from "graphql";
-import { GraphqlContext, User } from "swift-mini";
-import userModel from "@src/models/user.model";
-import { createPermanentUrl } from "@lib/utils";
 import { Types } from "mongoose";
+import { GraphQLError } from "graphql";
+import userModel from "@src/models/user.model";
+import { ApiReturn, GraphqlContext, User } from "swift-mini";
 
-type CreateUsernameResponse = {
-  success: boolean;
-  error?: string;
-  username: string;
-};
+type CreateUsernameResponse = ApiReturn<string, "username">;
 
-type Args = {
-  username: string;
-  userHasImage: boolean;
-};
+type SearchUserResponse = ApiReturn<User<Types.ObjectId>[], "users">;
 
 const resolvers = {
   Query: {
@@ -21,11 +13,15 @@ const resolvers = {
       _: unknown,
       args: { username: string },
       ctx: GraphqlContext
-    ): Promise<User<Types.ObjectId>[]> => {
+    ): Promise<SearchUserResponse> => {
       const { username: searchedUsername } = args;
       const { session } = ctx;
 
-      if (!session?.user) throw new GraphQLError("User is not authenticated");
+      if (!session?.user)
+        return {
+          success: false,
+          msg: "User is not authenticated"
+        };
 
       const { username: myUsername } = session.user;
 
@@ -38,11 +34,92 @@ const resolvers = {
           }
         });
 
-        return users;
+        return {
+          success: true,
+          msg: "success",
+          users
+        };
       } catch (error) {
         const e = error as unknown as { message: string };
-        console.log("searchUsers error", error);
-        throw new GraphQLError(e?.message);
+        console.log(e.message || e, "searchUsers error");
+        throw new GraphQLError(e?.message || "Something went wrong");
+      }
+    },
+
+    getRecentRandomUsers: async (
+      _: unknown,
+      args: { count?: number },
+      ctx: GraphqlContext
+    ) => {
+      const { session } = ctx;
+
+      if (!session?.user?.id)
+        return {
+          success: false,
+          msg: "User is not authenticated"
+        };
+
+      const count = Math.min(Math.max(args.count ?? 30, 1), 100);
+
+      try {
+        const users = await userModel.aggregate([
+          // Exclude the current user
+          {
+            $match: {
+              _id: { $ne: new Types.ObjectId(session.user.id) }
+            }
+          },
+
+          // Add recency weight (based on updatedAt proximity to "now")
+          {
+            $addFields: {
+              recencyWeight: {
+                $divide: [
+                  { $subtract: [new Date(), "$updatedAt"] },
+                  1000 * 60 * 60 * 24 * 30 // normalize by ~30 days range
+                ]
+              }
+            }
+          },
+
+          {
+            // Convert to a 0–1 range: newer = closer to 1
+            $addFields: {
+              recencyScore: {
+                $max: [{ $subtract: [1, "$recencyWeight"] }, 0]
+              }
+            }
+          },
+          {
+            // Add randomness biased by recencyScore
+            $addFields: {
+              randomWeighted: {
+                $multiply: ["$recencyScore", { $rand: {} }]
+              }
+            }
+          },
+          { $sort: { randomWeighted: -1 } },
+          { $limit: count },
+          {
+            $project: {
+              id: { $toString: "$_id" },
+              username: 1,
+              name: 1,
+              image: 1,
+              permanentImageUrl: 1
+            }
+          }
+        ]);
+
+        return {
+          success: true,
+          msg: "success",
+          users
+        };
+      } catch (err) {
+        const e = err as { message?: string };
+        console.error("getRecentRandomUsers error:", e?.message ?? err);
+        throw new GraphQLError(e?.message ?? "Something went wrong");
       }
     }
   },
@@ -50,17 +127,16 @@ const resolvers = {
   Mutation: {
     createUsername: async (
       _: unknown,
-      args: Args,
+      args: { username: string },
       ctx: GraphqlContext
     ): Promise<CreateUsernameResponse> => {
-      const { username, userHasImage } = args;
+      const { username } = args;
       const { session } = ctx;
 
       if (!session?.user)
         return {
-          username,
           success: false,
-          error: "User unauthenticated"
+          msg: "User unauthenticated"
         };
 
       const { id: userId } = session.user;
@@ -74,37 +150,24 @@ const resolvers = {
           .exec();
 
         // user exists
-        if (existingUser) {
+        if (existingUser)
           return {
-            username,
             success: false,
-            error: "Username is taken"
+            msg: "Username is taken"
           };
-        }
 
         // update user
-        await userModel
-          .findByIdAndUpdate(userId, {
-            username,
-            permanentImageUrl: userHasImage
-              ? createPermanentUrl(userId)
-              : undefined
-          })
-          .exec();
+        await userModel.findByIdAndUpdate(userId, { username }).exec();
 
         return {
           username,
           success: true,
-          error: undefined
+          msg: "success"
         };
       } catch (error) {
-        console.log("createUsername error", error);
         const e = error as unknown as { message: string };
-        return {
-          username,
-          success: false,
-          error: e?.message
-        };
+        console.log(e.message || e, "createUsername error");
+        throw new GraphQLError(e?.message || "Something went wrong");
       }
     }
   }

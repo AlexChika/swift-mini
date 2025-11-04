@@ -21,6 +21,8 @@ const messageFields = `
         id
         username
         image
+        name
+        permanentImageUrl
       }
 `;
 

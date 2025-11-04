@@ -12,32 +12,34 @@ type User {
   lastSeen: Date
 }
 
-
-# a lean user for use in message population
-type Sender {
-  id: String!
-  username: String!
-  image: String!
-  permanentImageUrl:String
-}
-
-  type SearchedUser {
-    id: String!
-    username: String!
-  }
-
 type Query {
-    searchUsers(username:String!):[SearchedUser]
+    searchUsers(username:String!):SearchUserResponse
+    getRecentRandomUsers(count:Int):SearchUserResponse
 }
 
 type Mutation {
-    createUsername(username:String!, userHasImage:Boolean!):CreateUserResponse
+    createUsername(username:String!):CreateUserResponse
+}
+
+# a lean user for use in message population
+type UserLean {
+    id: String!
+    name: String!
+    image: String!
+    username: String!
+    permanentImageUrl:String
+  }
+
+type SearchUserResponse {
+    success:Boolean!
+    msg:String!
+    users:[UserLean!]
 }
 
 type CreateUserResponse {
-    username:String!
+    username:String
     success:Boolean!
-    error:String
+    msg:String
 }
 
 `;

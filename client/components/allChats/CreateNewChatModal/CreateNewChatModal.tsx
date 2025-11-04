@@ -9,25 +9,26 @@ import {
   ButtonProps,
   Center
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import { Session } from "next-auth";
-import { useRouter } from "next/navigation";
-import CloseIcon from "@/lib/icons/CloseIcon";
-import useNavigate from "@/lib/hooks/useNavigate";
-import userOps from "@/graphql/operations/user.ops";
-import chatOps from "@/graphql/operations/chat.ops";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+
 import NoChats from "./NoChats";
 import ModalBtn from "./ModalBtn";
 import UsersList from "./UsersList";
+import { Session } from "next-auth";
+import toast from "react-hot-toast";
 import ModalHeader from "./ModalHeader";
 import { LeftArrowIcon } from "@/lib/icons";
 import { useEvent } from "@/lib/hooks/useEvents";
+import useNavigate from "@/lib/hooks/useNavigate";
+import { useGetSwiftUsers } from "./useGetSwiftUsers";
 import { useThemeValue } from "@/lib/helpers/color-mode";
+import React, { useCallback, useMemo, useState } from "react";
 import SearchSwiftUsersPane from "./SearchUsersPane/SearchSwiftUsersPane";
 import SearchUsersContactsPane from "./SearchUsersPane/SearchUsersContactsPane";
 import CreateGroupPane from "@/components/groups/CreateGroupPane/CreateGroupPane";
+import { useGetRecentlyContacted } from "./useGetRecentlyContacted";
+import chatOps from "@/graphql/operations/chat.ops";
+import { useMutation } from "@apollo/client/react";
+import Spinner from "@/components/general/Spinner";
 
 type Props = {
   isOpen: boolean;
@@ -35,60 +36,28 @@ type Props = {
   session: Session;
 };
 
+type UI_STATE = Swift.Create_Chats_UI_State;
 type CreateDuoChatVariable = {
   otherUserId: string;
 };
 
 type CreateDuoChatData = {
-  createDuoChat: {
-    chatId: string;
-  };
+  createDuoChat: ApiReturn<string, "chatId">;
 };
 
-type UI_STATE = Swift.Create_Chats_UI_State;
-
 function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
-  // const [username, setUsername] = React.useState("");
-  // const [participants, setParticipants] = React.useState<SearchedUser[]>([]);
-
-  // const [searchUsers, { loading, data }] = useLazyQuery<
-  //   SearchUsersData,
-  //   SearchUsersVariable
-  // >(userOps.Queries.searchUsers);
-
-  // const [createDuoChat, { loading: createConversationLoading }] = useMutation<
-  //   CreateDuoChatData,
-  //   CreateDuoChatVariable
-  // >(chatOps.Mutations.createDuoChat);
-
-  // const { openChat } = useNavigate();
-  // async function onCreateConversation() {
-  //   const otherUserId = participants[0]?.id;
-  //   try {
-  //     const { data } = await createDuoChat({
-  //       variables: { otherUserId }
-  //     });
-
-  //     const { chatId } = data?.createDuoChat || {};
-  //     console.log({ chatId });
-
-  //     if (!chatId) throw new Error("Failed to create conversation");
-
-  //     setParticipants([]);
-  //     setUsername("");
-  //     setIsOpen(false);
-  //     openChat(chatId);
-  //   } catch (error) {
-  //     const e = error as unknown as { message: string };
-  //     toast.error(e?.message, {
-  //       id: "create conversation"
-  //     });
-  //   }
-  // }
+  const [createDuoChat, { loading }] = useMutation<
+    CreateDuoChatData,
+    CreateDuoChatVariable
+  >(chatOps.Mutations.createDuoChat);
 
   const [UIState, setUIState] = useState<UI_STATE>("default");
   const redColor = useThemeValue("red.600", "red.500");
+
+  const { openChat } = useNavigate();
   const { dispatch } = useEvent("GROUP_UI_UPDATE");
+  const recentChats = useGetRecentlyContacted();
+  const { swiftUsers } = useGetSwiftUsers();
 
   function handleSetUIState(type: UI_STATE) {
     setUIState(type);
@@ -115,6 +84,54 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
     });
   }
 
+  const handleClick = useCallback(
+    (_: string, opts?: { chatId?: string }) => {
+      openChat(opts?.chatId || "");
+      setIsOpen(false);
+    },
+    [openChat, setIsOpen]
+  );
+
+  const createNewChat = useCallback(
+    async function (otherUserId: string) {
+      try {
+        const { data } = await createDuoChat({
+          variables: { otherUserId }
+        });
+
+        const res = data?.createDuoChat;
+        if (!res) throw new Error("Failed to create chat");
+
+        if (res.success) {
+          openChat(res.chatId);
+          setIsOpen(false);
+        } else return toast.error(res.msg, { id: "create chat" });
+      } catch (error) {
+        const e = error as unknown as { message: string; cause: string };
+        toast.error("Unable to create chat", { id: "create chat" });
+        console.log(e.message || e, "create new chat");
+      }
+    },
+    [createDuoChat, openChat, setIsOpen]
+  );
+
+  const swiftUsersListProp = useMemo(() => {
+    return {
+      type: "user" as const,
+      onClick: createNewChat,
+      userList: swiftUsers as User[],
+      emptyListText: "No users found"
+    };
+  }, [swiftUsers, createNewChat]);
+
+  const recentUsersListProp = useMemo(() => {
+    return {
+      type: "user" as const,
+      userList: recentChats,
+      onClick: handleClick
+    };
+  }, [recentChats, handleClick]);
+
   return (
     <Dialog.Root
       open={isOpen}
@@ -130,6 +147,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
             px={4}
             maxW="25rem"
             height="95dvh"
+            pos="relative"
             bg="{colors.secondaryBg}"
             color="{colors.primaryText}"
             border={"1px solid {colors.appBorder}"}>
@@ -169,8 +187,12 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
                       color={redColor}
                     />
                   </HStack>
-                  {/* <UsersList maxH="32dvh" /> if recent users  */}
-                  <NoChats />
+
+                  {recentChats.length > 0 && (
+                    <UsersList maxH="32dvh" customProps={recentUsersListProp} />
+                  )}
+
+                  {recentChats.length < 1 && <NoChats />}
                 </Box>
 
                 <Box mt={14}>
@@ -183,11 +205,21 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
                       color={redColor}
                     />
                   </HStack>
-                  <UsersList
-                    customProps={{ type: "user", userList: [] }}
-                    maxH="27dvh"
-                  />
+
+                  <UsersList customProps={swiftUsersListProp} maxH="27dvh" />
                 </Box>
+
+                {loading && (
+                  <Center
+                    inset="0"
+                    pos="absolute"
+                    aria-busy="true"
+                    userSelect="none"
+                    cursor="not-allowed"
+                    bg="{colors.secondaryBg/60}">
+                    <Spinner />
+                  </Center>
+                )}
               </Box>
             )}
 

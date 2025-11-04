@@ -21,6 +21,14 @@ type AuthProps = {
   session: Session | null;
 };
 
+type CreateUsernameVariable = {
+  username: string;
+};
+
+type CreateUsernameData = {
+  createUsername: ApiReturn<string, "username">;
+};
+
 function Auth({ session, reloadSession }: AuthProps) {
   const [Username, setUsername] = useState("");
   const [err, setErr] = useState(false); // input error
@@ -40,25 +48,29 @@ function Auth({ session, reloadSession }: AuthProps) {
 
     try {
       const { data } = await createUsername({
-        variables: { username, userHasImage: !!session?.user?.image }
+        variables: { username }
       });
 
       if (!data?.createUsername) {
-        throw new Error("Operation failed");
+        throw new Error("Failed to create username");
       }
 
-      if (!data?.createUsername.success) {
-        const { error } = data.createUsername;
-        throw new Error(error);
+      if (!data.createUsername.success) {
+        const { msg } = data.createUsername;
+        return toast.error(msg, {
+          id: "createusername"
+        });
       }
 
       toast.success("Username created successfully", {
         id: "createusername"
       });
+
       reloadSession();
     } catch (error) {
       const e = error as unknown as { message: string };
-      toast.error(e?.message || "Unknown error occured", {
+      console.log(e.message);
+      toast.error("Unknown error occured", {
         id: "createusername"
       });
     }
@@ -122,8 +134,7 @@ function Auth({ session, reloadSession }: AuthProps) {
             </Field.Root>
 
             <Button
-              color="{colors.primaryText}"
-              bg="{colors.primaryBg}"
+              colorPalette="greenv"
               loading={loading}
               disabled={err}
               w="full"

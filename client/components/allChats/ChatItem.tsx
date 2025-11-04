@@ -47,7 +47,7 @@ function ChatItem(props: Props) {
           {/* user names & latest message */}
           <Flex flexDir="column">
             {/* usernames */}
-            <Text truncate fontSize={15}>
+            <Text textTransform="capitalize" truncate fontSize={15}>
               {usernames}
             </Text>
 

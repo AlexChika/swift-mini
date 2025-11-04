@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema<User<Types.ObjectId>>(
     }
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }

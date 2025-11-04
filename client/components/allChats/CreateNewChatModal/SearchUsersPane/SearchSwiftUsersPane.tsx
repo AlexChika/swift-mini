@@ -1,13 +1,13 @@
-import { throttle, toRems } from "@/lib/helpers";
-import Spinner from "@/components/general/Spinner";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
-import userOps from "@/graphql/operations/user.ops";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Box, Center, HStack, Input, Text, VStack } from "@chakra-ui/react";
-import useNavigate from "@/lib/hooks/useNavigate";
-import chatOps from "@/graphql/operations/chat.ops";
 import toast from "react-hot-toast";
 import UsersList from "../UsersList";
+import { throttle, toRems } from "@/lib/helpers";
+import useNavigate from "@/lib/hooks/useNavigate";
+import Spinner from "@/components/general/Spinner";
+import chatOps from "@/graphql/operations/chat.ops";
+import userOps from "@/graphql/operations/user.ops";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Box, Center, HStack, Input, Text, VStack } from "@chakra-ui/react";
 
 type CreateDuoChatVariable = {
   otherUserId: string;
@@ -29,7 +29,7 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
     SearchUsersVariable
   >(userOps.Queries.searchUsers, { fetchPolicy: "no-cache" });
 
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserLean[]>([]);
 
   const searchUsers = useMemo(() => {
     return throttle(search, 350);
@@ -65,13 +65,11 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
         if (res.success) {
           openChat(res.chatId);
           setIsOpen(false);
-        } else throw new Error(res.msg, { cause: res.msg });
+        } else return toast.error(res.msg, { id: "create chat" });
       } catch (error) {
         const e = error as unknown as { message: string; cause: string };
-        toast.error(e.message || e.cause || "Unable to create chat", {
-          id: "create chat"
-        });
-        console.log(e.message || "Unable to create chat");
+        toast.error("Unable to create chat", { id: "create chat" });
+        console.log(e.message || e, "create new chat");
       }
     },
     [createDuoChat, openChat, setIsOpen]
@@ -85,7 +83,11 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
 
   useEffect(() => {
     if (!data?.searchUsers) return;
-    setUsers(data.searchUsers);
+    if (!data.searchUsers.success) {
+      toast.error(data.searchUsers.msg, { id: "search users", duration: 5000 });
+      return;
+    }
+    setUsers(data.searchUsers.users);
   }, [data]);
 
   return (
@@ -138,7 +140,7 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
         <UsersList
           customProps={{
             type: "user",
-            userList: users,
+            userList: users as User[],
             onClick: createNewChat
           }}
           bg="{colors.primaryBg/20}"

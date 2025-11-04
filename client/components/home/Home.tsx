@@ -47,8 +47,8 @@ function Home({ session }: Props) {
       gap={0}
       w="100%"
       bg="{colors.secondaryBg}"
-      border="4px solid {colors.appBorder}"
-      borderRightWidth={{ base: "4px", xmd: "1px" }}
+      xmd={{ border: "4px solid {colors.appBorder}" }}
+      borderRightWidth={{ xmd: "1px" }}
       display={{ base: id ? "none" : "flex", xmd: "flex" }}
       css={{
         margin: { base: "0px", xmd: toEms(5, 0, 5, 5) },

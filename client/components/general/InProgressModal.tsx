@@ -47,7 +47,7 @@ function InProgressModal() {
                   maxW="sm"
                   size="sm">
                   <HStack gap="5">
-                    <ToolTip content="The SwiftMini app is 25% complete">
+                    <ToolTip content="The SwiftMini app is 30% complete">
                       <Progress.Label cursor="pointer">
                         <InfoCircleIcon />
                       </Progress.Label>
@@ -57,7 +57,7 @@ function InProgressModal() {
                       <Progress.Range />
                     </Progress.Track>
 
-                    <Progress.ValueText>25%</Progress.ValueText>
+                    <Progress.ValueText>30%</Progress.ValueText>
                   </HStack>
                 </Progress.Root>
               </Dialog.Body>

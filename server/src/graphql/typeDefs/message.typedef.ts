@@ -12,7 +12,7 @@ type Message {
 
     # below fields are not part of message model, they are reference fields returned from db lookup queries
 
-    sender:Sender!
+    sender:UserLean!
 }
 
 type Query {

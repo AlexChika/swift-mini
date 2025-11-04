@@ -38,6 +38,7 @@ function StepCarousel(props: Props) {
           bg="inherit"
           pos="absolute"
           overflowY="auto"
+          scrollbarWidth="none"
           zIndex={i + 1 === carouselCurrIdx ? 10 : ""}
           data-swift-carousel={carouselId}>
           {STEP}

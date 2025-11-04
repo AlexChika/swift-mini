@@ -190,7 +190,7 @@ function SelectUsersStep(props: Props) {
           }}
           colorPalette="teal"
           onClick={handleContinue}
-          disabled={selectedUsers.length < 0}>
+          disabled={selectedUsers.length < 1}>
           {selectedUsers.length > 0 ? (
             <>
               Continue
