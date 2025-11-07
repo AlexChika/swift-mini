@@ -553,6 +553,7 @@ const chatResolver = {
 
         await chatMemberModel.insertMany(chatMembers, { session: msession });
         await msession.commitTransaction();
+        await msession.endSession();
 
         // start of temporal code
         const _chatId = new mongoose.Types.ObjectId(chatId);
@@ -708,6 +709,8 @@ const chatResolver = {
           chatId: chat.id
         };
       } catch (error) {
+        await msession.abortTransaction();
+        await msession.endSession();
         const err = error as unknown as { message: string };
         console.log("createDuoChat error", error);
         throw new GraphQLError(err.message);
@@ -852,6 +855,7 @@ const chatResolver = {
 
         await chatMemberModel.insertMany(chatMembers, { session: msession });
         await msession.commitTransaction();
+        await msession.endSession();
 
         // emit create subscription event
         // pubsub.publish("CONVERSATION_CREATED", {
@@ -864,6 +868,8 @@ const chatResolver = {
           chatId: chatId.toString()
         };
       } catch (error) {
+        await msession.abortTransaction();
+        await msession.endSession();
         const err = error as unknown as { message: string };
         console.log("createDuoChat error", error);
         throw new GraphQLError(err.message);

@@ -137,16 +137,14 @@ const messageResolver = {
 
       console.time("create mesage");
 
-      // const isUserAChatMember = await chatMemberModel
-      //   .findOne({
-      //     chatId,
-      //     memberId: senderId
-      //   })
-      //   .lean();
+      const isUserAChatMember = await chatMemberModel.exists({
+        chatId,
+        memberId: senderId
+      });
 
-      // if (!isUserAChatMember) {
-      //   throw new GraphQLError("You are not a member of this chat");
-      // }
+      if (!isUserAChatMember) {
+        throw new GraphQLError("You are not a member of this chat");
+      }
 
       try {
         const newMessage = await messageModel.create({
@@ -165,7 +163,9 @@ const messageResolver = {
             sender: {
               id: session.user.id,
               username: session.user.username,
-              image: session.user.image
+              image: session.user.image,
+              name: session.user.name,
+              permanentImageUrl: session.user.permanentImageUrl
             }
           }
         });

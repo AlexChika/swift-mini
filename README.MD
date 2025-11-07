@@ -32,9 +32,9 @@ The idea: keep it **cheap to run** but **easy to scale later**.
 
 ## 🔮 Upgrade Path
 
-- **Hosting** → Render Free → AWS EC2 / Fly.io (autoscaling infra)
-- **Database** → Atlas Free → Dedicated M10 cluster (more resources, higher IOPS)
-- **Cache** → Local Map → Redis (managed or self-hosted)
+- **Hosting** from Render Free to → AWS EC2 / Fly.io (autoscaling infra)
+- **Database** from Atlas Free to → Dedicated M10 cluster (more resources, higher IOPS)
+- **Cache** from Local Map to → Redis (managed or self-hosted)
 - **Monitoring** → Prometheus / Grafana or SaaS monitoring
 - **Async Workloads** → RabbitMQ, Kafka, or AWS SQS
 

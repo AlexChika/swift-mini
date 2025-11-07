@@ -1,14 +1,15 @@
 import SwiftStore from "@/store/Store";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export function useRecentGroups() {
   const { allChats } = SwiftStore();
+  const [chats] = useState<ChatLean[]>(allChats);
 
-  const recentlyContacted = useMemo(() => {
+  const recentGroups = useMemo(() => {
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    return allChats
+    return chats
       .filter(
         (chat) =>
           new Date(chat.updatedAt) > oneMonthAgo && chat.chatType == "group"
@@ -19,7 +20,7 @@ export function useRecentGroups() {
         );
       })
       .slice(0, 20);
-  }, [allChats]);
+  }, [chats]);
 
-  return recentlyContacted;
+  return recentGroups;
 }

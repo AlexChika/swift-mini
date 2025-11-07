@@ -17,7 +17,7 @@ export function useGetSwiftUsers(count?: number) {
   const { allChats } = SwiftStore();
   const session = useSession().data;
   const userId = session?.user?.id;
-  const [chats] = useState<ChatLean[]>(allChats); // storing allChats in a state bring stabilization. AllChats changes constatntle even for just metadas. This recent list also doen't eed to be realtime..
+  const [chats] = useState<ChatLean[]>(allChats); // storing allChats in a state brings stabilization. AllChats changes constatntly even for just metadas. This recent list also doen't need to be realtime..
 
   const { data, loading } = useQuery<
     GetRandomUsersData,

@@ -123,6 +123,10 @@ interface Session {
     name?: string | null;
     email?: string | null;
     image?: string | null;
+    lastSeen?: Date | null;
+    hideLastSeen?: boolean;
+    userImageUrl?: string | null;
+    permanentImageUrl?: string | null;
   };
 
   expires: ISODateString;
