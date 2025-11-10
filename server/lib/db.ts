@@ -1,20 +1,52 @@
 import mongoose from "mongoose";
 import { DATABASE_URL } from "./utils/constants";
 
-let isConnected = false;
+mongoose.connection.on("connected", () => {
+  console.log("✅ MongoDB connected successfully");
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("⚠️ MongoDB disconnected");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("❌ MongoDB connection error:", err);
+});
+
+process.on("SIGINT", async () => {
+  await mongoose.connection.close();
+  console.log("🔌 MongoDB connection closed due to app termination");
+  process.exit(0);
+});
 
 export async function connectDB() {
-  if (isConnected) return mongoose;
+  const { readyState } = mongoose.connection;
 
-  const db = await mongoose.connect(DATABASE_URL, {
-    dbName: "swift"
-  });
+  // 1 = connected, 2 = connecting
+  if (readyState === 1) {
+    return mongoose;
+  }
 
-  isConnected = db.connections[0].readyState === 1;
-  console.log({ isConnected });
+  if (readyState === 2) {
+    console.log("MongoDB connection in progress, waiting...");
+    await new Promise((resolve, reject) => {
+      mongoose.connection.once("connected", resolve);
+      mongoose.connection.once("error", reject);
+    });
+    return mongoose;
+  }
 
-  if (!isConnected) console.log("Failed to connect to MongoDB");
-  else console.log("Connected to MongoDB");
-
-  return mongoose;
+  try {
+    await mongoose.connect(DATABASE_URL, {
+      dbName: "swift",
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000
+    });
+    return mongoose;
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    throw error;
+  }
 }

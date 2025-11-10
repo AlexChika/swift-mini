@@ -1,6 +1,7 @@
 import React from "react";
 import * as SwiftTypes from "./SwiftTypes";
 import { fetchChats } from "./useFetchChats";
+import { connectSocketAsync } from "@/sockets/socket";
 
 // step1 connect to socket
 
@@ -8,9 +9,7 @@ import { fetchChats } from "./useFetchChats";
 
 // step3 fetch all chats
 
-// step4 set allChats
-
-// step5 set app initialized to true
+// dispatch payload
 
 async function InitSwiftMini(dispatch?: React.Dispatch<Swift.ChatAction>) {
   let status = "loading";
@@ -19,6 +18,36 @@ async function InitSwiftMini(dispatch?: React.Dispatch<Swift.ChatAction>) {
   let msg = "Initializing SwiftMini";
 
   // step1 connect to socket
+  try {
+    const socket = await connectSocketAsync();
+  } catch (error) {
+    const e = error as Error;
+    const errMsg = e.message || "Error connecting to socket";
+
+    const isAuthError = errMsg.split(":")[0] === "AUTH";
+
+    if (isAuthError) {
+      msg = "Authentication error. Please login again.";
+      status = "failed";
+    } else {
+      msg = errMsg;
+      status = "error";
+    }
+
+    const payload = {
+      status: status,
+      data: null,
+      msg: msg,
+      error: error as Error
+    } as Swift.InitSwiftMini;
+
+    dispatch?.({
+      type: SwiftTypes.INIT_SWIFT,
+      payload
+    });
+
+    return payload;
+  }
 
   // step2 subscribe to socket
 

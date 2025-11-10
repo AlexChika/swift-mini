@@ -6,7 +6,6 @@ import ChatLayout from "./ChatLayout";
 import { Box } from "@chakra-ui/react";
 import StartScreen from "./StartScreen";
 import { useSession } from "next-auth/react";
-// import { reloadSession } from "@/lib/helpers";
 import useNetworkChangeNotifier from "@/lib/hooks/useNetworkChangeNotifier";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import useDynamicHeight from "@/lib/hooks/useDynamicHeight";

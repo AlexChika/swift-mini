@@ -1,7 +1,7 @@
 import axios, { type AxiosError } from "axios";
 import { CronJob } from "cron";
 
-const url = "https://server-swiftmini.globalstack.dev/cron";
+const url = "https://server-swiftmini.globalstack.dev/health";
 
 const tryPing = async (attempt = 1) => {
   try {
@@ -18,12 +18,12 @@ const tryPing = async (attempt = 1) => {
   }
 };
 
-const restartJob = CronJob.from({
-  cronTime: "*/14 * * * *",
+const keepAliveJob = CronJob.from({
+  cronTime: "*/13 * * * *",
   onTick() {
     tryPing();
   },
   start: false
 });
 
-export default restartJob;
+export default keepAliveJob;

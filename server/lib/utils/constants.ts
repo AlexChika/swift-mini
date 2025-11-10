@@ -1,3 +1,5 @@
+import { CorsOptions } from "cors";
+
 /* --------- database url -------- */
 
 const DB_USER = process.env.DB_USER;
@@ -17,3 +19,25 @@ export const DATABASE_URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/
 
 const cloudName = process.env.CD_NAME;
 export const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+/* ---------------CORS --------------*/
+
+export const corsOpts: CorsOptions = {
+  origin:
+    process.env.NODE_ENV === "development"
+      ? ["http://localhost:3000", "https://studio.apollographql.com"]
+      : [
+          "https://swiftmini.globalstack.dev",
+          "https://swift-mini.vercel.app",
+          "https://swiftmini-staging.globalstack.dev"
+        ],
+  credentials: true
+};
+
+/* ------------- REDIS ------------- */
+
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+export const REDIS_URL =
+  process.env.NODE_ENV === "development"
+    ? "redis://127.0.0.1:6379"
+    : `rediss://default:${REDIS_PASSWORD}@sought-wolf-15913.upstash.io:6379`;

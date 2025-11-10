@@ -7,14 +7,14 @@ import cookieParser from "cookie-parser";
 import { ApolloServer } from "@apollo/server";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { expressMiddleware } from "@as-integrations/express4";
+import { expressMiddleware } from "@as-integrations/express5";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 
 import typeDefs from "@src/graphql/typeDefs";
 import { PubSub } from "graphql-subscriptions";
 import resolvers from "@src/graphql/resolvers";
 import imagesRouter from "src/routes/images/images.route";
-import { connectDB, restartJob, getCachedSession } from "lib";
+import { connectDB, keepAliveJob, getCachedSession } from "lib";
 import { GraphqlContext, SubscriptionContext } from "swift-mini";
 
 // configs
@@ -107,5 +107,5 @@ httpServer.listen(PORT, () => {
 
 // Cron Jobs ... used to keep render servers busy
 if (process.env.NODE_ENV === "production") {
-  restartJob.start();
+  keepAliveJob.start();
 }

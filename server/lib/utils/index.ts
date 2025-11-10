@@ -198,11 +198,27 @@ function validateField(
   return { success: true };
 }
 
+function parseCookies(cookieHeader: string): Record<string, string> {
+  const cookies: Record<string, string> = {};
+  const pairs = cookieHeader.split(";");
+
+  for (const pair of pairs) {
+    const [key, ...value] = pair.split("=").map((v) => v.trim());
+
+    if (key && value) {
+      cookies[key] = decodeURIComponent(value.join("="));
+    }
+  }
+
+  return cookies;
+}
+
 export {
   createPermanentUrl,
   getRandomId,
   inviteLinkEncoder,
   merge,
   validateBase64Image,
-  validateField
+  validateField,
+  parseCookies
 };

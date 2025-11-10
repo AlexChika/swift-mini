@@ -1,11 +1,15 @@
 import axios from "axios";
-// import Redis from "ioredis";
 import { Session } from "swift-mini";
 import { type Request } from "express";
+import { parseCookies } from "./utils";
 
-async function getSession(req: Request, url: string): Promise<Session | null> {
+type Req = Request | string;
+
+async function getSession(req: Req, url: string): Promise<Session | null> {
   try {
-    const fetchOptions = req ? { headers: { cookie: req.headers.cookie } } : {};
+    const cookie = typeof req === "string" ? req : req.headers.cookie;
+
+    const fetchOptions = req ? { headers: { cookie } } : {};
 
     const res = await axios.get<Session>(url, fetchOptions);
     const session = res.data;
@@ -35,19 +39,21 @@ type Cache = {
 
 const localMem = new Map<string, Cache>();
 
+type CacheType = "redis" | "localMem";
 async function getCachedSession(
-  req: Request,
+  req: Req,
   url: string,
-  cache: "redis" | "localMem" = "localMem"
+  cache: CacheType = "localMem"
 ): Promise<Session | null> {
-  const cookie =
-    req.cookies["__Secure-swift.session-token"] ||
-    req.cookies["authjs.session-token"];
+  const cookies = typeof req === "string" ? parseCookies(req) : req.cookies;
 
-  if (!cookie) return null;
+  const sessionToken =
+    cookies["__Secure-swift.session-token"] || cookies["authjs.session-token"];
+
+  if (!sessionToken) return null;
 
   const THIRTY_MINUTES = 1000 * 60 * 30;
-  const cacheKey = `session:${cookie}`;
+  const cacheKey = `session:${sessionToken}`;
 
   if (cache === "localMem") {
     const cache = localMem.get(cacheKey) || null;

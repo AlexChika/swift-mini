@@ -1,7 +1,5 @@
-import { connectDB } from "lib/db";
-const mongoose = await connectDB();
-import { type Document, Model, Types } from "mongoose";
 import { Message } from "swift-mini";
+import mongoose, { type Document, Model, Types } from "mongoose";
 
 type TMessage = Document & Message<Types.ObjectId>;
 
