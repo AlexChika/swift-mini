@@ -143,3 +143,30 @@ interface SubscriptionContext extends Context {
     session: Session | null;
   };
 }
+
+namespace Swift {
+  type DuoChatCreatedJob = {
+    chatId: string;
+    members: {
+      userId: string;
+      otherUserId: string;
+    };
+  };
+
+  type GroupChatCreatedJob = {
+    chatId: string;
+    memberIds: string[];
+  };
+
+  type ChatJobMap = {
+    duoChatCreated: DuoChatCreatedJob;
+    groupChatCreated: GroupChatCreatedJob;
+  };
+
+  type ChatJob = {
+    [K in keyof ChatJobMap]: {
+      name: K;
+      data: ChatJobMap[K];
+    };
+  }[keyof ChatJobMap];
+}

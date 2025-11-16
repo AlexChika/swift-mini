@@ -84,7 +84,7 @@ type ChatLean {
     # below fields are not part of chat model, they are reference fields returned from db lookup queries
     chat_latestMessage: Message
     duo_chat_members: [ChatMember!]
-    self_member: ChatMember!
+    self_member: ChatMember
 }
 
 enum ChatType {

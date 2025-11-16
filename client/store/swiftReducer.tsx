@@ -11,6 +11,14 @@ function swiftReducer(
       allChats: action.payload.data || []
     };
   }
+
+  if (action.type === SwiftTypes.UPDATE_CHATS) {
+    return {
+      ...state,
+      allChats: action.payload
+    };
+  }
+
   return state;
 }
 

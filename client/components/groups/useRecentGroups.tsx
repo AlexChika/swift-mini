@@ -1,4 +1,4 @@
-import SwiftStore from "@/store/Store";
+import SwiftStore from "@/store/swiftStore";
 import { useMemo, useState } from "react";
 
 export function useRecentGroups() {

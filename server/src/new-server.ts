@@ -4,12 +4,16 @@ import express from "express";
 import mongoose from "mongoose";
 import { createServer } from "http";
 import cookieParser from "cookie-parser";
+import { initQueue } from "./queue/queue";
 import { connectDB, keepAliveJob } from "lib";
 import { initApolloServer } from "@lib/apollo";
 import { corsOpts } from "@lib/utils/constants";
 import { initSocketServer } from "./sockets/socket";
 import { connectRedis, redis } from "src/redis/redis";
 import imagesRouter from "src/routes/images/images.route";
+import { enqueueChatCreated } from "./queue/queues/chat.queues";
+import { getChatMembers } from "./graphql/services/chat.service";
+import { redisGetChatMembers } from "./redis/chat.redis";
 
 // configs
 dotenv.config();
@@ -35,6 +39,21 @@ app.get("/health", (_, res) => {
   res.send("OK");
 });
 
+app.get("/test", async (req, res) => {
+  const { userId, chatId, otherUserId } = req.query;
+  if (typeof userId !== "string") return res.send("UserID missing");
+  if (typeof chatId !== "string") return res.send("ChatID missing");
+  if (typeof otherUserId !== "string") return res.send("ChatID missing");
+
+  // const ids = await redisGetChatMembers(chatId);
+  // const ids2 = await getChatMembers(chatId);
+  // console.log({ ids, ids2 });
+
+  enqueueChatCreated(chatId, { userId, otherUserId });
+
+  res.send("We Good" + " " + userId);
+});
+
 async function start() {
   const PORT = process.env.PORT || 4000;
 
@@ -46,6 +65,7 @@ async function start() {
   await Promise.all([pub.connect(), sub.connect()]);
 
   initSocketServer(httpServer, pub, sub);
+  initQueue();
   type RedisClient = typeof redis;
 
   return new Promise<{ pub: RedisClient; sub: RedisClient }>((res) =>
@@ -90,3 +110,5 @@ try {
   console.error("Server failed to start:", err);
   process.exit(1);
 }
+
+// http://localhost:4000/test?userId=68a6ddda719e71ea932488f8&chatId=69150dc75b56b999d0293fd4&otherUserId=68a6e3097eeafbc9d57b30e7

@@ -161,37 +161,41 @@ const getChats = gql`
             permanentImageUrl
           }
         }
+
         self_member {
           id
-          chatId
-          chatType
-          memberId
-          role
-          showChat
-          joinedAt
-          member {
-            id
-            username
-            image
-          }
-          lastRead {
-            time
-            messageId
-            id
-          }
-          lastDelivered {
-            time
-            id
-          }
-          messageMeta {
-            key
-            value {
-              messageId
-              showMessage
-              time
-            }
-          }
         }
+        # self_member {
+        #   id
+        #   chatId
+        #   chatType
+        #   memberId
+        #   role
+        #   showChat
+        #   joinedAt
+        #   member {
+        #     id
+        #     username
+        #     image
+        #   }
+        #   lastRead {
+        #     time
+        #     messageId
+        #     id
+        #   }
+        #   lastDelivered {
+        #     time
+        #     id
+        #   }
+        #   messageMeta {
+        #     key
+        #     value {
+        #       messageId
+        #       showMessage
+        #       time
+        #     }
+        #   }
+        # }
       }
     }
   }

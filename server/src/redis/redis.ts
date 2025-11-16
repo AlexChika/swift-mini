@@ -5,9 +5,9 @@ const redis = createClient({
   url: REDIS_URL
 });
 
-redis.on("connect", () => console.log("Redis connected"));
-redis.on("error", (err) => console.error("Redis error", err));
-redis.on("reconnecting", () => console.warn("Redis reconnecting..."));
+redis.on("connect", () => console.log("✅ Redis connected"));
+redis.on("error", (err) => console.error("❌ Redis error", err));
+redis.on("reconnecting", () => console.warn("⚠️ Redis reconnecting..."));
 
 export async function connectRedis() {
   if (!redis.isOpen) await redis.connect();

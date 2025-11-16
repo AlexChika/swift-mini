@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Server } from "socket.io";
 import { corsOpts } from "@lib/utils/constants";
 import { getCachedSession } from "@lib/getSession";
+import { DefaultEventsMap, Server } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
-import { socketTest } from "./socket.utils";
+import { socketOnConnect, socketOnDisconnect } from "./user.socket";
+
+let io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 
 export function initSocketServer(
   server: ReturnType<typeof import("http").createServer>,
   pub: any,
   sub: any
 ) {
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: corsOpts
   });
 
@@ -39,12 +41,19 @@ export function initSocketServer(
   });
 
   io.on("connection", (socket) => {
-    socketTest(io, socket);
+    socketOnConnect(io, socket);
 
-    socket.on("disconnect", () => {
-      console.log("⚠️ User disconnected:", socket.id);
-    });
+    // all other socket event handlers here
+
+    socketOnDisconnect(io, socket);
   });
 
+  return io;
+}
+
+export function getIO() {
+  if (!io) {
+    throw new Error("Socket.io not initialized");
+  }
   return io;
 }

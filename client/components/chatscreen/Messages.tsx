@@ -147,51 +147,51 @@ function Messages({ session, id }: Props) {
     }
   }, [data]);
 
-  function subToNewMessage(id: string) {
-    return subscribeToMore({
-      variables: { chatId: id },
-      document: messageOps.Subscriptions.messageSent,
-      updateQuery: (prev, update: MessageUpdate) => {
-        if (!update.subscriptionData.data) return prev as MessagesData;
-        const newMessage = update.subscriptionData.data.messageSent;
-        logLatency({
-          source: "subMore",
-          message: newMessage.body,
-          clientSentAt: newMessage.clientSentAt,
-          createdAt: newMessage.createdAt
-        });
-        return Object.assign({}, prev, {
-          getMessages: {
-            ...prev.getMessages,
-            messages: [
-              ...((prev.getMessages?.success && prev.getMessages.messages) ||
-                []),
-              newMessage
-            ]
-          }
-        }) as MessagesData;
-      }
-    });
-  }
+  // function subToNewMessage(id: string) {
+  //   return subscribeToMore({
+  //     variables: { chatId: id },
+  //     document: messageOps.Subscriptions.messageSent,
+  //     updateQuery: (prev, update: MessageUpdate) => {
+  //       if (!update.subscriptionData.data) return prev as MessagesData;
+  //       const newMessage = update.subscriptionData.data.messageSent;
+  //       logLatency({
+  //         source: "subMore",
+  //         message: newMessage.body,
+  //         clientSentAt: newMessage.clientSentAt,
+  //         createdAt: newMessage.createdAt
+  //       });
+  //       return Object.assign({}, prev, {
+  //         getMessages: {
+  //           ...prev.getMessages,
+  //           messages: [
+  //             ...((prev.getMessages?.success && prev.getMessages.messages) ||
+  //               []),
+  //             newMessage
+  //           ]
+  //         }
+  //       }) as MessagesData;
+  //     }
+  //   });
+  // }
 
-  const subscribedChats = useRef<string[]>([]);
-  useEffect(() => {
-    // if a conversation has been subscribed... we return
-    if (subscribedChats.current.find((ids) => ids === id)) return;
-    subscribedChats.current.push(id);
+  // const subscribedChats = useRef<string[]>([]);
+  // useEffect(() => {
+  //   // if a conversation has been subscribed... we return
+  //   if (subscribedChats.current.find((ids) => ids === id)) return;
+  //   subscribedChats.current.push(id);
 
-    const unsubscribe = subToNewMessage(id); // sub to conversation
+  //   const unsubscribe = subToNewMessage(id); // sub to conversation
 
-    return () => {
-      // cleanup
-      unsubscribe?.();
-      subscribedChats.current = subscribedChats.current.filter(
-        (ids) => ids !== id
-      );
-    };
+  //   return () => {
+  //     // cleanup
+  //     unsubscribe?.();
+  //     subscribedChats.current = subscribedChats.current.filter(
+  //       (ids) => ids !== id
+  //     );
+  //   };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [id]);
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {

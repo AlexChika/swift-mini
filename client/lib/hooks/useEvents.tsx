@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { swiftEvent } from "../helpers/swiftEvent";
 
 interface AppEvent<P> extends Event {
   detail: { data: P };
@@ -17,16 +18,16 @@ export function useEvent<K extends keyof Swift.Events>(
       callback(event.detail); // Use `event.detail` for custom payloads
     }) as EventListener;
 
-    window.addEventListener(eventName, listener);
+    swiftEvent.addEventListener(eventName, listener);
     return () => {
-      window.removeEventListener(eventName, listener);
+      swiftEvent.removeEventListener(eventName, listener);
     };
   }, [callback, eventName]);
 
   const dispatch = useCallback(
     (data: Swift.Events[K]) => {
       const event = new CustomEvent(eventName, { detail: { data } });
-      window.dispatchEvent(event);
+      swiftEvent.dispatchEvent(event);
     },
     [eventName]
   );

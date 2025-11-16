@@ -1,24 +1,17 @@
 import client from "@/graphql/apollo";
-import { throttle } from "@/lib/helpers";
 import { useEffect, useRef } from "react";
-// import { Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 type Options = {
-  socket: any;
-  //   socket: Socket;
+  socket: Socket;
   query: any;
   onRefetch: (data: any) => void;
   throttleMs?: number; // configurable
 };
 
-export function useRealtimeSync({
-  socket,
-  query,
-  onRefetch,
-  throttleMs = 1000
-}: Options) {
+export function useRealtimeSync({ socket, query, onRefetch }: Options) {
   const hasConnectedOnce = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -42,13 +35,13 @@ export function useRealtimeSync({
       }
     }
 
-    const handleConnect = throttle(function () {
+    function handleConnect() {
       if (hasConnectedOnce.current) {
         refetchChats();
       } else {
         hasConnectedOnce.current = true;
       }
-    }, throttleMs);
+    }
 
     socket.on("connect", handleConnect);
 
@@ -56,5 +49,5 @@ export function useRealtimeSync({
       if (abortRef.current) abortRef.current.abort();
       socket.off("connect", handleConnect);
     };
-  }, [client, socket, query, onRefetch, throttleMs]);
+  }, [socket, query, onRefetch]);
 }

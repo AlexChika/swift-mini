@@ -1,4 +1,4 @@
-import SwiftStore from "@/store/Store";
+import SwiftStore from "@/store/swiftStore";
 import { useMemo, useState } from "react";
 import { extractUniqueMembers } from "./SearchUsersPane/SearchUsersContactsPane";
 import { useSession } from "next-auth/react";

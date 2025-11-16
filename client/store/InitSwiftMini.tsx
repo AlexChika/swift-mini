@@ -1,15 +1,15 @@
 import React from "react";
 import * as SwiftTypes from "./SwiftTypes";
-import { fetchChats } from "./useFetchChats";
-import { connectSocketAsync } from "@/sockets/socket";
+import { fetchChats } from "./fetchChats";
+import { connectSocketAsync } from "@/socket/socket";
 
-// step1 connect to socket
+// step1 subscribe to socket
 
-// step2 subscribe to socket
+// step2 connect to socket ✅
 
-// step3 fetch all chats
+// step3 fetch all chats ✅
 
-// dispatch payload
+// dispatch payload ✅
 
 async function InitSwiftMini(dispatch?: React.Dispatch<Swift.ChatAction>) {
   let status = "loading";

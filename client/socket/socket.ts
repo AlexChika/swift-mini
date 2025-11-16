@@ -1,4 +1,9 @@
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
+import { swiftEvent } from "@/lib/helpers/swiftEvent";
+
+export type Payload<T> = {
+  data: T;
+};
 
 const url =
   process.env.NODE_ENV === "development"
@@ -21,15 +26,26 @@ function connectSocket() {
 async function connectSocketAsync() {
   if (socket.connected) return socket;
 
-  return new Promise((resolve, reject) => {
+  return new Promise<Socket>((resolve, reject) => {
     socket.once("connect", () => resolve(socket));
     socket.once("connect_error", (err) => reject(err));
     socket.connect();
   });
 }
 
+function loadListeners() {}
+
+export const eventTypes = {
+  CHAT_CREATED: "CHAT_CREATED"
+} as const satisfies Record<string, keyof Swift.Events>;
+
+socket.on(eventTypes.CHAT_CREATED, (payload: Payload<ChatLean>) => {
+  console.log("chat created", payload);
+  swiftEvent.emit(eventTypes.CHAT_CREATED, payload);
+});
+
 function disconnectSocket() {
   socket.disconnect();
 }
-
+//
 export { socket, connectSocket, disconnectSocket, connectSocketAsync };

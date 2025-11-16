@@ -191,30 +191,30 @@ type IconProp = {
 };
 
 namespace Swift {
-  export type SwiftStore = {
+  type SwiftStore = {
     dispatch: React.Dispatch<ChatAction>;
   } & SwiftReducer;
 
-  export type SwiftReducer = {
+  type SwiftReducer = {
     allChats: ChatLean[];
     initSwiftMini: InitSwiftMini;
   };
 
-  export type InitSwiftMini = {
+  type InitSwiftMini = {
     status: "success" | "loading" | "failed" | "error";
     data: ChatLean[] | null;
     error: Error | ErrorLike | null;
     msg: string;
   };
 
-  export type ChatAction =
+  type ChatAction =
     | { type: "SET_ALL_CHATS"; payload: ChatLean[] }
     | { type: "ADD_CHAT"; payload: ChatLean }
-    | { type: "UPDATE_CHAT"; payload: ChatLean }
+    | { type: "UPDATE_CHATS"; payload: ChatLean[] }
     | { type: "REMOVE_CHAT"; payload: string }
     | { type: "INIT_SWIFT"; payload: InitSwiftMini };
 
-  export type Create_Chats_UI_State =
+  type Create_Chats_UI_State =
     | "default"
     | "swiftUsers"
     | "usersGroup"
@@ -222,8 +222,20 @@ namespace Swift {
     | "usersContact"
     | "createGroupDetails";
 
-  export type Events = {
+  type Events = {
     GROUP_UI_UPDATE: Create_Group_UI_State;
     GROUP_SELECTED_USERS: User[];
+    CHAT_CREATED: ChatLean;
   };
+
+  type ResolverEventsMap<T extends keyof Events> = {
+    [P in T]: {
+      type: P;
+      data: Swift.Events[P];
+    };
+  };
+
+  type ResolverEvents = ResolverEventsMap<keyof Swift.Events>;
+
+  type ResolverEvent = ResolverEvents[keyof Swift.Events];
 }

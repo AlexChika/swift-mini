@@ -1,6 +1,6 @@
 import { Session } from "next-auth";
 import UsersList from "../UsersList";
-import SwiftStore from "@/store/Store";
+import SwiftStore from "@/store/swiftStore";
 import { useSession } from "next-auth/react";
 import { debounce, toRems } from "@/lib/helpers";
 import useNavigate from "@/lib/hooks/useNavigate";

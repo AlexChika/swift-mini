@@ -1,2 +1,2 @@
-export { SwiftProvider } from "@/store/Store";
-export { default as SwiftStore } from "@/store/Store";
+export { SwiftProvider } from "@/store/swiftStore";
+export { default as SwiftStore } from "@/store/swiftStore";

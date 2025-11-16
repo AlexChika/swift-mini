@@ -1,7 +1,7 @@
 import ChatList from "./ChatList";
 import { Session } from "next-auth";
 import { Box } from "@chakra-ui/react";
-import SwiftStore from "@/store/Store";
+import SwiftStore from "@/store/swiftStore";
 import { memo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getSearchParam } from "@/lib/helpers";

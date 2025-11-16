@@ -1,4 +1,4 @@
-import SwiftStore from "@/store/Store";
+import SwiftStore from "@/store/swiftStore";
 import { Center, Text } from "@chakra-ui/react";
 import ErrorUI from "@/components/general/Error";
 import SwiftLoading from "@/components/general/SwiftLoading";

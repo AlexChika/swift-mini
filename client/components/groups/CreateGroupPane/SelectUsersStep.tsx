@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import SwiftStore from "@/store/Store";
+import SwiftStore from "@/store/swiftStore";
 import { debounce } from "@/lib/helpers";
 import { LeftArrowIcon } from "@/lib/icons";
 import SelectedUsers from "./SelectedUsers";
