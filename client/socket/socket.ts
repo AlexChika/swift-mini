@@ -23,6 +23,10 @@ function connectSocket() {
   return socket.connect();
 }
 
+function disconnectSocket() {
+  socket.disconnect();
+}
+
 async function connectSocketAsync() {
   if (socket.connected) return socket;
 
@@ -33,19 +37,59 @@ async function connectSocketAsync() {
   });
 }
 
-function loadListeners() {}
+const socketEmitEvents = {
+  CREATE_MESSAGE: "CREATE_MESSAGE"
+} as const;
 
-export const eventTypes = {
-  CHAT_CREATED: "CHAT_CREATED"
+function socketEmitNewMessage(payload: {
+  tempId: string;
+  message: SendMessage;
+}) {
+  socket.emit(socketEmitEvents.CREATE_MESSAGE, { data: payload });
+}
+
+// function loadListeners() {}
+
+export const socketOnEvents = {
+  CHAT_CREATED: "CHAT_CREATED",
+  MESSAGE_CREATED_ACK: "MESSAGE_CREATED_ACK",
+  MESSAGE_QUEUED_ACK: "MESSAGE_QUEUED_ACK",
+  MESSAGE_FAILED_ACK: "MESSAGE_FAILED_ACK"
 } as const satisfies Record<string, keyof Swift.Events>;
 
-socket.on(eventTypes.CHAT_CREATED, (payload: Payload<ChatLean>) => {
+socket.on(socketOnEvents.CHAT_CREATED, (payload: Payload<ChatLean>) => {
   console.log("chat created", payload);
-  swiftEvent.emit(eventTypes.CHAT_CREATED, payload);
+  swiftEvent.emit(socketOnEvents.CHAT_CREATED, payload);
 });
 
-function disconnectSocket() {
-  socket.disconnect();
-}
-//
-export { socket, connectSocket, disconnectSocket, connectSocketAsync };
+socket.on(
+  socketOnEvents.MESSAGE_QUEUED_ACK,
+  (payload: Payload<Swift.Events["MESSAGE_QUEUED_ACK"]>) => {
+    console.log("message created ack", payload);
+    swiftEvent.emit(socketOnEvents.MESSAGE_QUEUED_ACK, payload);
+  }
+);
+
+socket.on(
+  socketOnEvents.MESSAGE_CREATED_ACK,
+  (payload: Payload<Swift.Events["MESSAGE_CREATED_ACK"]>) => {
+    console.log("message created ack", payload);
+    swiftEvent.emit(socketOnEvents.MESSAGE_CREATED_ACK, payload);
+  }
+);
+
+socket.on(
+  socketOnEvents.MESSAGE_FAILED_ACK,
+  (payload: Payload<Swift.Events["MESSAGE_FAILED_ACK"]>) => {
+    console.log("message failed ack", payload);
+    swiftEvent.emit(socketOnEvents.MESSAGE_FAILED_ACK, payload);
+  }
+);
+
+export {
+  socket,
+  connectSocket,
+  disconnectSocket,
+  connectSocketAsync,
+  socketEmitNewMessage
+};

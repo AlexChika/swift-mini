@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import swiftReducer from "./swiftReducer";
 import InitSwiftMini from "./InitSwiftMini";
 import { useSession } from "next-auth/react";
-import { useChatsResolver } from "./fetchChats";
+import { useChatsResolver } from "@/lib/hooks/useChatsResolver";
 
 const initialReducerState: Swift.SwiftReducer = {
   allChats: [],
@@ -28,6 +28,8 @@ function SwiftProvider(props: SwiftProvider) {
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
   const [state, dispatch] = React.useReducer(swiftReducer, initialReducerState);
+
+  console.log(state.allChats);
 
   useChatsResolver(dispatch, state.initSwiftMini);
 

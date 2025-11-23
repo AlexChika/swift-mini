@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { GraphQLError } from "graphql";
 import userModel from "@src/models/user.model";
-import { ApiReturn, GraphqlContext, User } from "swift-mini";
+import { redisDeleteUserSessions } from "@src/redis/user.redis";
 
 type CreateUsernameResponse = ApiReturn<string, "username">;
 
@@ -157,7 +157,15 @@ const resolvers = {
           };
 
         // update user
-        await userModel.findByIdAndUpdate(userId, { username }).exec();
+        await userModel
+          .findByIdAndUpdate(userId, {
+            username,
+            hideLastSeen: false,
+            lastSeen: Date.now()
+          })
+          .exec();
+
+        await redisDeleteUserSessions(session.sessionToken);
 
         return {
           username,

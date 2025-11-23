@@ -1,5 +1,4 @@
 import mongoose, { type Document, Model, Types } from "mongoose";
-import { Chat } from "swift-mini";
 
 type TChatDocument = Document & Chat<Types.ObjectId>;
 

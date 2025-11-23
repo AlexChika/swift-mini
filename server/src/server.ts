@@ -1,111 +1,109 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import mongoose from "mongoose";
 import { createServer } from "http";
-import { WebSocketServer } from "ws";
 import cookieParser from "cookie-parser";
-import { ApolloServer } from "@apollo/server";
-import { useServer } from "graphql-ws/lib/use/ws";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { expressMiddleware } from "@as-integrations/express5";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-
-import typeDefs from "@src/graphql/typeDefs";
-import { PubSub } from "graphql-subscriptions";
-import resolvers from "@src/graphql/resolvers";
+import { initQueue } from "./queue/queue";
+import { connectDB, keepAliveJob } from "lib";
+import { initApolloServer } from "@lib/apollo";
+import { corsOpts } from "@lib/utils/constants";
+import { initSocketServer } from "./sockets/socket";
+import { connectRedis, redis } from "src/redis/redis";
 import imagesRouter from "src/routes/images/images.route";
-import { connectDB, keepAliveJob, getCachedSession } from "lib";
-import { GraphqlContext, SubscriptionContext } from "swift-mini";
+import { getMessage } from "./graphql/services/message.service";
 
 // configs
 dotenv.config();
-await connectDB();
-const pubsub = new PubSub();
-
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-const corsOpts: cors.CorsOptions = {
-  origin:
-    process.env.NODE_ENV === "development"
-      ? ["http://localhost:3000", "https://studio.apollographql.com"]
-      : [
-          "https://swiftmini.globalstack.dev",
-          "https://swift-mini.vercel.app",
-          "https://swiftmini-staging.globalstack.dev"
-        ],
-  credentials: true
-};
 
 // http server
 const app = express();
 const httpServer = createServer(app);
 
-// websocket server
-const wsServer = new WebSocketServer({
-  server: httpServer,
-  path: "/subscriptions"
-});
+app.use(cors<cors.CorsRequest>(corsOpts));
+app.use(express.json({ limit: "5mb" }));
+app.use(cookieParser());
 
-const serverCleanup = useServer(
-  {
-    schema,
-    context: async (ctx: SubscriptionContext): Promise<GraphqlContext> => {
-      const { session } = ctx?.connectionParams || {};
-      return { session, pubsub };
-    }
-  },
-  wsServer
-);
-
-const server = new ApolloServer<GraphqlContext>({
-  schema,
-  csrfPrevention: true,
-  introspection: process.env.NODE_ENV !== "production",
-  plugins: [
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    {
-      async serverWillStart() {
-        return {
-          async drainServer() {
-            await serverCleanup.dispose();
-          }
-        };
-      }
-    }
-  ]
-});
-
-await server.start();
+// routes
+await initApolloServer(app, httpServer);
 
 app.use("/images", imagesRouter);
-app.use(cors<cors.CorsRequest>(corsOpts));
-app.use("/graphql", cookieParser());
-
-app.use(
-  "/graphql",
-  express.json({ limit: "5mb" }),
-  expressMiddleware(server, {
-    context: async ({ req }): Promise<GraphqlContext> => {
-      const sessionUrl = req.headers["x-session-url"] as string;
-      const session = await getCachedSession(req, sessionUrl, "localMem");
-      return { session, pubsub };
-    }
-  })
-);
 
 app.get("/time", (_, res) => {
   res.json({ serverNow: Date.now() });
 });
 
-app.get("/cron", (_, res) => {
-  res.end("SERVER RUNING");
+app.get("/health", (_, res) => {
+  res.send("OK");
 });
 
-const PORT = process.env.PORT || 4000;
-httpServer.listen(PORT, () => {
-  console.log(`Server is now running.`, httpServer.address());
+app.get("/test", async (req, res) => {
+  // const { sessionToken } = req.query;
+  // if (typeof sessionToken !== "string") return res.send("sessionToken missing");
+
+  const msg = await getMessage("69220b45ab318d02c7e65446");
+
+  console.log({ msg });
+  console.log(msg?.id);
+
+  res.send("We Good" + " ");
 });
 
-// Cron Jobs ... used to keep render servers busy
-if (process.env.NODE_ENV === "production") {
-  keepAliveJob.start();
+async function start() {
+  const PORT = process.env.PORT || 4000;
+
+  await connectDB();
+  await connectRedis();
+
+  const pub = redis.duplicate();
+  const sub = redis.duplicate();
+  await Promise.all([pub.connect(), sub.connect()]);
+
+  initSocketServer(httpServer, pub, sub);
+  initQueue();
+  type RedisClient = typeof redis;
+
+  return new Promise<{ pub: RedisClient; sub: RedisClient }>((res) =>
+    httpServer.listen(PORT, () => {
+      if (process.env.NODE_ENV === "production") keepAliveJob.start();
+      res({ pub, sub });
+    })
+  );
 }
+
+try {
+  const { pub, sub } = await start();
+  const addr = httpServer.address();
+  console.log(`Server running on ${JSON.stringify(addr)}`);
+
+  async function SwiftShutdown(signal: string) {
+    console.log(`${signal} received. Shutting down...`);
+
+    httpServer.close(async () => {
+      console.log("HTTP server closed.");
+
+      try {
+        await mongoose.connection.close();
+        console.log("MongoDB connection closed");
+
+        await Promise.all([redis.quit(), pub.quit(), sub.quit()]);
+        console.log("Redis connections closed");
+      } catch (err) {
+        console.error("Error closing MongoDB connection:", err);
+      }
+
+      process.exit(0);
+    });
+  }
+
+  process.on("SIGTERM", () => SwiftShutdown("SIGTERM"));
+  process.on("SIGINT", () => SwiftShutdown("SIGINT"));
+  process.on("unhandledRejection", (reason, p) => {
+    console.error("Unhandled Rejection at:", p, "reason:", reason);
+  });
+} catch (err) {
+  console.error("Server failed to start:", err);
+  process.exit(1);
+}
+
+// http://localhost:4000/test?sessionToken=70ba7462-a5df-4e60-adfb-455d8956ac47

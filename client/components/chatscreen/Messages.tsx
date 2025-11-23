@@ -84,34 +84,6 @@ function Messages({ session, id }: Props) {
 
   const { theme } = ColorMode.useTheme();
 
-  function logLatency({
-    source,
-    message,
-    clientSentAt,
-    createdAt
-  }: {
-    source: string;
-    message: string;
-    clientSentAt: string;
-    createdAt: number;
-  }) {
-    const roundTripLatency = Date.now() - new Date(clientSentAt).getTime(); // no offset
-    const now = Date.now() + (window.swtf_offset || 0);
-    const serverLatency = now - new Date(createdAt).getTime(); // offset applied
-
-    console.table([
-      {
-        Source: source,
-        RoundTripLatency_ms: roundTripLatency,
-        ServerLatency_ms: serverLatency,
-        Message: message,
-        CreatedAt: createdAt,
-        ClientSentAt: clientSentAt,
-        OffsetApplied: window.swtf_offset
-      }
-    ]);
-  }
-
   const { data, error, loading, subscribeToMore } = useQuery<
     MessagesData,
     { chatId: string }
@@ -132,21 +104,6 @@ function Messages({ session, id }: Props) {
     runSync();
   }, [data]);
 
-  // log latency when messages are fetched
-  useEffect(() => {
-    if (data?.getMessages.success) {
-      const len = data.getMessages.messages.length;
-      const msg = data.getMessages.messages[len - 1];
-      if (!msg) return;
-      logLatency({
-        source: "effect",
-        message: msg.body,
-        clientSentAt: msg.clientSentAt,
-        createdAt: msg.createdAt
-      });
-    }
-  }, [data]);
-
   // function subToNewMessage(id: string) {
   //   return subscribeToMore({
   //     variables: { chatId: id },
@@ -154,12 +111,7 @@ function Messages({ session, id }: Props) {
   //     updateQuery: (prev, update: MessageUpdate) => {
   //       if (!update.subscriptionData.data) return prev as MessagesData;
   //       const newMessage = update.subscriptionData.data.messageSent;
-  //       logLatency({
-  //         source: "subMore",
-  //         message: newMessage.body,
-  //         clientSentAt: newMessage.clientSentAt,
-  //         createdAt: newMessage.createdAt
-  //       });
+
   //       return Object.assign({}, prev, {
   //         getMessages: {
   //           ...prev.getMessages,
@@ -192,6 +144,8 @@ function Messages({ session, id }: Props) {
 
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [id]);
+
+  console.log(data?.getMessages);
 
   const BoxRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {

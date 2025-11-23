@@ -1,4 +1,3 @@
-import { Message } from "swift-mini";
 import mongoose, { type Document, Model, Types } from "mongoose";
 
 type TMessage = Document & Message<Types.ObjectId>;
@@ -22,10 +21,6 @@ const messageSchema = new mongoose.Schema<Message<Types.ObjectId>>(
     deleted: {
       type: Boolean,
       default: false
-    },
-    clientSentAt: {
-      type: String,
-      required: [true, "MongoDB error: clientSentAt is required"]
     },
     type: {
       type: String,
@@ -57,13 +52,10 @@ const messageSchema = new mongoose.Schema<Message<Types.ObjectId>>(
     editted: {
       type: Boolean,
       default: false
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now
     }
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }

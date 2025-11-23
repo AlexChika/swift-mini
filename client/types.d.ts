@@ -10,27 +10,25 @@ type ApiReturn<T, Name extends string> =
 
 /* --------------------- users --------------------- */
 type User = {
-  selected?: boolean; // remove - compose new types
-  chatId?: string; // remove - compose new types
-  _id: string; // MongoDB ObjectId
   id: string;
-  username?: string | null;
-  emailVerified?: boolean | null;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null; // set by Oauth
-  lastSeen?: Date | null;
+  username?: string;
+  emailVerified?: boolean;
+  name?: string;
+  email?: string;
+  image?: string; // set by Oauth
+  lastSeen?: Date;
   hideLastSeen?: boolean;
-  userImageUrl?: string | null; // set/upload by User
-  permanentImageUrl?: string | null;
+  permanentImageUrl?: string; // set by user
 };
+
+type UserWithChatId = User & { chatId?: string };
 
 type UserLean = {
   id: string;
-  name: string;
-  image: string;
-  username: string;
-  permanentImageUrl: string;
+  name?: string;
+  image?: string;
+  username?: string;
+  permanentImageUrl?: string;
 };
 
 type SearchUsersData = {
@@ -135,7 +133,6 @@ type sendMessageVariable = {
   body: string;
   chatId: string;
   senderId: string;
-  clientSentAt: string;
 };
 
 type MessageUpdate = {
@@ -146,7 +143,12 @@ type Message = {
   id: string;
   body: string;
   createdAt: number;
-  clientSentAt: string;
+  updatedAt: number;
+  chatId: string;
+  senderId: string;
+  deleted: boolean;
+  editted: boolean;
+  type: "text" | "image" | "video" | "audio" | "file" | "location";
   eddited: boolean;
   deleted: boolean;
   sender: UserLean;
@@ -160,6 +162,25 @@ type Message = {
       deliveredAt: number;
     };
   };
+};
+
+type DbMessage = {
+  chatId: string;
+  senderId: string;
+  body: string;
+  type: "text" | "image" | "video" | "audio" | "file" | "location";
+};
+
+type SendMessage = DbMessage & {
+  sender: UserLean;
+};
+
+type OutboundMessage = {
+  tempId: string;
+  chatId: string;
+  type: "outbound";
+  message: SendMessage;
+  status: "pending" | "success" | "failed";
 };
 
 /* ------------------- Utilities ------------------- */
@@ -226,16 +247,17 @@ namespace Swift {
     GROUP_UI_UPDATE: Create_Group_UI_State;
     GROUP_SELECTED_USERS: User[];
     CHAT_CREATED: ChatLean;
+    MESSAGE_QUEUED_ACK: { tempId: string; status: "success" | "failed" };
+    MESSAGE_CREATED_ACK: { tempId: string; status: "success" | "failed" };
+    MESSAGE_FAILED_ACK: { tempId: string; status: "success" | "failed" };
   };
 
-  type ResolverEventsMap<T extends keyof Events> = {
-    [P in T]: {
+  type ResolverEvents = {
+    [P in keyof Events]: {
       type: P;
       data: Swift.Events[P];
     };
   };
-
-  type ResolverEvents = ResolverEventsMap<keyof Swift.Events>;
 
   type ResolverEvent = ResolverEvents[keyof Swift.Events];
 }

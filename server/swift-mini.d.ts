@@ -1,6 +1,3 @@
-import { PubSub } from "graphql-subscriptions";
-import { Context } from "graphql-ws";
-
 /* ------------ model types ----------- */
 type User<T> = {
   _id: T; // MongoDB ObjectId
@@ -12,8 +9,7 @@ type User<T> = {
   image?: string | null;
   lastSeen?: Date | null;
   hideLastSeen?: boolean;
-  userImageUrl?: string | null; // set/upload by User
-  permanentImageUrl?: string | null;
+  permanentImageUrl?: string | null; // set by user
 };
 
 type Chat<T> = {
@@ -62,7 +58,6 @@ type Message<T> = {
   chatId: T;
   senderId: T;
   createdAt: Date;
-  clientSentAt: string;
   deleted: boolean;
   editted: boolean;
   meta: {
@@ -94,7 +89,7 @@ type ChatMemberPopulated = ChatMember<string> & {
 };
 
 type MessagePopulated = Message<string> & {
-  sender: User;
+  sender: UserLean;
 };
 
 type ChatLean = Chat<string> & {
@@ -115,36 +110,45 @@ type ChatPopulated = Chat<string> & {
   chat_members: ChatMemberPopulated[];
 };
 
-interface Session {
+type UserLean = {
+  id: string;
+  name: string;
+  image: string;
+  username: string;
+  permanentImageUrl: string;
+};
+
+type Session = {
   user: {
     id: string;
-    username: string;
+    username?: string;
     emailVerified: boolean;
     name?: string | null;
     email?: string | null;
     image?: string | null;
     lastSeen?: Date | null;
     hideLastSeen?: boolean;
-    userImageUrl?: string | null;
     permanentImageUrl?: string | null;
   };
 
   expires: ISODateString;
-}
+  sessionToken: string;
+  userId: string;
+};
 
 // Server Context Configuration
 type GraphqlContext = {
   session: Session | null;
-  pubsub: PubSub;
 };
 
-interface SubscriptionContext extends Context {
-  connectionParams: {
-    session: Session | null;
-  };
-}
+// interface SubscriptionContext extends Context {
+//   connectionParams: {
+//     session: Session | null;
+//   };
+// }
 
 namespace Swift {
+  // chat Jobs
   type DuoChatCreatedJob = {
     chatId: string;
     members: {
@@ -169,4 +173,62 @@ namespace Swift {
       data: ChatJobMap[K];
     };
   }[keyof ChatJobMap];
+
+  // message jobs
+  type MessageCreatedBase<K extends boolean> = {
+    tempId: string;
+    chatId: string;
+  } & (K extends true
+    ? {
+        success: true;
+        msg: "success";
+        message: Message<unknown> & { sender: UserLean };
+      }
+    : {
+        success: false;
+        msg: string;
+        errType: "client" | "server";
+        message: CreateMessagePayLoad["message"];
+      });
+
+  type MessageFailedAckJob = MessageCreatedBase<false>;
+  type MessageCreatedAckJob = MessageCreatedBase<true>;
+  type CreateMessageJob = CreateMessagePayLoad & { userId: string };
+  type CreateMessageDuplicateJob = CreateMessageJob & {
+    messageIds: {
+      cmid: string;
+      smid: string;
+    };
+  };
+
+  type MessageJobMap = {
+    createMessage: CreateMessageJob;
+    createMessageDuplicate: CreateMessageJob;
+    messageCreatedAck: MessageCreatedAckJob;
+    messageFailedAck: MessageFailedAckJob;
+    jobeNameTwo: string;
+  };
+
+  type MessageJob = {
+    [K in keyof MessageJobMap]: {
+      name: K;
+      data: MessageJobMap[K];
+    };
+  }[keyof MessageJobMap];
+
+  // sockets
+  type CreateMessagePayLoad = {
+    tempId: string;
+    message: {
+      chatId: string;
+      senderId: string;
+      body: string;
+      type: "text" | "image" | "video" | "audio" | "file" | "location";
+      sender: UserLean;
+    };
+  };
+
+  type SocketOnEvents = {
+    CREATE_MESSAGE: CreateMessagePayLoad;
+  };
 }

@@ -1,12 +1,9 @@
 import React from "react";
-import toast from "react-hot-toast";
 import { Session } from "next-auth";
 import { SendIcon } from "@/lib/icons";
-import { useMutation } from "@apollo/client/react";
-import handleError from "@/lib/helpers/handleError";
-import messageOps from "@/graphql/operations/message.ops";
 import { Flex, IconButton, Box, Icon, HStack } from "@chakra-ui/react";
 import useMobileInputScrollFix from "@/lib/hooks/useMobileScrollFix";
+import { outgoingMessageResolver } from "@/socket/outgoingMessageResolver";
 
 type Props = {
   session: Session;
@@ -15,10 +12,6 @@ type Props = {
 
 function MessageInput(props: Props) {
   const { id, session } = props;
-
-  const [send, { error }] = useMutation<sendMessageData, sendMessageVariable>(
-    messageOps.Mutations.sendMessage
-  );
 
   // btn : submit handler
   function handleOnSubmit() {
@@ -32,29 +25,16 @@ function MessageInput(props: Props) {
     sendMessage(textString);
   }
 
-  // called by the submit and enter btn:sends message
   async function sendMessage(str: string) {
-    const newMessage = {
+    const newMessage: SendMessage = {
       body: str,
       chatId: id,
-      senderId: session.user.id
+      type: "text" as const,
+      senderId: session.user.id,
+      sender: getSenderFromUser(session.user)
     };
 
-    try {
-      await send({
-        variables: {
-          ...newMessage,
-          clientSentAt: new Date().toISOString()
-        }
-      });
-
-      if (error) toast.error("Could not send");
-    } catch (error) {
-      toast.error("Could not send");
-      handleError(error, (err) => {
-        console.log("onMessageError", err);
-      });
-    }
+    outgoingMessageResolver.enqueueMessage(newMessage);
   }
 
   function onKeyDownHandler(e: React.KeyboardEvent) {
@@ -135,3 +115,13 @@ function MessageInput(props: Props) {
 }
 
 export default MessageInput;
+
+function getSenderFromUser(user: User): UserLean {
+  return {
+    id: user.id,
+    username: user.username,
+    image: user.image,
+    name: user.name,
+    permanentImageUrl: user.permanentImageUrl
+  };
+}

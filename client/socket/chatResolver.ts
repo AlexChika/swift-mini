@@ -78,7 +78,7 @@ class ChatResolver {
 
     this.#queue[++this.#length] = event;
 
-    if (!this.#scheduled) {
+    if (!this.#scheduled && !this.#resolving) {
       this.#scheduled = true;
       queueMicrotask(() => this.#resolver());
     }
@@ -97,6 +97,7 @@ class ChatResolver {
   initResolver(cb: (chat: ChatLean[]) => void, allChats: ChatLean[]) {
     this.#cb = cb;
     this.#chats = [...allChats];
+    this.#reset();
     return ((this.#initialized = true), this.#initialized);
   }
 }

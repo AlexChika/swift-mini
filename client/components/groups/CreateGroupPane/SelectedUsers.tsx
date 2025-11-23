@@ -61,8 +61,7 @@ function SelectedUser(props: SelectedProp) {
   const name = user.name || "name here";
   const username = user.username || "username here";
 
-  const image =
-    user.permanentImageUrl ?? user.userImageUrl ?? user.image ?? undefined;
+  const image = user.permanentImageUrl ?? user.image ?? undefined;
 
   const colorPalette = ["purple", "blue", "green", "pink", "red", "black"];
 

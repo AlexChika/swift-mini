@@ -169,6 +169,48 @@ function getCloudinaryUrl({
   return `https://res.cloudinary.com/${cloudName}/image/upload/${transform}/${folderPath}${publicId}.${format}`;
 }
 
+type RandomIdOptions =
+  | { type: "number"; min?: number; max?: number }
+  | { type: "alphaNumeric"; length?: number };
+
+function getRandomId(opts: {
+  type: "number";
+  min?: number;
+  max?: number;
+}): number;
+function getRandomId(opts: { type: "alphaNumeric"; length?: number }): string;
+function getRandomId(opts: RandomIdOptions) {
+  const type = opts.type;
+  let arr: Uint8Array<ArrayBuffer>;
+
+  if (type === "number") {
+    const { min = 1, max = 1000000000000 } = opts;
+    arr = new Uint8Array(8);
+    crypto.getRandomValues(arr);
+
+    let randStr = "";
+    for (let i = 0; i < arr.length; i++) {
+      randStr += arr[i].toString().padStart(3, "0");
+    }
+
+    const randNum = Number(randStr.slice(0, 15));
+    const range = max - min + 1;
+
+    return min + (randNum % range);
+  } else {
+    const length = opts.length || 16;
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    arr = new Uint8Array(length);
+    crypto.getRandomValues(arr);
+    let id = "";
+    for (let i = 0; i < length; i++) {
+      id += chars[arr[i] % chars.length];
+    }
+    return id;
+  }
+}
+
 export * as Cookies from "./clientcookie";
 export * as ColorMode from "./color-mode";
 export { reloadSession } from "./reloadSession";
@@ -182,5 +224,6 @@ export {
   throttle,
   truthy,
   getSearchParam,
-  getCloudinaryUrl
+  getCloudinaryUrl,
+  getRandomId
 };

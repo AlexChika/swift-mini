@@ -8,51 +8,6 @@ import CategorizedUsers from "./CategorizedUsers";
 import { useCallback, useMemo, useState } from "react";
 import { Box, Text, Input, Center, HStack } from "@chakra-ui/react";
 
-export const sampleUsers: User[] = [
-  { id: "1231", username: "ochkika", _id: "lol" },
-  { id: "1232", username: "omhkika", _id: "lol" },
-  { id: "1233", username: "oahkika", _id: "lol" },
-  { id: "1234", username: "fahkika", _id: "lol" },
-  { id: "1235", username: "fzhkika", _id: "lol" },
-  { id: "1236", username: "fqhkika", _id: "lol" },
-  { id: "1237", username: "gchkika", _id: "lol" },
-  { id: "1238", username: "gdhkika", _id: "lol" },
-  { id: "1239", username: "gyhkika", _id: "lol" },
-  { id: "0123", username: "glhkika", _id: "lol" },
-  { id: "11123", username: "hchkika", _id: "lol" },
-  { id: "1223", username: "hohkika", _id: "lol" },
-  { id: "13203789", username: "hphkika", _id: "lol" },
-  { id: "1423", username: "hahkika", _id: "lol" },
-  { id: "1523", username: "inhkika", _id: "lol" },
-  { id: "1623", username: "ifhkika", _id: "lol" },
-  { id: "1723", username: "ixhkika", _id: "lol" },
-  { id: "1823", username: "iphkika", _id: "lol" },
-  { id: "1923", username: "jlhkika", _id: "lol" },
-  { id: "2023", username: "jahkika", _id: "lol" },
-  { id: "2123", username: "jnhkika", _id: "lol" },
-  { id: "22123", username: "jqhkika", _id: "lol" },
-  { id: "23123", username: "kphkika", _id: "lol" },
-  { id: "24123", username: "kahkika", _id: "lol" },
-  { id: "25123", username: "kzhkika", _id: "lol" },
-  { id: "1263", username: "pihkika", _id: "lol" },
-  { id: "1273", username: "plhkika", _id: "lol" },
-  { id: "1283", username: "pchkika", _id: "lol" },
-  { id: "1293", username: "lchkika", _id: "lol" },
-  { id: "1230", username: "achkika", _id: "lol" },
-  { id: "3123", username: "mchkika", _id: "lol" },
-  { id: "32123", username: "nchkika", _id: "lol" },
-  { id: "1323", username: "echkika", _id: "lol" },
-  { id: "33123", username: "cchkika", _id: "lol" },
-  { id: "34123", username: "dchkika", _id: "lol" },
-  { id: "35123", username: "bchkika", _id: "lol" },
-  { id: "36123", username: "7chkika", _id: "lol" },
-  { id: "37123", username: "7czhkika", _id: "lol" },
-  { id: "38123", username: "7mchkika", _id: "lol" },
-  { id: "39123", username: "7qchkika", _id: "lol" }
-];
-
-type UserWithChatId = User & { chatId: string };
-
 type Props = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: "user" | "group";
@@ -69,7 +24,6 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
   const [lists] = useState(() => {
     if (type === "group") return extractGroups(allChats);
     else return extractUniqueMembers(allChats, session.user.id);
-    // else return sampleUsers; // mock code - remove this.
   });
 
   const _searchUsers = useCallback(
@@ -240,7 +194,7 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
 export default SearchUsersContactsPane;
 
 export function extractUniqueMembers(array: ChatLean[], userId: string) {
-  const user: User[] = [];
+  const user: UserWithChatId[] = [];
   const lookUp: Record<string, boolean> = {};
 
   for (let i = 0; i < array.length; i++) {

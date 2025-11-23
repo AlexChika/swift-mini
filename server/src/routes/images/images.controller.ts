@@ -32,7 +32,7 @@ const getImageController: RequestHandler = async function (req, res) {
 
     const user = await userModel.findById(userId).lean();
 
-    const userImage = user?.userImageUrl || user?.image;
+    const userImage = user?.image;
 
     if (!userImage) {
       return res.status(404).send("Avatar not found");

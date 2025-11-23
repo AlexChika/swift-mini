@@ -1,4 +1,3 @@
-import { ChatMember } from "swift-mini";
 import mongoose, { type Document, Model, Types } from "mongoose";
 
 type TChatMember = Document & ChatMember<Types.ObjectId>;
@@ -84,7 +83,7 @@ chatMemberSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
 chatMemberSchema.index({ chatId: 1, memberId: 1 }, { unique: true });
-chatMemberSchema.index({ memberId: 1, chatType: 1, chatId: 1 });
+chatMemberSchema.index({ memberId: 1, chatId: 1, chatType: 1 });
 type ChatMemberModel = Model<TChatMember>;
 const chatMemberModel =
   (mongoose.models.ChatMember as ChatMemberModel) ||

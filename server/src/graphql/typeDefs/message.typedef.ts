@@ -5,7 +5,7 @@ type Message {
     senderId:String!
     body:String!
     createdAt:Date!
-    clientSentAt:String!
+    updatedAt:Date!
     deleted:Boolean!
     editted:Boolean!
     meta: MessageMeta!
@@ -20,7 +20,7 @@ type Query {
 }
 
 type Mutation {
-    sendMessage( chatId:String!, senderId:String!, body:String!, clientSentAt: String!) : Boolean!
+    sendMessage( chatId:String!, senderId:String!, body:String!) : Boolean!
 }
 
 type Subscription {

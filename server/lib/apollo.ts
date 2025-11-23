@@ -1,8 +1,6 @@
 import { type Express } from "express";
-import { GraphqlContext } from "swift-mini";
 import typeDefs from "@src/graphql/typeDefs";
 import { ApolloServer } from "@apollo/server";
-import { PubSub } from "graphql-subscriptions";
 import resolvers from "@src/graphql/resolvers";
 import { getCachedSession } from "./getSession";
 import { expressMiddleware } from "@as-integrations/express5";
@@ -12,8 +10,6 @@ async function initApolloServer(
   app: Express,
   httpServer: ReturnType<typeof import("http").createServer>
 ) {
-  const pubsub = new PubSub(); // temporary pubsub instance
-
   const server = new ApolloServer<GraphqlContext>({
     typeDefs,
     resolvers,
@@ -29,8 +25,8 @@ async function initApolloServer(
     expressMiddleware(server, {
       context: async ({ req }): Promise<GraphqlContext> => {
         const sessionUrl = req.headers["x-session-url"] as string;
-        const session = await getCachedSession(req, sessionUrl, "localMem");
-        return { session, pubsub };
+        const session = await getCachedSession(req, sessionUrl);
+        return { session };
       }
     })
   );

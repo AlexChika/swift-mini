@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Swift } from "swift-mini";
 import { Job, Worker } from "bullmq";
 import { getIO } from "@src/sockets/socket";
 import { queueConfig } from "../queues.config";
 import { SOCKET_EVENTS } from "@lib/utils/constants";
-import { redisGetUserSockets } from "@src/redis/user.redis";
-import { redisSetChatMembers } from "@src/redis/chat.redis";
+import { redisGetUserSocketsWithRetry } from "@src/redis/user.redis";
+import { redisSetChatMembersWithRetry } from "@src/redis/chat.redis";
 import { getChatCreated } from "@src/graphql/services/chat.service";
 
 export async function jobChatCreated(data: Swift.DuoChatCreatedJob) {
@@ -13,17 +12,17 @@ export async function jobChatCreated(data: Swift.DuoChatCreatedJob) {
   const { userId, otherUserId } = members;
   const io = getIO();
 
-  try {
-    const thisUserSockets = await redisGetUserSockets(userId);
-    const otherUserSockets = await redisGetUserSockets(otherUserId);
+  const memberIds = [userId, otherUserId];
 
-    const chat = await getChatCreated(chatId, userId);
+  await redisSetChatMembersWithRetry(chatId, memberIds);
+  const chat = await getChatCreated(chatId);
 
-    [...thisUserSockets, ...otherUserSockets].forEach((sid) => {
+  for (const memberId of memberIds) {
+    const memberSockets = await redisGetUserSocketsWithRetry(memberId);
+
+    memberSockets.forEach((sid) => {
       io.to(sid).emit(SOCKET_EVENTS.CHAT_CREATED, { data: chat });
     });
-  } catch (error) {
-    console.log("error @ jobChatCreated", error);
   }
 }
 
@@ -31,19 +30,15 @@ export async function jobGroupChatCreated(data: Swift.GroupChatCreatedJob) {
   const { chatId, memberIds } = data;
   const io = getIO();
 
-  try {
-    await redisSetChatMembers(chatId, memberIds);
-    const chat = await getChatCreated(chatId, "");
+  await redisSetChatMembersWithRetry(chatId, memberIds);
+  const chat = await getChatCreated(chatId);
 
-    for (const memberId of memberIds) {
-      const memberSockets = await redisGetUserSockets(memberId);
+  for (const memberId of memberIds) {
+    const memberSockets = await redisGetUserSocketsWithRetry(memberId);
 
-      memberSockets.forEach((sid) => {
-        io.to(sid).emit(SOCKET_EVENTS.CHAT_CREATED, { data: chat });
-      });
-    }
-  } catch (error) {
-    console.log("error @ jobGroupChatCreated", error);
+    memberSockets.forEach((sid) => {
+      io.to(sid).emit(SOCKET_EVENTS.CHAT_CREATED, { data: chat });
+    });
   }
 }
 
@@ -52,20 +47,24 @@ export function registerChatWorker() {
   const worker = new Worker<ChatJob["data"], any, ChatJob["name"]>(
     "chats",
     async (job: Job<ChatJob["data"], any, ChatJob["name"]>) => {
+      // /* ---------------- duo chat created --------------- */
       if (job.name === "duoChatCreated") {
         await jobChatCreated(job.data as Swift.DuoChatCreatedJob);
-      } else if (job.name === "groupChatCreated") {
+      }
+
+      // /* --------------- group chat created -------------- */
+      else if (job.name === "groupChatCreated") {
         await jobGroupChatCreated(job.data as Swift.GroupChatCreatedJob);
-      } else if (job.name === "test") {
+      }
+
+      // ....
+      else if (job.name === "test") {
         console.log("Test job data:", job.data);
       }
     },
     queueConfig.redis
   );
 
-  worker.on("completed", (job) =>
-    console.log(`✅ Job ${job.name} (${job.id}) completed`)
-  );
   worker.on("failed", (job, err) =>
     console.error(`❌ Job ${job?.name} failed:`, err)
   );

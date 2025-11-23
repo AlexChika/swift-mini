@@ -1,4 +1,3 @@
-import { User } from "swift-mini";
 import mongoose, { type Document, Model, Types } from "mongoose";
 
 type TUserDocument = User<Types.ObjectId> & Document;
@@ -10,11 +9,10 @@ const userSchema = new mongoose.Schema<User<Types.ObjectId>>(
     image: String,
     username: String,
     emailVerified: Boolean,
-    userImageUrl: String,
     permanentImageUrl: String,
     lastSeen: {
       type: Date,
-      default: null
+      default: Date.now
     },
     hideLastSeen: {
       type: Boolean,

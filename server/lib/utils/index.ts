@@ -102,7 +102,7 @@ function getRandomId(opts: RandomIdOptions) {
     const range = max - min + 1;
 
     return min + (randNum % range);
-  } else if (type === "alphaNumeric") {
+  } else {
     const length = opts.length || 16;
     const chars =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -212,6 +212,66 @@ function validateField(
   return { success: true };
 }
 
+/* --------------- W --------------- */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type RetryOptions = {
+  retries?: number;
+  baseDelay?: number;
+  maxDelay?: number;
+  onRetry?: (error: any, attempt: number, delay: number) => void;
+};
+
+/**
+ * A utility function that wraps an async function with retry logic.
+ * @param fn The async function to execute.
+ * @param options Configuration for retry behavior.
+ * @param options.retries The maximum number of retries. Default is 3.
+ * @param options.delay The delay between retries in milliseconds. Default is 1000.
+ * @param options.onRetry A callback function that gets called on each retry attempt.
+ * @returns A function that when called, executes the original async function with retry logic.
+ */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function withRetry<T extends (...args: any[]) => Promise<any>>(
+  fn: T,
+  options: RetryOptions = {}
+) {
+  const {
+    retries = 3,
+    baseDelay = 25, // much smaller & safer
+    maxDelay = 200, // protects from huge delays
+    onRetry
+  } = options;
+
+  return async function (
+    ...args: Parameters<T>
+  ): Promise<Awaited<ReturnType<T>>> {
+    let attempt = 0;
+    let lastError: any;
+
+    while (attempt < retries) {
+      try {
+        return await fn(...args);
+      } catch (error) {
+        attempt++;
+        lastError = error;
+
+        if (attempt >= retries) break;
+
+        const delay =
+          Math.min(baseDelay * 2 ** (attempt - 1), maxDelay) +
+          Math.random() * 20; // jitter
+
+        onRetry?.(error, attempt, delay);
+
+        await new Promise((res) => setTimeout(res, delay));
+      }
+    }
+
+    throw lastError;
+  };
+}
+
 export {
   createPermanentUrl,
   getRandomId,
@@ -219,5 +279,6 @@ export {
   merge,
   validateBase64Image,
   validateField,
-  parseCookies
+  parseCookies,
+  withRetry
 };

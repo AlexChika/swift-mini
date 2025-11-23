@@ -4,7 +4,6 @@ const messageFields = `
        id
         body
         createdAt
-        clientSentAt
         editted
         deleted
         meta {
@@ -41,18 +40,8 @@ const messages = gql`
 
 // Mutation
 const sendMessage = gql`
-  mutation SendMessage(
-    $senderId: String!
-    $chatId: String!
-    $body: String!
-    $clientSentAt: String!
-  ) {
-    sendMessage(
-      senderId: $senderId
-      chatId: $chatId
-      body: $body
-      clientSentAt: $clientSentAt
-    )
+  mutation SendMessage($senderId: String!, $chatId: String!, $body: String!) {
+    sendMessage(senderId: $senderId, chatId: $chatId, body: $body)
   }
 `;
 

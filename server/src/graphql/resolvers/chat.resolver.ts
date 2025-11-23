@@ -1,27 +1,19 @@
 import {
-  ApiReturn,
-  ChatLean,
-  ChatPopulated,
-  GraphqlContext,
-  User
-} from "swift-mini";
-import mongoose from "mongoose";
-import { GraphQLError } from "graphql";
-import {
   inviteLinkEncoder,
   validateBase64Image,
   validateField
 } from "@lib/utils";
-import chatModel from "@src/models/chat.model";
-import userModel from "@src/models/user.model";
-import { withFilter } from "graphql-subscriptions";
-import chatMemberModel from "@src/models/chatMember.model";
-import { getCloudinaryUrl, uploadToCloudinary } from "@lib/cloudinary";
 import {
   enqueueChatCreated,
   enqueueGroupCreated
 } from "@src/queue/queues/chat.queues";
+import mongoose from "mongoose";
+import { GraphQLError } from "graphql";
+import chatModel from "@src/models/chat.model";
+import userModel from "@src/models/user.model";
 import { getChats } from "../services/chat.service";
+import chatMemberModel from "@src/models/chatMember.model";
+import { getCloudinaryUrl, uploadToCloudinary } from "@lib/cloudinary";
 
 type createGroupChatArgs = {
   description: string;
@@ -56,7 +48,6 @@ const chatResolver = {
       }
 
       const { id } = session.user;
-      const userId = new mongoose.Types.ObjectId(id);
 
       try {
         const chats = await getChats(id);
@@ -304,9 +295,6 @@ const chatResolver = {
           delete chat.joinRequestUsers; // Clean up the temporary field
         }
 
-        // console.log(JSON.stringify(chat, null, 2));
-        // console.log(chat);
-
         return chat;
       } catch (error) {
         const err = error as unknown as { message: string };
@@ -322,7 +310,7 @@ const chatResolver = {
       args: createDuoChatArgs,
       ctx: GraphqlContext
     ): Promise<ReturnedCreateChat> => {
-      const { session, pubsub } = ctx;
+      const { session } = ctx;
       const { otherUserId } = args;
 
       /* ------------ // is user authenticated ----------- */
@@ -566,34 +554,6 @@ const chatResolver = {
         console.log("createDuoChat error", error);
         throw new GraphQLError(err.message);
       }
-    }
-  },
-
-  Subscription: {
-    chatCreated: {
-      subscribe: withFilter(
-        (_: unknown, __: unknown, ctx: GraphqlContext) => {
-          const { pubsub } = ctx;
-          return pubsub.asyncIterator(["CHAT_CREATED"]);
-        },
-        (
-          payload: {
-            chatCreated: ChatLean;
-          },
-          _: unknown,
-          ctx: GraphqlContext
-        ) => {
-          const { session } = ctx;
-          const { chatCreated } = payload;
-
-          console.log({ chatCreated });
-
-          const userIsAMember = !!chatCreated.duo_chat_members.find(
-            (m) => m.memberId.toString() === session?.user.id
-          );
-          return userIsAMember;
-        }
-      )
     }
   }
 };

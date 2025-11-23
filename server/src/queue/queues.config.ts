@@ -11,5 +11,8 @@ export const queueConfig = {
     backoff: { type: "exponential", delay: 3000 },
     removeOnComplete: true,
     removeOnFail: true
-  }
-};
+  },
+
+  maxAttempts: 6,
+  baseAttempts: 3
+} as const;

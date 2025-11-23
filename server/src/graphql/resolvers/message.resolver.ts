@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
 import { GraphQLError } from "graphql";
-import { withFilter } from "graphql-subscriptions";
 import messageModel from "@src/models/messages.model";
 import chatMemberModel from "@src/models/chatMember.model";
-import { ApiReturn, GraphqlContext, Message } from "swift-mini";
 
 type SendMessageArgs = {
   senderId: string;
   chatId: string;
   body: string;
-  clientSentAt: Date;
 };
 
 type MessageResponse = ApiReturn<Message<string>[], "messages">;
@@ -72,7 +69,6 @@ const messageResolver = {
               updatedAt: 1,
               sender: 1,
               deleted: 1,
-              clientSentAt: 1,
               editted: 1,
               meta: 1
               // sender: {
@@ -104,12 +100,12 @@ const messageResolver = {
       args: SendMessageArgs,
       ctx: GraphqlContext
     ): Promise<boolean> => {
-      const { session, pubsub } = ctx;
+      const { session } = ctx;
 
       // check if user is authenticated
       if (!session?.user) throw new GraphQLError("User is not authenticated");
 
-      const { body, chatId, senderId, clientSentAt } = args;
+      const { body, chatId, senderId } = args;
 
       if (senderId !== session.user.id)
         throw new GraphQLError("Operation not allowed");
@@ -122,12 +118,6 @@ const messageResolver = {
       // validate senderId is a valid mongo id
       if (!mongoose.isValidObjectId(senderId)) {
         throw new GraphQLError("Invalid sender ID");
-      }
-
-      // debug only... remove this
-      // validate clientSentAt is a valid date
-      if (isNaN(new Date(clientSentAt).getTime())) {
-        throw new GraphQLError("Invalid clientSentAt date");
       }
 
       //validate body is a string
@@ -150,51 +140,16 @@ const messageResolver = {
         const newMessage = await messageModel.create({
           body,
           chatId,
-          senderId,
-          clientSentAt
+          senderId
         });
 
         console.timeEnd("create mesage");
-
-        // publish events to users
-        pubsub.publish("MESSAGE_SENT", {
-          messageSent: {
-            ...newMessage.toObject(),
-            sender: {
-              id: session.user.id,
-              username: session.user.username,
-              image: session.user.image,
-              name: session.user.name,
-              permanentImageUrl: session.user.permanentImageUrl
-            }
-          }
-        });
-        console.log(new Date().getMilliseconds(), "published");
         return true;
       } catch (error) {
         const err = error as unknown as { message: string };
         console.log("sendMessage error", error);
         throw new GraphQLError(err.message);
       }
-    }
-  },
-
-  Subscription: {
-    messageSent: {
-      subscribe: withFilter(
-        (_: unknown, __: unknown, ctx: GraphqlContext) => {
-          const { pubsub } = ctx;
-          return pubsub.asyncIterator(["MESSAGE_SENT"]);
-        },
-        (
-          payload: { messageSent: Message<string> },
-          args: { chatId: string },
-          ___: unknown
-        ) => {
-          console.log(new Date().getMilliseconds(), "published 2");
-          return payload.messageSent.chatId.toString() === args.chatId;
-        }
-      )
     }
   }
 };

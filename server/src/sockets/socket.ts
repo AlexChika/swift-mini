@@ -4,6 +4,7 @@ import { getCachedSession } from "@lib/getSession";
 import { DefaultEventsMap, Server } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { socketOnConnect, socketOnDisconnect } from "./user.socket";
+import { socketOnCreateMessage } from "./message.socket";
 
 let io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 
@@ -32,11 +33,13 @@ export function initSocketServer(
     if (!sessionUrl || !cookies)
       return next(new Error("AUTH: User is not authenticated"));
 
-    const session = await getCachedSession(cookies, sessionUrl, "localMem");
+    const session = await getCachedSession(cookies, sessionUrl);
 
     if (!session) return next(new Error("AUTH: User is not authenticated"));
 
     socket.data.user = session.user;
+    socket.data.sessionToken = session.sessionToken;
+
     next();
   });
 
@@ -44,6 +47,7 @@ export function initSocketServer(
     socketOnConnect(io, socket);
 
     // all other socket event handlers here
+    socketOnCreateMessage(io, socket);
 
     socketOnDisconnect(io, socket);
   });

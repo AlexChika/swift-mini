@@ -20,7 +20,7 @@ type Prop = BoxProps & {
   } & (
     | {
         type: "user";
-        userList: User[];
+        userList: UserWithChatId[];
       }
     | {
         type: "group";
@@ -106,7 +106,7 @@ type UserProp = {
 } & (
   | {
       type: "user";
-      user: User;
+      user: UserWithChatId;
     }
   | {
       type: "group";
@@ -129,11 +129,7 @@ function User(props: UserProp) {
     username = props.user.username || "";
     id = props.user.id;
     chatId = props.user.chatId;
-    image =
-      props.user.permanentImageUrl ??
-      props.user.userImageUrl ??
-      props.user.image ??
-      undefined;
+    image = props.user.permanentImageUrl ?? props.user.image ?? undefined;
   }
 
   if (type == "group") {

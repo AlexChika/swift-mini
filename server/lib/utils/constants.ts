@@ -51,15 +51,32 @@ export const REDIS_URL =
  * @property {string} chatMembers - Prefix for group chat members list. Redis data is a SET.,
  */
 export const REDIS_KEYS = {
-  userSockets: "user:sockets:", // Prefix for user socket IDs SET
+  /**
+   * Prefix for user socket IDs SET. `user:sockets:<userid>`
+   */
+  userSockets: "user:sockets:",
 
-  userSessions: "user:sessions:", // Prefix for users session token String.
+  /**
+   * Prefix for users session token. `user:sessions:<sessiontoken>`
+   */
+  userSessions: "user:sessions:",
 
-  sessionData: "session:data:", // Prefix for session data hash
+  /**
+   * Prefix for group chat members list `chat:members:<chatid>`
+   */
+  chatMembers: "chat:members:",
 
-  chatMembers: "chat:members:" // Prefix for group chat members list,
+  /**
+   * Prefix for message idempotency keys `message:idempotency:<cmid>`
+   */
+  messageIdempotency: "message:idempotency:"
 } as const;
 
 export const SOCKET_EVENTS = {
-  CHAT_CREATED: "CHAT_CREATED"
+  CHAT_CREATED: "CHAT_CREATED",
+  CREATE_MESSAGE: "CREATE_MESSAGE",
+  MESSAGE_QUEUED_ACK: "MESSAGE_QUEUED_ACK",
+  MESSAGE_STATUS_ACK: "MESSAGE_STATUS_ACK",
+  MESSAGE_FAILED_ACK: "MESSAGE_FAILED_ACK",
+  MESSAGE_CREATED_ACK: "MESSAGE_CREATED_ACK"
 } as const;

@@ -20,7 +20,6 @@ export async function socketOnConnect(_: IO, socket: SOCKET) {
 
 export async function socketOnDisconnect(_: IO, socket: SOCKET) {
   socket.on("disconnect", async () => {
-    console.log("socket disconnect called");
     try {
       await redisRemoveUserSocket(socket.data.user.id, socket.id);
     } catch (error) {
