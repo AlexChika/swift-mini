@@ -24,8 +24,8 @@ export default defineConfig(
   ]),
   eslint.configs.recommended,
   tseslint.configs.recommended,
-  [nexLint.flatConfig.recommended],
-  [nexLint.flatConfig.coreWebVitals],
+  [nexLint.configs.recommended],
+  [nexLint.configs["core-web-vitals"]],
 
   // [reactLint.configs.flat.recommended],
   // [reactLint.configs.flat["jsx-runtime"]],

@@ -158,6 +158,15 @@ function Messages({ session, id }: Props) {
     (data?.getMessages.success && data?.getMessages.messages) || []
   );
 
+  const isUsersFirstMessage = (messages: Message[], i: number) => {
+    const prevMessage = messages[i - 1];
+    const m = messages[i]; // current message
+    if (!prevMessage) return true;
+
+    if (m.sender.id === prevMessage.sender.id) return false;
+    return true;
+  };
+
   // TODO: use rems and ems
   return (
     // calc(100% - 60px) => 60px accounts for the MessageHeader
@@ -208,13 +217,10 @@ function Messages({ session, id }: Props) {
               <React.Fragment key={i}>
                 <DateDemacator key={m.id} demacatorText={renderObj[m.id]} />
                 <Message
-                  usersFirstMessageAfterOthers={(() => {
-                    const prevMessage = messages[i - 1];
-                    if (!prevMessage) return true;
-
-                    if (m.sender.id === prevMessage.sender.id) return false;
-                    return true;
-                  })()}
+                  usersFirstMessageAfterOthers={isUsersFirstMessage(
+                    messages,
+                    i
+                  )}
                   message={m}
                   sentByMe={session.user.id === m.sender.id}
                   key={m.id + i}

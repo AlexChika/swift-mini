@@ -23,6 +23,11 @@ type FetchChats =
       error: ErrorLike | Error;
     };
 
+/**
+ * Fetches all chats for the current user from the GraphQL server.
+ * This function uses Apollo Client's "all" error policy to ensure it returns
+ * partial data if available even when GraphQL errors occur. Hence, the async funcion does not throw.
+ */
 async function fetchChats(): Promise<FetchChats> {
   const { data, error } = await client.query<GetChats>({
     query: chatOps.Queries.getChats,
@@ -30,7 +35,7 @@ async function fetchChats(): Promise<FetchChats> {
     errorPolicy: "all"
   });
 
-  if (!data?.getChats || error) {
+  if (error || !data?.getChats) {
     return {
       getChats: null,
       error: error || new Error("Error fetching chats")

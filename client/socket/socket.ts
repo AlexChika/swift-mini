@@ -14,7 +14,7 @@ const socket = io(url, {
   withCredentials: true,
   autoConnect: false,
   auth: {
-    platform: "web",
+    platform: "web", // TODO: add platform to env
     sessionUrl: process.env.NEXT_PUBLIC_SESSION_URL
   }
 });
