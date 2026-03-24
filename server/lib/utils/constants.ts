@@ -40,7 +40,7 @@ const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 export const REDIS_URL =
   process.env.NODE_ENV === "development"
     ? "redis://127.0.0.1:6379"
-    : `rediss://default:${REDIS_PASSWORD}@sought-wolf-15913.upstash.io:6379`;
+    : `rediss://default:${REDIS_PASSWORD}@pretty-rooster-66194.upstash.io:6379`;
 
 /**
  *  Redis keys used in the application.

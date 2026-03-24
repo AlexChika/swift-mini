@@ -65,7 +65,7 @@ socket.on(socketOnEvents.CHAT_CREATED, (payload: Payload<ChatLean>) => {
 socket.on(
   socketOnEvents.MESSAGE_QUEUED_ACK,
   (payload: Payload<Swift.Events["MESSAGE_QUEUED_ACK"]>) => {
-    console.log("message created ack", payload);
+    console.log("message queued ack", payload);
     swiftEvent.emit(socketOnEvents.MESSAGE_QUEUED_ACK, payload);
   }
 );
@@ -73,7 +73,7 @@ socket.on(
 socket.on(
   socketOnEvents.MESSAGE_CREATED_ACK,
   (payload: Payload<Swift.Events["MESSAGE_CREATED_ACK"]>) => {
-    console.log("message created ack", payload);
+    console.log("message created ack hhhh", payload);
     swiftEvent.emit(socketOnEvents.MESSAGE_CREATED_ACK, payload);
   }
 );

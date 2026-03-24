@@ -105,5 +105,3 @@ try {
   console.error("Server failed to start:", err);
   process.exit(1);
 }
-
-// http://localhost:4000/test?sessionToken=70ba7462-a5df-4e60-adfb-455d8956ac47

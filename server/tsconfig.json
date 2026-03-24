@@ -7,8 +7,10 @@
 
   "compilerOptions": {
     "lib": ["ES2024"],
+    // "module": "es2022", // update in future
+    // "target": "es2022", // update in future
     "module": "es2022",
-    "target": "es2022",
+    "target": "es2024",
     "sourceMap": true,
     "noEmit": true,
     "baseUrl": ".",
@@ -18,12 +20,12 @@
       "@src/*": ["src/*"],
       "@models/*": ["src/models/*"]
     },
-
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "bundler",
+    // "moduleResolution": "nodenext", // update in future
     "allowImportingTsExtensions": true
   }
 }

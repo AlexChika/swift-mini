@@ -1,8 +1,15 @@
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import nexLint from "@next/eslint-plugin-next";
-import reactLint from "eslint-plugin-react";
-import reactHooksLint from "eslint-plugin-react-hooks";
+
+// yet to support eslint 10
+// import reactLint from "eslint-plugin-react";
+
+// replacing reactLint
+import eslintReact from "@eslint-react/eslint-plugin";
+
+// yet to support eslint 10
+// import reactHooksLint from "eslint-plugin-react-hooks";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig(
@@ -19,9 +26,14 @@ export default defineConfig(
   tseslint.configs.recommended,
   [nexLint.flatConfig.recommended],
   [nexLint.flatConfig.coreWebVitals],
-  [reactLint.configs.flat.recommended],
-  [reactLint.configs.flat["jsx-runtime"]],
-  [reactHooksLint.configs["recommended-latest"]],
+
+  // [reactLint.configs.flat.recommended],
+  // [reactLint.configs.flat["jsx-runtime"]],
+
+  // replacing reactLint
+  [eslintReact.configs["recommended-typescript"]],
+
+  // [reactHooksLint.configs["recommended-latest"]],
 
   [
     {

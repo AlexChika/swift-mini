@@ -48,7 +48,7 @@ export const redisGetMessageIdemKeysWithRetry = withRetry(
   {
     onRetry: (err: Error, attempt) => {
       console.error(
-        `Error on set message idempotency keys. Attempt: ${attempt}. Error: ${err.message || err}`
+        `Error on get message idempotency keys. Attempt: ${attempt}. Error: ${err.message || err}`
       );
     }
   }

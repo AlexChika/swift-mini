@@ -10,6 +10,7 @@ type Req = Request | string;
 
 async function getSession(req: Req, url: string): Promise<Session | null> {
   try {
+    if (!url) return null;
     const cookie = typeof req === "string" ? req : req.headers.cookie;
 
     const fetchOptions = req ? { headers: { cookie } } : {};
