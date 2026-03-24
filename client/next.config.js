@@ -1,6 +1,21 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-/** @type {import('next').NextConfig} */
 const path = require("path");
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  typedRoutes: true,
+  experimental: {
+    globalNotFound: true
+  },
+  outputFileTracingExcludes: {
+    "*": ["next.config.js"]
+  },
+  turbopack: {
+    root: path.join(__dirname)
+  }
+};
+
+module.exports = nextConfig;
+
 // const { PrismaPlugin } = require("@prisma/nextjs-monorepo-workaround-plugin");
 
 // @ts-check
@@ -31,18 +46,3 @@ const path = require("path");
 //     return config;
 //   }
 // });
-
-const nextConfig = {
-  typedRoutes: true,
-  experimental: {
-    globalNotFound: true
-  },
-
-  turbopack: {
-    root: path.join(__dirname)
-  },
-
-  outputFileTracingRoot: path.join(__dirname)
-};
-
-module.exports = nextConfig;
