@@ -1,5 +1,4 @@
 import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import { createServer } from "http";
@@ -12,9 +11,6 @@ import { initSocketServer } from "./sockets/socket";
 import { connectRedis, redis } from "src/redis/redis";
 import imagesRouter from "src/routes/images/images.route";
 import { getMessage } from "./graphql/services/message.service";
-
-// configs
-dotenv.config();
 
 // http server
 const app = express();

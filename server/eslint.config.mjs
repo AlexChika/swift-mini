@@ -2,10 +2,12 @@ import eslint from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
+import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
+  globalIgnores(["node_modules", "dist", "prisma/", "eslint.config.mjs"]),
   eslint.configs.recommended,
-  // tseslint.configs.recommended
+  tseslint.configs.recommended,
   tseslint.configs.strict,
   [
     {
@@ -27,14 +29,6 @@ export default tseslint.config(
           sourceType: "module"
         }
       },
-      ignores: [
-        "node_modules/",
-        "dist/",
-        "build/",
-        "coverage/",
-        "*.log",
-        "*.tmp"
-      ],
       rules: {
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
