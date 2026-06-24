@@ -1,4 +1,4 @@
-import userModel from "src/models/user.model";
+import userModel from "@src/models/user.model";
 import { RequestHandler } from "express";
 
 const imagesCache = new Map<string, { url: string; timestamp: number }>();

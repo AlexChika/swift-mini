@@ -4,12 +4,12 @@ import mongoose from "mongoose";
 import { createServer } from "http";
 import cookieParser from "cookie-parser";
 import { initQueue } from "./queue/queue";
-import { connectDB, keepAliveJob } from "lib";
+import { connectDB, keepAliveJob } from "@lib";
 import { initApolloServer } from "@lib/apollo";
 import { corsOpts } from "@lib/utils/constants";
 import { initSocketServer } from "./sockets/socket";
-import { connectRedis, redis } from "src/redis/redis";
-import imagesRouter from "src/routes/images/images.route";
+import { connectRedis, redis } from "@src/redis/redis";
+import imagesRouter from "@src/routes/images/images.route";
 import { getMessage } from "./graphql/services/message.service";
 
 // http server
