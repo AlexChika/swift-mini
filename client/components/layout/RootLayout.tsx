@@ -39,7 +39,9 @@ function RootLayout({ children }: Props) {
           Child={<ChatLayout session={session}>{children}</ChatLayout>}
         />
       ) : (
-        <Auth session={session} reloadSession={update} />
+        <Auth session={session} reloadSession={update}>
+          {children}
+        </Auth>
       )}
     </Box>
   );

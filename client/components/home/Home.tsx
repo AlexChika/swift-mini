@@ -1,9 +1,3 @@
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams
-} from "next/navigation";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import SideBar from "./SideBar";
@@ -14,6 +8,7 @@ import Groups from "@/components/groups/Groups";
 import AllChats from "@/components/allChats/AllChats";
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { getPageName, getParam, toEms, toRems } from "@/lib/helpers";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AI from "../ai/AI";
 
 type Props = {
@@ -26,7 +21,6 @@ function Home({ session }: Props) {
   const sp = useSearchParams();
   const param = getParam(sp.get("swift"));
   const pageName = getPageName(param || "home");
-  const { chatId: id } = useParams<{ chatId: string }>();
 
   // resets param to home if param is not valid
   useEffect(() => {
@@ -42,6 +36,11 @@ function Home({ session }: Props) {
     [path, router, param]
   );
 
+  // hides the home page in mobile
+  function hide(path: string) {
+    return path !== "/";
+  }
+
   return (
     <HStack
       gap={0}
@@ -49,7 +48,7 @@ function Home({ session }: Props) {
       bg="{colors.secondaryBg}"
       xmd={{ border: "4px solid {colors.appBorder}" }}
       borderRightWidth={{ xmd: "1px" }}
-      display={{ base: id ? "none" : "flex", xmd: "flex" }}
+      display={{ base: hide(path) ? "none" : "flex", xmd: "flex" }}
       css={{
         margin: { base: "0px", xmd: toEms(5, 0, 5, 5) },
         borderRadius: { base: "0px", xmd: "10px 0px 0px 10px" }

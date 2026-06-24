@@ -15,7 +15,7 @@ type Props = {
 
 function SearchUsersContactsPane({ type, setIsOpen }: Props) {
   const { allChats } = SwiftStore();
-  const { openChat } = useNavigate();
+  const { openLink } = useNavigate();
   const session = useSession().data as Session;
 
   const [username, setUsername] = useState("");
@@ -58,10 +58,10 @@ function SearchUsersContactsPane({ type, setIsOpen }: Props) {
 
   const handleClick = useCallback(
     (id: string, opts?: { chatId?: string }) => {
-      openChat(type == "group" ? id : opts?.chatId || "");
+      openLink(type == "group" ? id : opts?.chatId || "");
       setIsOpen(false);
     },
-    [openChat, setIsOpen, type]
+    [openLink, setIsOpen, type]
   );
 
   const customProps = useMemo(() => {

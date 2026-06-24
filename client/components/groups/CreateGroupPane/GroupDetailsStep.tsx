@@ -40,7 +40,7 @@ type CreateGroupChatData = {
 
 function GroupDetailsStep(props: Props) {
   const { setIsOpen, nextStep } = props;
-  const { openChat } = useNavigate();
+  const { openLink } = useNavigate();
 
   // states
   const [info, setInfo] = useState({
@@ -208,7 +208,7 @@ function GroupDetailsStep(props: Props) {
       if (!res) throw new Error("Unable to create group chat");
 
       if (res.success) {
-        openChat(res.chatId);
+        openLink(res.chatId);
         setIsOpen(false);
       } else throw new Error(res.msg, { cause: res.msg });
     } catch (error) {

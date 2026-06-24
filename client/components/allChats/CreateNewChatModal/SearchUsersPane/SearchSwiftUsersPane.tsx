@@ -45,7 +45,7 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
     searchUsers({ variables: { username } });
   }
 
-  const { openChat } = useNavigate();
+  const { openLink } = useNavigate();
 
   const [createDuoChat, { loading: createChatLoading }] = useMutation<
     CreateDuoChatData,
@@ -63,7 +63,7 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
         if (!res) throw new Error("Failed to create chat");
 
         if (res.success) {
-          openChat(res.chatId);
+          openLink(res.chatId);
           setIsOpen(false);
         } else return toast.error(res.msg, { id: "create chat" });
       } catch (error) {
@@ -72,7 +72,7 @@ function SearchSwiftUsersPane({ setIsOpen }: Props) {
         console.log(e.message || e, "create new chat");
       }
     },
-    [createDuoChat, openChat, setIsOpen]
+    [createDuoChat, openLink, setIsOpen]
   );
 
   const InputRef = useRef<HTMLInputElement>(null);

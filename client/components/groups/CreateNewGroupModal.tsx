@@ -22,17 +22,17 @@ type Props = {
 type UI_STATE = Swift.Create_Chats_UI_State;
 
 function CreateNewGroupModal({ isOpen, setIsOpen }: Props) {
-  const { openChat } = useNavigate();
+  const { openLink } = useNavigate();
   const { dispatch } = useEvent("GROUP_UI_UPDATE");
 
   const recentGroups = useRecentGroups();
 
   const handleClick = useCallback(
     (id: string) => {
-      openChat(id);
+      openLink(id);
       setIsOpen(false);
     },
-    [openChat, setIsOpen]
+    [openLink, setIsOpen]
   );
 
   const [UIState, setUIState] = useState<UI_STATE>("default");

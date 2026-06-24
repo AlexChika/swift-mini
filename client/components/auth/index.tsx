@@ -7,18 +7,21 @@ import {
   Stack,
   Text,
   Image,
-  Field
+  Field,
+  Flex
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Session } from "next-auth";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import userOps from "@/graphql/operations/user.ops";
 
 type AuthProps = {
   reloadSession: () => void;
   session: Session | null;
+  children: React.ReactNode;
 };
 
 type CreateUsernameVariable = {
@@ -29,9 +32,11 @@ type CreateUsernameData = {
   createUsername: ApiReturn<string, "username">;
 };
 
-function Auth({ session, reloadSession }: AuthProps) {
+function Auth(props: AuthProps) {
+  const { session, reloadSession, children } = props;
   const [Username, setUsername] = useState("");
   const [err, setErr] = useState(false); // input error
+  const path = usePathname();
 
   const [createUsername, { loading }] = useMutation<
     CreateUsernameData,
@@ -89,80 +94,94 @@ function Auth({ session, reloadSession }: AuthProps) {
   const imageUrl = session?.user?.image ? session.user.image : "/icon.png";
 
   return (
-    <Center color="{colors.primaryText}" position="relative" height="100vh">
-      <Stack
-        width="95%"
-        maxWidth="19.2rem"
-        bg="{colors.secondaryBg}"
-        p={50}
-        gap={5}
-        align="center">
-        <Image
-          src={imageUrl}
-          width="7rem"
-          alt="user image"
-          rounded={session?.user?.image ? "100%" : ""}
-        />
+    <Flex gap={0} w={"100%"} margin={0} h={{ base: "", xmd: "100%" }}>
+      <Center
+        color="{colors.primaryText}"
+        position="relative"
+        width="100%"
+        display={{
+          base: acceptedPaths.includes(path) ? "none" : "flex",
+          xmd: "flex"
+        }}
+        height="100vh">
+        <Stack
+          width="95%"
+          maxWidth="19.2rem"
+          bg="{colors.secondaryBg}"
+          p={50}
+          gap={5}
+          align="center">
+          <Image
+            src={imageUrl}
+            width="7rem"
+            alt="user image"
+            rounded={session?.user?.image ? "100%" : ""}
+          />
 
-        {session ? (
-          <>
-            <Text
-              fontWeight={900}
-              fontSize="1.125rem"
-              lineClamp={1}
-              textAlign="center"
-              mb={-5}>
-              Hi, 👋 {session?.user.name}
-            </Text>
+          {session ? (
+            <>
+              <Text
+                fontWeight={900}
+                fontSize="1.125rem"
+                lineClamp={1}
+                textAlign="center"
+                mb={-5}>
+                Hi, 👋 {session?.user.name}
+              </Text>
 
-            <Text opacity={0.8}>Create a username</Text>
+              <Text opacity={0.8}>Create a username</Text>
 
-            <Field.Root invalid={err}>
-              <Input
-                bg="{colors.primaryBg}/20"
-                color="{colors.primaryText}"
-                borderColor={err ? "red" : "{colors.primaryBg}"}
-                padding={2}
-                onChange={(e) => onChange(e)}
-                value={Username}
-                placeholder="Enter a username"
-              />
+              <Field.Root invalid={err}>
+                <Input
+                  bg="{colors.primaryBg}/20"
+                  color="{colors.primaryText}"
+                  borderColor={err ? "red" : "{colors.primaryBg}"}
+                  padding={2}
+                  onChange={(e) => onChange(e)}
+                  value={Username}
+                  placeholder="Enter a username"
+                />
 
-              <Field.ErrorText textAlign="justify">
-                Invalid username, use only letters and numbers
-              </Field.ErrorText>
-            </Field.Root>
+                <Field.ErrorText textAlign="justify">
+                  Invalid username, use only letters and numbers
+                </Field.ErrorText>
+              </Field.Root>
 
-            <Button
-              colorPalette="greenv"
-              loading={loading}
-              disabled={err}
-              w="full"
-              onClick={() => onSubmit()}>
-              All Good
-            </Button>
-          </>
-        ) : (
-          <>
-            <Text opacity={0.8}>You are not signed in</Text>
-            <Button
-              py={2}
-              px={5}
-              fontSize={14}
-              onClick={() => signIn("google")}>
-              <Image
-                src="/google.png"
-                alt="Google Logo"
-                height={30}
-                width={30}
-              />{" "}
-              Continue with Google
-            </Button>
-          </>
-        )}
-      </Stack>
-    </Center>
+              <Button
+                colorPalette="greenv"
+                loading={loading}
+                disabled={err}
+                w="full"
+                onClick={() => onSubmit()}>
+                All Good
+              </Button>
+            </>
+          ) : (
+            <>
+              <Text opacity={0.8}>You are not signed in</Text>
+              <Button
+                py={2}
+                px={5}
+                fontSize={14}
+                onClick={() => signIn("google")}>
+                <Image
+                  src="/google.png"
+                  alt="Google Logo"
+                  height={30}
+                  width={30}
+                />{" "}
+                Continue with Google
+              </Button>
+            </>
+          )}
+        </Stack>
+      </Center>
+
+      {acceptedPaths.includes(path) && children}
+    </Flex>
   );
 }
 
 export default Auth;
+
+const acceptedPaths = ["/privacy"];

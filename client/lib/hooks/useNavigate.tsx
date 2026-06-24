@@ -5,15 +5,17 @@ import { useCallback, useMemo } from "react";
 function useNavigate() {
   const router = useRouter();
 
-  const openChat = useCallback(
-    function (chatId: string) {
+  /**
+   * Router.push wrapper. please omit the leading slash when inputing the path
+   */
+  const openLink = useCallback(
+    function (path: string) {
       const param = getSearchParam("swift");
-      router.push(`/${chatId}?swift=${param}`);
+      router.push(`/${path}?swift=${param}`);
     },
     [router]
   );
-
-  return useMemo(() => ({ openChat }), [openChat]);
+  return useMemo(() => ({ openLink }), [openLink]);
 }
 
 export default useNavigate;

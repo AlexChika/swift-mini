@@ -54,7 +54,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
   const [UIState, setUIState] = useState<UI_STATE>("default");
   const redColor = useThemeValue("red.600", "red.500");
 
-  const { openChat } = useNavigate();
+  const { openLink } = useNavigate();
   const { dispatch } = useEvent("GROUP_UI_UPDATE");
   const recentChats = useGetRecentlyContacted();
   const { swiftUsers } = useGetSwiftUsers();
@@ -86,10 +86,10 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
 
   const handleClick = useCallback(
     (_: string, opts?: { chatId?: string }) => {
-      openChat(opts?.chatId || "");
+      openLink(opts?.chatId || "");
       setIsOpen(false);
     },
-    [openChat, setIsOpen]
+    [openLink, setIsOpen]
   );
 
   const createNewChat = useCallback(
@@ -103,7 +103,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
         if (!res) throw new Error("Failed to create chat");
 
         if (res.success) {
-          openChat(res.chatId);
+          openLink(res.chatId);
           setIsOpen(false);
         } else return toast.error(res.msg, { id: "create chat" });
       } catch (error) {
@@ -112,7 +112,7 @@ function CreateNewChatModal({ isOpen, setIsOpen }: Props) {
         console.log(e.message || e, "create new chat");
       }
     },
-    [createDuoChat, openChat, setIsOpen]
+    [createDuoChat, openLink, setIsOpen]
   );
 
   const swiftUsersListProp = useMemo(() => {
