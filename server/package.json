@@ -36,8 +36,7 @@
     "graphql": "^16.11.0",
     "mongoose": "^8.17.1",
     "redis": "^5.9.0",
-    "socket.io": "^4.8.1",
-    "tsx": "^4.20.6"
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -48,6 +47,7 @@
     "esbuild": "^0.27.4",
     "eslint": "^9.33.0",
     "prettier": "^3.6.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.39.0"
   },

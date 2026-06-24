@@ -15,13 +15,13 @@ function MessageInput(props: Props) {
 
   // btn : submit handler
   function handleOnSubmit() {
-    if (!InputBox.current) return;
-    InputBox.current.focus();
+    if (!InputBoxRef.current) return;
+    InputBoxRef.current.focus();
 
-    const textString = InputBox.current.textContent?.trim();
+    const textString = InputBoxRef.current.textContent?.trim();
     if (!textString) return;
 
-    InputBox.current.innerHTML = "";
+    InputBoxRef.current.innerHTML = "";
     sendMessage(textString);
   }
 
@@ -56,8 +56,8 @@ function MessageInput(props: Props) {
   }
 
   // ref
-  const InputBox = React.useRef<HTMLDivElement>(null);
-  useMobileInputScrollFix(InputBox, "swift-message-container");
+  const InputBoxRef = React.useRef<HTMLDivElement>(null);
+  useMobileInputScrollFix(InputBoxRef, "swift-message-container");
 
   //TODO: use rems and ems
   return (
@@ -80,7 +80,7 @@ function MessageInput(props: Props) {
           maxH="200px"
           minH="33px"
           fontSize={16}
-          ref={InputBox}
+          ref={InputBoxRef}
           overflowY="auto"
           borderRadius={14}
           whiteSpace="pre-wrap"

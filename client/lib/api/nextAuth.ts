@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export const getAuthConfig = (): NextAuthConfig => {
   const dev = process.env.NODE_ENV === "development";
-  const domain = "globalstack.dev";
+  const domain = "alexchika.com";
   const cookiePrefix = "__Secure-swift";
 
   return {

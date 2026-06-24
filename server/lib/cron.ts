@@ -1,7 +1,7 @@
 import axios, { type AxiosError } from "axios";
 import { CronJob } from "cron";
 
-const url = "https://server-swiftmini.globalstack.dev/health";
+const url = "https://server-swift.alexchika.com/health";
 
 const tryPing = async (attempt = 1) => {
   try {

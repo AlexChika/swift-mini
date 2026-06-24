@@ -11,7 +11,7 @@ function SwiftMini() {
       fontSize="1.5rem"
       color="red.600"
       asChild>
-      <NextLink href="/?swift=home">SwiftMini</NextLink>
+      <NextLink href="/?swift=home">Swift Mini</NextLink>
     </ChakraLink>
   );
 }

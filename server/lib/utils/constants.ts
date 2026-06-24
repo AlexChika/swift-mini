@@ -12,9 +12,9 @@ export const corsOpts: CorsOptions = {
     process.env.NODE_ENV === "development"
       ? ["http://localhost:3000", "https://studio.apollographql.com"]
       : [
-          "https://swiftmini.globalstack.dev",
+          "https://swift.alexchika.com",
           "https://swift-mini.vercel.app",
-          "https://swiftmini-staging.globalstack.dev"
+          "https://staging-swift.alexchika.com"
         ],
   credentials: true
 };

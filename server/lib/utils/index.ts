@@ -5,7 +5,7 @@
  * @returns {string} The permanent image URL for the user.
  */
 function createPermanentUrl(userId: string): string {
-  return `https://server-swiftmini.globalstack.dev/images/${userId}.png`;
+  return `https://server-swift.alexchika.com/images/${userId}.png`;
 }
 
 /* ----------------------- G ----------------------- */
