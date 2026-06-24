@@ -8,7 +8,10 @@ import {
   Text,
   Image,
   Field,
-  Flex
+  Flex,
+  Box,
+  HStack,
+  VStack
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Session } from "next-auth";
@@ -17,6 +20,7 @@ import { signIn } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import userOps from "@/graphql/operations/user.ops";
+import Link from "next/link";
 
 type AuthProps = {
   reloadSession: () => void;
@@ -105,12 +109,13 @@ function Auth(props: AuthProps) {
         }}
         height="100vh">
         <Stack
-          width="95%"
-          maxWidth="19.2rem"
-          bg="{colors.secondaryBg}"
           p={50}
-          gap={5}
-          align="center">
+          gap={7}
+          width="95%"
+          pos="relative"
+          align="center"
+          maxWidth="19.2rem"
+          bg="{colors.secondaryBg}">
           <Image
             src={imageUrl}
             width="7rem"
@@ -158,20 +163,31 @@ function Auth(props: AuthProps) {
             </>
           ) : (
             <>
-              <Text opacity={0.8}>You are not signed in</Text>
-              <Button
-                py={2}
-                px={5}
-                fontSize={14}
-                onClick={() => signIn("google")}>
-                <Image
-                  src="/google.png"
-                  alt="Google Logo"
-                  height={30}
-                  width={30}
-                />{" "}
-                Continue with Google
-              </Button>
+              <VStack gap={3} py={4}>
+                <Text opacity={0.8}>You are not signed in</Text>
+                <Button
+                  py={2}
+                  px={5}
+                  fontSize={14}
+                  onClick={() => signIn("google")}>
+                  <Image
+                    src="/google.png"
+                    alt="Google Logo"
+                    height={30}
+                    width={30}
+                  />{" "}
+                  Continue with Google
+                </Button>
+
+                <Box
+                  textDecoration="underline"
+                  fontSize="small"
+                  pos="absolute"
+                  bottom="0.5rem"
+                  color="gray.500">
+                  <Link href="/privacy">Visit our privacy policy page</Link>
+                </Box>
+              </VStack>
             </>
           )}
         </Stack>
