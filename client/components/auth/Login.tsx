@@ -97,7 +97,12 @@ function Login() {
   if (session?.user.username) return "";
 
   return (
-    <Flex gap={0} w={"100%"} margin={0} h={{ base: "", xmd: "100%" }}>
+    <Flex
+      className="red"
+      gap={0}
+      w={"100%"}
+      margin={0}
+      h={{ base: "", xmd: "100%" }}>
       {/* auth / login modal */}
       <Center color="{colors.primaryText}" position="relative" width="100%">
         <Stack
@@ -109,7 +114,7 @@ function Login() {
           align="center"
           maxWidth="19.2rem"
           bg="{colors.secondaryBg}">
-          <ColorMode.ThemeButton /> {/* For Debugging */}
+          <ColorMode.ThemeButton></ColorMode.ThemeButton>
           <VStack mb={5}>
             <Image
               src={imageUrl}

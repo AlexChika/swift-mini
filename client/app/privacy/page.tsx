@@ -1,16 +1,13 @@
 "use client";
 
-import { hideScrollbar } from "@/chakra/theme";
-import { toEms, toRems } from "@/lib/helpers";
-import useNavigate from "@/lib/hooks/useNavigate";
 import { LeftArrowIcon } from "@/lib/icons";
-import { useSession } from "next-auth/react";
+import { toEms, toRems } from "@/lib/helpers";
+import { hideScrollbar } from "@/chakra/theme";
+import useNavigate from "@/lib/hooks/useNavigate";
 import { Box, Heading, Text, VStack, Flex, Button } from "@chakra-ui/react";
 
 export default function PrivacyPage() {
   const { openLink } = useNavigate();
-  const { data: session } = useSession();
-  const isSplitScreen = !!session?.user;
 
   return (
     <Flex
@@ -18,17 +15,13 @@ export default function PrivacyPage() {
       direction="column"
       bg="{colors.secondaryBg}"
       justifyContent="space-between"
-      borderLeft={isSplitScreen ? { xmd: "none" } : "none"}
-      xmd={
-        isSplitScreen ? { border: "4px solid {colors.appBorder}" } : undefined
-      }
-      borderLeftWidth={isSplitScreen ? { xmd: "0px" } : undefined}
+      borderLeft={{ xmd: "none" }}
+      xmd={{ border: "4px solid {colors.appBorder}" }}
+      borderLeftWidth={{ xmd: "0px" }}
       overflowY="auto"
       css={{
-        margin: isSplitScreen ? { base: "0px", xmd: toEms(5, 5, 5, 0) } : "0px",
-        borderRadius: isSplitScreen
-          ? { base: "0px", xmd: "0px 10px 10px 0px" }
-          : "0px",
+        margin: { base: "0px", xmd: toEms(5, 5, 5, 0) },
+        borderRadius: { base: "0px", xmd: "0px 10px 10px 0px" },
         ...hideScrollbar
       }}>
       <Box h="100%" p={{ base: 6, md: 10 }}>
@@ -134,6 +127,70 @@ export default function PrivacyPage() {
               </Box>
             </Box>
           </Box>
+
+          {/* Detailed Policy Sections */}
+          <VStack align="start" gap={8} w="100%" mt={8}>
+            <Box w="100%">
+              <Heading as="h2" size="lg" mb={3} color="{colors.primaryText}">
+                1. Information We Do Not Collect
+              </Heading>
+              <Text lineHeight="tall" color="{colors.usernameColor}">
+                We believe that the best way to protect your privacy is to
+                collect as little data as possible. We do not track your
+                location, we do not monitor your device fingerprint, and we do
+                not collect usage telemetry for third-party advertisers.
+              </Text>
+            </Box>
+
+            <Box w="100%">
+              <Heading as="h2" size="lg" mb={3} color="{colors.primaryText}">
+                2. Cookies and Tracking Technologies
+              </Heading>
+              <Text lineHeight="tall" color="{colors.usernameColor}">
+                Swift Mini uses only essential session cookies required to keep
+                you authenticated and to ensure the core functionality of the
+                real-time chat application. We do not use third-party tracking
+                cookies or advertising pixels.
+              </Text>
+            </Box>
+
+            <Box w="100%">
+              <Heading as="h2" size="lg" mb={3} color="{colors.primaryText}">
+                3. Data Retention and Deletion
+              </Heading>
+              <Text lineHeight="tall" color="{colors.usernameColor}">
+                Your data is retained only for as long as your account is
+                active. If you choose to delete your account, all associated
+                messages, profile data, and metadata will be permanently
+                expunged from our MongoDB servers within 30 days.
+              </Text>
+            </Box>
+
+            <Box w="100%">
+              <Heading as="h2" size="lg" mb={3} color="{colors.primaryText}">
+                4. Your Rights
+              </Heading>
+              <Text lineHeight="tall" color="{colors.usernameColor}">
+                Under applicable privacy laws (such as GDPR and CCPA), you have
+                the right to access, rectify, or erase your personal data. You
+                may export your chat history or request full account deletion at
+                any time by contacting our support team or navigating to your
+                account settings.
+              </Text>
+            </Box>
+
+            <Box w="100%">
+              <Heading as="h2" size="lg" mb={3} color="{colors.primaryText}">
+                5. Changes to This Policy
+              </Heading>
+              <Text lineHeight="tall" color="{colors.usernameColor}">
+                We may update this privacy policy occasionally to reflect
+                changes in our practices or for other operational, legal, or
+                regulatory reasons. We will notify you of any material changes
+                by posting the new policy on this page.
+              </Text>
+            </Box>
+          </VStack>
 
           <Box
             py={8}

@@ -193,6 +193,17 @@ const config = defineConfig({
           opacity: 0.4,
           transform: "scale(1)"
         }
+      },
+
+      float: {
+        "0%": { transform: "translateY(0)" },
+        "50%": { transform: "translateY(-15px)" },
+        "100%": { transform: "translateY(0)" }
+      },
+
+      scrollMarquee: {
+        "0%": { transform: "translateX(0)" },
+        "100%": { transform: "translateX(-50%)" }
       }
     }
   }
