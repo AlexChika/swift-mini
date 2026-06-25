@@ -13,8 +13,9 @@ import {
   VStack
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { useState } from "react";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import useNavigate from "@/lib/hooks/useNavigate";
 import { useMutation } from "@apollo/client/react";
 import userOps from "@/graphql/operations/user.ops";
 import { signIn, useSession } from "next-auth/react";
@@ -29,12 +30,10 @@ type CreateUsernameData = {
 };
 
 function Login() {
-  //   const { session, reloadSession, children } = props;
-  const { data: session, update } = useSession();
-
+  const { openLink } = useNavigate();
+  const [err, setErr] = useState(false);
   const [Username, setUsername] = useState("");
-  const [err, setErr] = useState(false); // input error
-  //   const path = usePathname();
+  const { data: session, update } = useSession();
 
   const [createUsername, { loading }] = useMutation<
     CreateUsernameData,
@@ -90,6 +89,12 @@ function Login() {
   }
 
   const imageUrl = session?.user?.image ? session.user.image : "/icon.png";
+
+  useEffect(() => {
+    if (session?.user.username) openLink("");
+  }, [openLink, session?.user.username]);
+
+  if (session?.user.username) return "";
 
   return (
     <Flex gap={0} w={"100%"} margin={0} h={{ base: "", xmd: "100%" }}>
