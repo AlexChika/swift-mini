@@ -10,7 +10,6 @@ import {
   Field,
   Flex,
   Box,
-  HStack,
   VStack
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -21,6 +20,7 @@ import { usePathname } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import userOps from "@/graphql/operations/user.ops";
 import Link from "next/link";
+import { ColorMode } from "@/lib/helpers";
 
 type AuthProps = {
   reloadSession: () => void;
@@ -100,6 +100,7 @@ function Auth(props: AuthProps) {
   return (
     <Flex gap={0} w={"100%"} margin={0} h={{ base: "", xmd: "100%" }}>
       <Center
+        className="red"
         color="{colors.primaryText}"
         position="relative"
         width="100%"
@@ -109,20 +110,28 @@ function Auth(props: AuthProps) {
         }}
         height="100vh">
         <Stack
-          p={50}
-          gap={7}
+          py={50}
+          px={10}
+          gap={4}
           width="95%"
           pos="relative"
           align="center"
           maxWidth="19.2rem"
           bg="{colors.secondaryBg}">
-          <Image
-            src={imageUrl}
-            width="7rem"
-            alt="user image"
-            rounded={session?.user?.image ? "100%" : ""}
-          />
-
+          <ColorMode.ThemeButton /> {/* For Debugging */}
+          <VStack mb={5}>
+            <Image
+              src={imageUrl}
+              width="7rem"
+              alt="user image"
+              rounded={session?.user?.image ? "100%" : ""}
+            />
+            {!session && (
+              <Text fontSize="small" color="gray.400" textAlign="center">
+                Chat Swiftly with friends and in groups.
+              </Text>
+            )}
+          </VStack>
           {session ? (
             <>
               <Text
@@ -164,7 +173,7 @@ function Auth(props: AuthProps) {
           ) : (
             <>
               <VStack gap={3} py={4}>
-                <Text opacity={0.8}>You are not signed in</Text>
+                <Text opacity={0.8}>You are not signed in.</Text>
                 <Button
                   py={2}
                   px={5}
@@ -200,4 +209,4 @@ function Auth(props: AuthProps) {
 
 export default Auth;
 
-const acceptedPaths = ["/privacy"];
+const acceptedPaths = ["/privacy", "/home"];

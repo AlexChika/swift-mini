@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import Auth from "@/components/auth";
 import ChatLayout from "./ChatLayout";
 import { Box } from "@chakra-ui/react";
@@ -8,7 +7,6 @@ import StartScreen from "./StartScreen";
 import { useSession } from "next-auth/react";
 import useNetworkChangeNotifier from "@/lib/hooks/useNetworkChangeNotifier";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
-import useDynamicHeight from "@/lib/hooks/useDynamicHeight";
 
 type Props = {
   children: React.ReactNode;
@@ -24,16 +22,14 @@ function RootLayout({ children }: Props) {
     loadErrorMessages();
   }
 
-  // return <Auth session={session} reloadSession={reloadSession} />;
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  useDynamicHeight({
-    ref: containerRef
-  });
+  // return (
+  //   <Auth session={session} reloadSession={update}>
+  //     {children}
+  //   </Auth>
+  // );
 
   return (
     <Box h="100vh">
-      {/* <ColorMode.ThemeButton /> */} {/* For Debugging */}
       {session?.user.username ? (
         <StartScreen
           Child={<ChatLayout session={session}>{children}</ChatLayout>}

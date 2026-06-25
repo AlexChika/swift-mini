@@ -9,7 +9,7 @@ import { getServerTheme } from "@/components/Providers/getServerTheme";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Swift Mini",
+  title: "Swift : Chat Swiftly with friends and in groups",
   description: "Chat Swiftly with friends and in groups."
 };
 
