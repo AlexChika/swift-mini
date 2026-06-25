@@ -49,10 +49,7 @@ export default function PrivacyPage() {
             </Text>
           </Box>
 
-          <SimpleGrid
-            columns={{ base: 1, md: 2, xmd: 1, xl: 2 }}
-            gap={8}
-            w="100%">
+          <SimpleGrid columns={{ base: 1, md: 2 }} gap={8} w="100%">
             {/* Data Collection */}
             <Box
               p={6}

@@ -13,7 +13,7 @@ type Props = {
 };
 
 function RootLayout({ children }: Props) {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   useNetworkChangeNotifier();
 
   if (process.env.NODE_ENV !== "production") {
@@ -35,9 +35,7 @@ function RootLayout({ children }: Props) {
           Child={<ChatLayout session={session}>{children}</ChatLayout>}
         />
       ) : (
-        <Auth session={session} reloadSession={update}>
-          {children}
-        </Auth>
+        <Auth>{children}</Auth>
       )}
     </Box>
   );

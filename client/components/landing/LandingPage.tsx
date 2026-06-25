@@ -16,7 +16,7 @@ import {
   Center
 } from "@chakra-ui/react";
 
-export default function HomePage() {
+export default function LandingPage() {
   const { openLink } = useNavigate();
 
   return (
@@ -96,7 +96,7 @@ export default function HomePage() {
               boxShadow: "lg"
             }}
             transition="all 0.2s"
-            onClick={() => openLink("")}>
+            onClick={() => openLink("login")}>
             Enter Swift Mini
           </Button>
         </VStack>
@@ -345,7 +345,7 @@ export default function HomePage() {
         </Text>
         <Button
           bg="transparent"
-          onClick={() => openLink("")}
+          onClick={() => openLink("login")}
           border="2px solid"
           borderColor="red.500"
           color={{ base: "red.600", _dark: "red.400" }}
