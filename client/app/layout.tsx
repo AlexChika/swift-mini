@@ -6,8 +6,6 @@ import Layout from "@/components/layout/RootLayout";
 import Provider from "@/components/Providers/Provider";
 import { getServerTheme } from "@/components/Providers/getServerTheme";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
   title: "Swift : Chat Swiftly with friends and in groups",
   description: "Chat Swiftly with friends and in groups."
@@ -17,6 +15,8 @@ type Props = {
   children: React.ReactNode;
 };
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default async function RootLayout({ children }: Props) {
   const session = await auth();
   const theme = await getServerTheme();
@@ -24,7 +24,7 @@ export default async function RootLayout({ children }: Props) {
   return (
     <html className={`${inter.className} ${theme || ""}`} lang="en">
       <body>
-        <Provider defaultTheme="system" serverTheme={theme} session={session}>
+        <Provider session={session} serverTheme={theme} defaultTheme="system">
           <Layout>{children}</Layout>
         </Provider>
       </body>

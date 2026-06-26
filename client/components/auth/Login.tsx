@@ -15,11 +15,12 @@ import {
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { loginParticles } from "./loginParticle";
 import useNavigate from "@/lib/hooks/useNavigate";
 import { useMutation } from "@apollo/client/react";
 import userOps from "@/graphql/operations/user.ops";
+import { NextParticles } from "@tsparticles/nextjs";
 import { signIn, useSession } from "next-auth/react";
-import { ColorMode } from "@/lib/helpers";
 
 type CreateUsernameVariable = {
   username: string;
@@ -97,14 +98,23 @@ function Login() {
   if (session?.user.username) return "";
 
   return (
-    <Flex
-      className="red"
-      gap={0}
-      w={"100%"}
-      margin={0}
-      h={{ base: "", xmd: "100%" }}>
+    <Flex pos="relative" margin={0} h="100%">
+      {/* Overlay Bg */}
+      <NextParticles
+        style={{
+          position: "absolute",
+          inset: "0"
+        }}
+        id="login-particles"
+        options={loginParticles}
+      />
+
       {/* auth / login modal */}
-      <Center color="{colors.primaryText}" position="relative" width="100%">
+      <Center
+        zIndex={2}
+        color="{colors.primaryText}"
+        position="relative"
+        width="100%">
         <Stack
           py={50}
           px={10}
@@ -114,7 +124,6 @@ function Login() {
           align="center"
           maxWidth="19.2rem"
           bg="{colors.secondaryBg}">
-          <ColorMode.ThemeButton></ColorMode.ThemeButton>
           <VStack mb={5}>
             <Image
               src={imageUrl}
