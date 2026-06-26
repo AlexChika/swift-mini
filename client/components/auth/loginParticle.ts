@@ -57,19 +57,27 @@ const loginParticles: ISourceOptions = {
     opacity: {
       value: {
         min: 0.35,
-        max: 0.85
+        max: 0.95
       }
     },
     paint: {
       fill: {
         color: {
-          value: ["#60a5fa", "#34d399", "#f59e0b", "#f472b6"]
+          value: [
+            "#60a5fa",
+            "#b80422",
+            "#34d399",
+            "#f59e0b",
+            "#f472b6",
+            "#ff8000",
+            "#2bff00"
+          ]
         },
         enable: true
       },
       stroke: {
         color: {
-          value: "#ffffff"
+          value: "#000000"
         },
         width: 0
       }
