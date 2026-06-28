@@ -221,7 +221,7 @@ export default function LandingPage() {
         <SimpleGrid mb={16} columns={{ base: 1, lg: 3 }} gap={8}>
           {/* Smart AI Search - Span 2 Columns on LG */}
           <Box gridColumn={{ base: "span 1", lg: "span 2" }}>
-            <ScrollReveal delay={0}>
+            <ScrollReveal delay={0.5}>
               <Flex
                 direction={{ base: "column", md: "row" }}
                 bg={{ base: "white", _dark: "black" }}
@@ -267,7 +267,7 @@ export default function LandingPage() {
 
           {/* Privacy First */}
           <Box gridColumn={{ base: "span 1", lg: "span 1" }}>
-            <ScrollReveal delay={0.1}>
+            <ScrollReveal delay={0.15}>
               <VStack
                 bg={{ base: "white", _dark: "black" }}
                 borderRadius="2xl"
@@ -318,7 +318,7 @@ export default function LandingPage() {
 
           {/* Core Messaging */}
           <Box gridColumn={{ base: "span 1", lg: "span 1" }}>
-            <ScrollReveal delay={0.2}>
+            <ScrollReveal delay={0.25}>
               <VStack
                 bg={{ base: "white", _dark: "black" }}
                 borderRadius="2xl"
@@ -362,7 +362,7 @@ export default function LandingPage() {
 
           {/* Advanced Capabilities - Span 2 */}
           <Box gridColumn={{ base: "span 1", lg: "span 2" }}>
-            <ScrollReveal delay={0.3}>
+            <ScrollReveal delay={0.35}>
               <Flex
                 direction={{ base: "column-reverse", md: "row" }}
                 bg={{ base: "white", _dark: "black" }}

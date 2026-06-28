@@ -92,21 +92,24 @@ const loginParticles: ISourceOptions = {
           style: "",
           value: [
             "Swift",
-            "❤️",
-            "Hi",
-            "My Love",
-            "❣️",
-            "Kisses",
-            "🥰",
-            "Bye",
-            "💞",
-            "Hello",
-            "💖",
-            "Call Me",
-            "💕",
-            "Love",
-            "🧡",
-            "Swift"
+            "Swift",
+            "Hey!",
+            "Sup",
+            "BRB",
+            "LMAO",
+            "OMG",
+            "Wyd?",
+            "TTYL",
+            "Nice!",
+            "Lol",
+            "Gtg",
+            "Yo",
+            "😊",
+            "🔥",
+            "✨",
+            "👋",
+            "💬",
+            "❤️"
           ],
           weight: "700"
         }
@@ -114,8 +117,8 @@ const loginParticles: ISourceOptions = {
     },
     size: {
       value: {
-        min: 12,
-        max: 30
+        min: 15,
+        max: 35
       }
     }
   }
