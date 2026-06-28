@@ -80,7 +80,7 @@ export default function LandingPage() {
         direction={{ base: "column", lg: "row" }}
         align="center"
         justify="space-between"
-        p={{ base: 4, sm: 8, md: 16 }}
+        p={{ base: 4, sm: 6, md: 16 }}
         minH="80vh"
         position="relative"
         overflow="hidden">
@@ -203,7 +203,7 @@ export default function LandingPage() {
       {/* Features Bento Grid */}
       <Box
         mb={10}
-        px={{ base: 4, sm: 8, md: 16 }}
+        px={{ base: 4, sm: 4, md: 16 }}
         bg={{ base: "gray.100", _dark: "gray.900" }}
         borderTop="1px solid"
         borderColor={{ base: "gray.200", _dark: "gray.800" }}>
