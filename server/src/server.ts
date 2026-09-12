@@ -1,4 +1,5 @@
 import cors from "cors";
+import morgan from "morgan";
 import express from "express";
 import mongoose from "mongoose";
 import { createServer } from "http";
@@ -16,6 +17,7 @@ import { getMessage } from "./graphql/services/message.service";
 const app = express();
 const httpServer = createServer(app);
 
+app.use(morgan("combined"));
 app.use(cors<cors.CorsRequest>(corsOpts));
 app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
@@ -45,6 +47,20 @@ app.get("/test", async (req, res) => {
   res.send("We Good" + " ");
 });
 
+app.use(
+  (
+     // @typescript-eslint/no-explicit-any
+    err: any ,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.error(`[Express]: ${req.method} ${req.url}`);
+    console.error(err.stack);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+);
+
 async function start() {
   const PORT = process.env.PORT || 4000;
 
@@ -53,6 +69,8 @@ async function start() {
 
   const pub = redis.duplicate();
   const sub = redis.duplicate();
+  pub.on("error", (e) => console.error("[Redis]: Pub error:", e));
+  sub.on("error", (e) => console.error("[Redis]: Sub error:", e));
   await Promise.all([pub.connect(), sub.connect()]);
 
   initSocketServer(httpServer, pub, sub);
@@ -80,10 +98,10 @@ try {
 
       try {
         await mongoose.connection.close();
-        console.log("MongoDB connection closed");
+        console.log("[MongoDB]: Db connection closed");
 
         await Promise.all([redis.quit(), pub.quit(), sub.quit()]);
-        console.log("Redis connections closed");
+        console.log("[Redis]: connections closed");
       } catch (err) {
         console.error("Error closing MongoDB connection:", err);
       }
@@ -95,7 +113,12 @@ try {
   process.on("SIGTERM", () => SwiftShutdown("SIGTERM"));
   process.on("SIGINT", () => SwiftShutdown("SIGINT"));
   process.on("unhandledRejection", (reason, p) => {
-    console.error("Unhandled Rejection at:", p, "reason:", reason);
+    console.error("[FATAL]: Unhandled Rejection at:", p, "reason:", reason);
+    process.exit(1);
+  });
+  process.on("uncaughtException", (err) => {
+    console.error("[FATAL]: Uncaught Exception:", err);
+    process.exit(1);
   });
 } catch (err) {
   console.error("Server failed to start:", err);

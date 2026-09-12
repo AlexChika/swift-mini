@@ -1,5 +1,5 @@
-import { redis } from "./redis";
 import { withRetry } from "@lib/utils";
+import { redis, shouldRetry } from "./redis";
 import { REDIS_KEYS } from "@lib/utils/constants";
 
 export async function redisAddUserSocket(userId: string, socketId: string) {
@@ -19,25 +19,23 @@ export async function redisRemoveUserSocket(userId: string, socketId: string) {
   const prefix = REDIS_KEYS.userSockets;
   const key = `${prefix}${userId}`;
 
-  try {
-    await redis.sRem(key, socketId);
-  } catch (_) {
-    //
-  }
+  await redis.sRem(key, socketId);
 }
 
 export const redisGetUserSocketsWithRetry = withRetry(redisGetUserSockets, {
+  shouldRetry,
   onRetry: (err: Error, attempt) => {
     console.error(
-      `Error on Redis getUserSockets. Attempt: ${attempt}. Error: ${err.message || err}`
+      `[Redis]: Error on Redis getUserSockets. Attempt: ${attempt}. Error: ${err.message || err}`
     );
   }
 });
 
 export const redisAddUserSocketWithRetry = withRetry(redisAddUserSocket, {
+  shouldRetry,
   onRetry: (err: Error, attempt) => {
     console.error(
-      `Error on Redis addUserSocket. Attempt: ${attempt}. Error: ${err.message || err}`
+      `[Redis]: Error on Redis addUserSocket. Attempt: ${attempt}. Error: ${err.message || err}`
     );
   }
 });

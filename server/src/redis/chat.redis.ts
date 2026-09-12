@@ -1,5 +1,5 @@
-import { redis } from "./redis";
 import { withRetry } from "@lib/utils";
+import { redis, shouldRetry } from "./redis";
 import { REDIS_KEYS } from "@lib/utils/constants";
 
 export async function redisSetChatMembers(
@@ -30,9 +30,10 @@ export async function redisRemoveChatMember(chatId: string, memberId: string) {
 }
 
 export const redisSetChatMembersWithRetry = withRetry(redisSetChatMembers, {
+  shouldRetry,
   onRetry: (err: Error, attempt) => {
     console.error(
-      `Error on Redis set chat members. Attempt: ${attempt}. Error: ${err.message || err}`
+      `[Redis]: Error on Redis set chat members. Attempt: ${attempt}. Error: ${err.message || err}`
     );
   }
 });

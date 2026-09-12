@@ -218,6 +218,7 @@ type RetryOptions = {
   retries?: number;
   baseDelay?: number;
   maxDelay?: number;
+  shouldRetry?: (err: any) => boolean;
   onRetry?: (error: any, attempt: number, delay: number) => void;
 };
 
@@ -228,6 +229,7 @@ type RetryOptions = {
  * @param options.retries The maximum number of retries. Default is 3.
  * @param options.delay The delay between retries in milliseconds. Default is 1000.
  * @param options.onRetry A callback function that gets called on each retry attempt.
+ * @param options.shouldRetry returns a boolean. Determines if a function should be retried.
  * @returns A function that when called, executes the original async function with retry logic.
  */
 
@@ -240,7 +242,8 @@ function withRetry<T extends (...args: any[]) => Promise<any>>(
     retries = 3,
     baseDelay = 25, // much smaller & safer
     maxDelay = 200, // protects from huge delays
-    onRetry
+    onRetry,
+    shouldRetry
   } = options;
 
   return async function (
@@ -255,6 +258,10 @@ function withRetry<T extends (...args: any[]) => Promise<any>>(
       } catch (error) {
         attempt++;
         lastError = error;
+
+        if (shouldRetry && !shouldRetry(error)) {
+          throw error;
+        }
 
         if (attempt >= retries) break;
 

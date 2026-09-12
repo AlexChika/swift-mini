@@ -30,7 +30,7 @@ function useChatsResolver(
     handleChatCreated(payload, updates);
   });
 
-  return {};
+  return null;
   // to be implemented
 }
 

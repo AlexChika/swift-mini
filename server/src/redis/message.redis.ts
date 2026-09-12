@@ -1,5 +1,5 @@
-import { redis } from "./redis";
 import { withRetry } from "@lib/utils";
+import { redis, shouldRetry } from "./redis";
 import { REDIS_KEYS } from "@lib/utils/constants";
 
 /**
@@ -46,9 +46,10 @@ export async function redisDeleteMessageIdemKeys(cmid: string) {
 export const redisGetMessageIdemKeysWithRetry = withRetry(
   redisGetMessageIdemKeys,
   {
+    shouldRetry,
     onRetry: (err: Error, attempt) => {
       console.error(
-        `Error on get message idempotency keys. Attempt: ${attempt}. Error: ${err.message || err}`
+        `[Redis]: Error on get message idempotency keys. Attempt: ${attempt}. Error: ${err.message || err}`
       );
     }
   }
@@ -57,9 +58,10 @@ export const redisGetMessageIdemKeysWithRetry = withRetry(
 export const redisSetMessageIdemKeysWithRetry = withRetry(
   redisSetMessageIdemKeys,
   {
+    shouldRetry,
     onRetry: (err: Error, attempt) => {
       console.error(
-        `Error on set message idempotency keys. Attempt: ${attempt}. Error: ${err.message || err}`
+        `[Redis]: Error on set message idempotency keys. Attempt: ${attempt}. Error: ${err.message || err}`
       );
     }
   }

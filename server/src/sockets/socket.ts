@@ -43,8 +43,8 @@ export function initSocketServer(
     next();
   });
 
-  io.on("connection", (socket) => {
-    socketOnConnect(io, socket);
+  io.on("connection", async (socket) => {
+    await socketOnConnect(io, socket);
 
     // all other socket event handlers here
     socketOnCreateMessage(io, socket);
