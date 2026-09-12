@@ -18,7 +18,7 @@ export async function connectRedis() {
   return redis;
 }
 
- // @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function shouldRetry(err: any) {
   // Return false to skip retrying semantic/syntax errors
   if (err.name === "ReplyError" || err.message?.includes("WRONGTYPE")) {

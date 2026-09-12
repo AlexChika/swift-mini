@@ -49,8 +49,8 @@ app.get("/test", async (req, res) => {
 
 app.use(
   (
-     // @typescript-eslint/no-explicit-any
-    err: any ,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    err: any,
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
