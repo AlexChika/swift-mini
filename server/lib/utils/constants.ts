@@ -36,11 +36,10 @@ export const DATABASE_URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/
 
 /* ------------- REDIS ------------- */
 
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 export const REDIS_URL =
   process.env.NODE_ENV === "development"
     ? "redis://127.0.0.1:6379"
-    : `rediss://default:${REDIS_PASSWORD}@pretty-rooster-66194.upstash.io:6379`;
+    : `rediss://default:${process.env.REDIS_URI}`;
 
 /**
  *  Redis keys used in the application.
