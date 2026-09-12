@@ -17,6 +17,7 @@ import { getMessage } from "./graphql/services/message.service";
 const app = express();
 const httpServer = createServer(app);
 
+app.set("trust proxy", 1);
 app.use(morgan("combined"));
 app.use(cors<cors.CorsRequest>(corsOpts));
 app.use(express.json({ limit: "5mb" }));
