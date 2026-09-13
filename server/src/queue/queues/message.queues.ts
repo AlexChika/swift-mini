@@ -3,6 +3,10 @@ import { queueConfig } from "../queues.config";
 
 export const messageQueue = new Queue("messages", queueConfig.redis);
 
+messageQueue.on("error", (err) => {
+  console.error("[Queue]: Message Que error :", err);
+});
+
 /**
  * enques messages to be created from socket on Create chat event
  */

@@ -193,6 +193,12 @@ export function registerMessageWorker() {
   );
 
   worker.on("failed", async (job, err) => {
-    console.error(`❌ Job ${job?.name} (${job?.id}) failed:`, err);
+    console.error(`[Worker]: Job ${job?.name} failed ❌:`, err);
   });
+
+  worker.on("error", (err) => {
+    console.error("[Worker]: Message Worker error :", err);
+  });
+
+  return worker;
 }

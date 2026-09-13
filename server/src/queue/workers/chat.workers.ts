@@ -66,6 +66,12 @@ export function registerChatWorker() {
   );
 
   worker.on("failed", (job, err) =>
-    console.error(`❌ Job ${job?.name} failed:`, err)
+    console.error(`[Worker]: Job ${job?.name} failed ❌:`, err)
   );
+
+  worker.on("error", (err) => {
+    console.error("[Worker]: Chat Worker error :", err);
+  });
+
+  return worker;
 }

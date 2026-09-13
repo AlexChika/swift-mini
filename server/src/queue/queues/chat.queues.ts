@@ -3,6 +3,10 @@ import { queueConfig } from "../queues.config";
 
 export const chatQueue = new Queue("chats", queueConfig.redis);
 
+chatQueue.on("error", (err) => {
+  console.error("[Queue]: Chat Que error :", err);
+});
+
 export async function enqueueChatCreated(
   chatId: string,
   members: {
